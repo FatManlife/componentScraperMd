@@ -7,9 +7,7 @@ import (
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
 	"github.com/FatManlife/component-finder/back-end/internal/models"
-	"github.com/FatManlife/component-finder/back-end/internal/scraper/pcprime"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
-	"github.com/FatManlife/component-finder/back-end/scraper/pcprime"
 	"github.com/gocolly/colly"
 )
 
@@ -18,44 +16,48 @@ func TestColly(){
 
 	// Extracting Computer category
 	c.OnHTML("div.main_product.container",func(e *colly.HTMLElement){
-		LaptopHandler(e)
+		aioHandler(e)
 	})
 	
-	c.Visit("https://prime-pc.md/products/lenovo-v17-g4-iru-i5-13420h-8gb-512gb-intel-uhd-no-os-iron-grey")
+	c.Visit("https://prime-pc.md/products/asus-aio-a3402i3-1315u-8gb-512gb-intel-uhd-no-os-white")
 }
 
-func LaptopHandler(e *colly.HTMLElement){
-	var laptop models.Laptop
+var ruEng map[string]string = map[string]string {
+	"Жидкостное охлаждение":"Liquid cooling",
+	"Воздушное охлаждение" : "Air cooling",
+	"Вентилятор":"Air cooling",
+	"ARGB": "ARGB",
+	"RGB": "RGB",
+	"Многоцветный":"Multicolor",
+	"Для компьютера": "Pc",
+	"Для ноутбука": "Laptop",
+}
 
-	laptop.Name = e.ChildText("ol.breadcrumb li:last-child")
-	laptop.ImageURL = e.ChildAttr("img","src")
-	laptop.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	laptop.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+func aioHandler(e *colly.HTMLElement){
+	var aio models.Aio
+
+	aio.Name = e.ChildText("ol.breadcrumb li:last-child")
+	aio.ImageURL = e.ChildAttr("img","src")
+	aio.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	aio.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch category{
 		case "Процессор":
-			laptop.Cpu = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1)
-		case "Видеокарта":
-			laptop.Gpu = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"Интегрированная","Integrated",1)
-		case "Оперативная память":
-			laptop.Ram = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
-		case "Накопитель":
-			laptop.Storage = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
-		case "Диагональ экрана":
-			laptop.Diagonal = el.ChildText("div.table_cell:nth-child(2)")
-		case "Аккумулятор":
-			laptop.Battery = pcprime.CastingFloat64Laptop(el.ChildText("div.table_cell:nth-child(2)"))
+			aio.Cpu = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1)
+		case "Модель видеокарты":
+			aio.Gpu = el.ChildText("div.table_cell:nth-child(2) ")
+		case "Объем оперативной памяти":
+			aio.Ram = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
+		case "Объем SSD":
+			aio.Storage= strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
+		case "Экран":
+			aio.Diagonal = strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0]
 		}
-
 	})
 
-	data,_ := json.MarshalIndent(laptop,""," ")
+	data,_ := json.MarshalIndent(aio,""," ")
 	fmt.Println(string(data))
 }
-
-
-
-

@@ -105,27 +105,27 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 
 		switch category {
 			case "cpu":
-				CpuHandler(e)
+				cpuHandler(e)
 			case "motherboard":
-				MotherboardHandler(e)
+				motherboardHandler(e)
 			case "gpu":
-				GpuHandler(e)
+				gpuHandler(e)
 			case "ram":
-				RamHandler(e)
+				ramHandler(e)
 			case "storage":
-				StorageHandler(e)
+				storageHandler(e)
 			case "case":
-				CaseHandler(e)
+				caseHandler(e)
 			case "psu":
-				PsuHandler(e)
+				psuHandler(e)
 			case "cooler":
-				CoolerHandler(e)
+				coolerHandler(e)
 			case "laptop":
-				LaptopHandler(e)
+				laptopHandler(e)
 			case "pc":
-				PcHandler(e)
+				pcHandler(e)
 			case "aio":
-				AioHandler(e)
+				aioHandler(e)
 		}
 
 		fmt.Println()
