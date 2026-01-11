@@ -4,7 +4,7 @@ import "github.com/gocolly/colly"
 
 func New(domain string, isAsync bool) *colly.Collector{
 	return colly.NewCollector(
-		colly.AllowedDomains("xstore.md"),
+		colly.AllowedDomains(domain),
 		colly.Async(isAsync),
 	)
 }
