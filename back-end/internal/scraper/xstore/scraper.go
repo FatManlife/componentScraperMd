@@ -15,7 +15,7 @@ func Run () error {
 
 	requestBodyProduct(category, page, product, &productsLinks, &semaphor)
 
-	category.Visit("https://xstore.md/")
+	category.Visit("https://xstore.md/componente-pc/racire")
 	category.Wait()
 	page.Wait()
 	product.Wait()

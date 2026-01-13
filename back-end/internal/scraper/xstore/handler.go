@@ -12,6 +12,29 @@ import (
 	"github.com/gocolly/colly"
 )
 
+//Generalize the categories to send
+var components map[string]string = map[string]string{
+	"procesoare": "cpu",
+	"plăci de bază": "motherboard",
+	"plăci video": "gpu",
+	"memorie operativă (ram)": "ram",
+	"unități de stocare date": "storage",
+	"carcase": "case",
+	"surse de alimentare (psu)": "psu",
+	"sisteme de racire": "cooling systems",
+	"m.2 nvme": "ssd",
+	"ssd": "ssd",
+	"hdd": "hdd",
+	"ssd externe": "ssd",
+	"hdd externe": "hdd",
+	"sisteme de racire cu apă": "cooler",
+	"coolere procesoare": "cooler",
+	"ventilatoare pc": "fan",
+	"all-in-one pc": "aio",
+	"mini pc": "pc_mini",
+
+}
+
 func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan models.Link, semaphor *chan struct{}){
 	//Seting up filter for urls
 	var sentUrls sync.Map
@@ -19,60 +42,51 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 	//Scrape the link for categories
 	categoryColly.OnHTML("div.xabs_header div.layer1.side-menu ul[data-xcat] > li ", func(e *colly.HTMLElement) {	
 		//Getting categories names
-		category := e.DOM.Find("a").First().Text()
+		category := strings.ToLower(e.DOM.Find("a").First().Text())
 
 		//Filterin categories
-		if (!strings.Contains(category, "Laptopuri") && !strings.Contains(category, "MacBook") && !strings.Contains(category, "Calculatoare") && !strings.Contains(category, "PC")){
+		if strings.Contains(category,"accesorii") || (!strings.Contains(category, "laptopuri") && !strings.Contains(category, "macbook") && !strings.Contains(category, "calculatoare") && !strings.Contains(category, "pc")){
 			return
 		}
 
 		//Scraping each category
 		e.ForEach("ul li", func(_ int, el *colly.HTMLElement){
-			if strings.Contains(el.ChildText("a"), "software"){
+			subCategory := strings.ToLower(el.ChildText("a"))
+
+			//Filtering for unwanted categories
+			if strings.Contains(subCategory,"software") || strings.Contains(subCategory, "setup"){
+				return 
+			}
+			
+			link := el.ChildAttr("a", "href")
+
+			//Filtering existing links
+			if _, exists := sentUrls.LoadOrStore(link, true); exists{
 				return 
 			}
 
-			//Generalize the categories to send 
-			components := map[string]string{
-				"Procesoare": "cpu",
-				"Plăci de bază": "motherboard",
-				"Plăci video": "gpu",
-				"Memorie operativă (RAM)": "ram",
-				"Unități de stocare date": "storage",
-				"Carcase": "case",
-				"Surse de alimentare (PSU)": "psu",
-				"Sisteme de racire": "cooler",
-			}
-
-			link := el.ChildAttr("a", "href")
-
-			var subCategory string
-
 			// sending the correct category 
-			if (category != "Componente PC"){
-				if (strings.Contains(category, "Laptopuri") || strings.Contains(category, "MacBook")){
-					subCategory = "laptop"
-				} else if ( category != "All-in-One PC" && category != "Mini PC" && (strings.Contains(category, "PC") || strings.Contains(category, "Calculatoare"))){ 
+			if category != "componente pc"{
+				if strings.Contains(category, "laptopuri") || strings.Contains(category, "macbook"){
+					subCategory = "laptop"			
+				} else if  category != "all-in-one pc" && category != "mini pc" && (strings.Contains(category, "pc") || strings.Contains(category, "calculatoare")){ 
 					subCategory = "pc"
-				} else if (category == "All-in-One PC") {
-					subCategory = "aio"
-				} else if (category == "Mini PC") {
-					subCategory = "pc_mini"
-				}
-			} else {	
-				if (el.ChildText("a") == "Cabluri și controlere") {
-					return 
-				}
-				subCategory = components[el.ChildText("a")]
-			}
+				} else {
+					subCategory = components[category]
+				} 
+			} else {		
+				subCategory = components[subCategory]
 
-			//filter existing links
-			if _, exists := sentUrls.LoadOrStore(link, true); !exists {
-				//visiting link and seting up a semaphor
-				utils.SafeVisit(pageColly, link, collector.NewContext("category",subCategory))
-				//Setting up a semaphor to block the for loop
-				<- *semaphor 
+				if subCategory == ""{
+					return
+				}
 			}	
+
+			//visiting link and seting up a semaphor
+			utils.SafeVisit(pageColly, link, collector.NewContext("category",subCategory))
+			//Setting up a semaphor to block the for loop
+			<- *semaphor 
+
 		})	
 	})
 
@@ -81,14 +95,39 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 		go func (){	
 			for link := range *productLinks {
 				utils.SafeVisit(productColly, link.Url, collector.NewContext("category",link.Category))
-				time.Sleep(1000 * time.Millisecond)
+				time.Sleep(1500 * time.Millisecond)
 			}
 		}()
 	}
+
+	//Specific category Page (cooler/storage)
+	pageColly.OnHTML("div.category-baner-item",func(e *colly.HTMLElement){
+		category := e.Request.Ctx.Get("category")
+
+		category = "storage"
+
+		if category != "storage" && category != "cooling systems" {
+			return 
+		}
+
+		category = components[strings.ToLower(e.ChildText("a"))]
+
+		if category == ""{
+			return
+		}
+
+		utils.SafeVisit(pageColly,e.ChildAttr("a","href"),collector.NewContext("category",category))		
+	})
 	
 	//Category page
 	pageColly.OnHTML("div.category-prods.xlists figure.card-product", func(e *colly.HTMLElement){
-		*productLinks <- models.Link{Category: e.Request.Ctx.Get("category"), Url: e.ChildAttr("a.img-wrap", "href")}
+		category := e.Request.Ctx.Get("category")
+
+		if category == "storage" || category == "cooling systems" {
+			return 
+		}
+
+		*productLinks <- models.Link{Category: category, Url: e.ChildAttr("a.img-wrap", "href")}
 	})
 
 	//Unblocking the sempahor 
@@ -100,11 +139,13 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 
 	//going to the next page
 	pageColly.OnHTML("a[aria-label=\"Următor\"]", func(e *colly.HTMLElement){
-		categroy := e.Request.Ctx.Get("category")	
+		category := e.Request.Ctx.Get("category")	
 		link := e.Attr("href")
-		if link != "#" {
-			utils.SafeVisit(pageColly, link, collector.NewContext("category", categroy))
+
+		if category != "storage" && category != "cooling systems" && link != "#" {
+			utils.SafeVisit(pageColly, link, collector.NewContext("category", category))
 		}
+
 	})
 
 	//Scraping the details of the product
@@ -120,8 +161,12 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 				gpuHandler(e)
 			case "ram":
 				ramHandler(e)
-			case "storage":
-				//storageHandler(e)
+			case "ssd":
+				ssdHandler(e)
+			case "hdd":
+				hddHandler(e)
+			case "fan":
+				fanHandler(e)
 			case "case":
 				caseHandler(e)
 			case "psu":
