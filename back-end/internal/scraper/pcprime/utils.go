@@ -14,7 +14,7 @@ func castingFloat64Laptop(s string) float64{
 	return 0
 }
 
-func CastingCastIntFan(s string) int{
+func CastingIntFan(s string) int{
 	m := regexp.MustCompile(`(?i)(\d+)\s*rpm`).FindAllStringSubmatch(s, -1)
 	if len(m) > 0 {
 		v, _ := strconv.Atoi(m[len(m)-1][1])

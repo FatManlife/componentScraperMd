@@ -41,7 +41,7 @@ func ssdHandler(e *colly.HTMLElement){
 		case "Viteza maximă de citire":
 			ssd.ReadingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Form Factor":
-			ssd.FormFactor= el.ChildText("span:nth-child(2)")
+			ssd.FormFactor= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}
 	})
 
@@ -61,10 +61,10 @@ func hddHandler(e *colly.HTMLElement){
 		case "Producator":
 			hdd.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Capacitatea totală a memoriei":
-			capacity := el.ChildText("span:nth-child(2)")
+			capacity := strings.TrimSpace(e.ChildText("span:nth-child(2)"))
 
 			if strings.Contains(capacity, "TB"){
-				hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity)) * 1000
+				hdd.Capacity= utils.CastInt(capacity) * 1000
 				return 
 			}
 
@@ -72,7 +72,7 @@ func hddHandler(e *colly.HTMLElement){
 		case "Viteza de rotație":
 			hdd.RotationSpeed= utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Form Factor":
-			hdd.FormFactor= el.ChildText("span:nth-child(2)")
+			hdd.FormFactor= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}
 	})
 
@@ -168,6 +168,10 @@ func laptopHandler(e *colly.HTMLElement){
 
 func pcHandler(e *colly.HTMLElement){
 	var pc models.Pc
+
+	if strings.Contains(strings.ToLower(strings.TrimSpace(e.ChildText("div.top-title h1"))),"setup"){
+		return
+	}
 
 	setBaseAttrs(e, &pc.BaseAttrs)	
 

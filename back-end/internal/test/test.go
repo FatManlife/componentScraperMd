@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -14,18 +15,47 @@ func TestColly(){
 	c := collector.New("xstore.md",false)
 
 	// Extracting Computer category
-	c.OnHTML("div.category-baner-item",func(e *colly.HTMLElement){
-		category := strings.ToLower(e.ChildText("a"))
-		link := strings.ToLower(e.ChildAttr("a","href"))
-		if !strings.Contains(category, "nvme") && !strings.Contains(category, "hdd") && !strings.Contains(category, "ssd"){
-			return 
-		}
-		fmt.Println(category)
-		fmt.Println(link)
+	c.OnHTML("div.container.page_product",func(e *colly.HTMLElement){
+		pcHandler(e)
 	})
 	
-	c.Visit("https://xstore.md/componente-pc/stocare")
+	c.Visit("https://xstore.md/calculatoare-pc/gaming/raptor-x07")
 }
+
+func pcHandler(e *colly.HTMLElement){
+	var pc models.Pc
+
+	if strings.Contains(strings.ToLower(strings.TrimSpace(e.ChildText("div.top-title h1"))),"setup"){
+		return
+	}
+
+	setBaseAttrs(e, &pc.BaseAttrs)	
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec {
+		case "Model placă de bază":
+			pc.Motherboard= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Model carcasă":
+			pc.Case = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Procesor":
+			pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Model placă video":
+			pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM":
+			pc.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Unitate de stocare":
+			pc.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Model sursa de alimentare":
+			pc.Psu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		}
+	})
+
+	data, _ := json.MarshalIndent(pc, "", "  ")
+	fmt.Println(string(data))
+}
+
 
 var ruEng map[string]string = map[string]string {
 	"Жидкостное охлаждение":"Liquid cooling",
