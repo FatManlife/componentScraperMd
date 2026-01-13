@@ -12,14 +12,45 @@ import (
 )
 
 func TestColly(){
-	c := collector.New("prime-pc.md",false)
+	c := collector.New("xstore.md",false)
 
 	// Extracting Computer category
-	c.OnHTML("div.main_product.container",func(e *colly.HTMLElement){
-		aioHandler(e)
+	c.OnHTML("div.container.page_product",func(e *colly.HTMLElement){
+		ssdHandler(e)
 	})
 	
-	c.Visit("https://prime-pc.md/products/asus-aio-a3402i3-1315u-8gb-512gb-intel-uhd-no-os-white")
+	c.Visit("https://xstore.md/componente-pc/stocare/samsung-pro-ultimate-128gb")
+}
+
+func ssdHandler(e *colly.HTMLElement){
+	var ssd models.Ssd
+
+	setBaseAttrs(e, &ssd.BaseAttrs)
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec { 
+		case "Producator":
+			ssd.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Capacitatea totală a memoriei":
+			capacity := el.ChildText("span:nth-child(2)")
+			if strings.Contains(capacity, "TB"){
+				ssd.Capacity= utils.CastInt(strings.TrimSpace(capacity)) * 1000
+				return 
+			}
+			ssd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
+		case "Viteza maximă de scriere":
+			ssd.WritingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Viteza maximă de citire":
+			ssd.ReadingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Form Factor":
+			ssd.FormFactor= el.ChildText("span:nth-child(2)")
+		}
+	})
+
+	data, _ := json.MarshalIndent(ssd, "", "  ")
+	fmt.Println(string(data))
 }
 
 var ruEng map[string]string = map[string]string {
@@ -33,31 +64,11 @@ var ruEng map[string]string = map[string]string {
 	"Для ноутбука": "Laptop",
 }
 
-func aioHandler(e *colly.HTMLElement){
-	var aio models.Aio
-
-	aio.Name = e.ChildText("ol.breadcrumb li:last-child")
-	aio.ImageURL = e.ChildAttr("img","src")
-	aio.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-	aio.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
-
-	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
-		category := el.ChildText("div.table_cell:nth-child(1)")
-
-		switch category{
-		case "Процессор":
-			aio.Cpu = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1)
-		case "Модель видеокарты":
-			aio.Gpu = el.ChildText("div.table_cell:nth-child(2) ")
-		case "Объем оперативной памяти":
-			aio.Ram = strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
-		case "Объем SSD":
-			aio.Storage= strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)
-		case "Экран":
-			aio.Diagonal = strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0]
-		}
-	})
-
-	data,_ := json.MarshalIndent(aio,""," ")
-	fmt.Println(string(data))
+func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
+	product.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
+	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
+	product.Price = utils.CastFloat64(e.ChildText("div.xp-price"))
+	product.Website_id = 1
+	product.Url = e.Request.URL.String()
 }
+

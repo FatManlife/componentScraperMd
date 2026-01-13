@@ -22,13 +22,20 @@ var ruEng map[string]string = map[string]string {
 	"Для ноутбука": "Laptop",
 }
 
+
+func setBaseAttrs(e *colly.HTMLElement, product models.BaseProduct){
+	product.Name = e.ChildText("ol.breadcrumb li:last-child")
+	product.ImageURL = e.ChildAttr("img","src")
+	product.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	product.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
+	product.Website_id = 2 
+	product.Url = e.Request.URL.String()
+}
+
 func aioHandler(e *colly.HTMLElement){
 	var aio models.Aio
 
-	aio.Name = e.ChildText("ol.breadcrumb li:last-child")
-	aio.ImageURL = e.ChildAttr("img","src")
-	aio.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-	aio.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
+	setBaseAttrs(e, aio.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -53,10 +60,8 @@ func aioHandler(e *colly.HTMLElement){
 
 func pcMiniHandler(e *colly.HTMLElement){
 	var pc models.Pc
-
-	pc.Name = e.ChildText("ol.breadcrumb li:last-child")
-	pc.ImageURL = e.ChildAttr("img","src")
-	pc.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	
+	setBaseAttrs(e, pc.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -79,10 +84,8 @@ func pcMiniHandler(e *colly.HTMLElement){
 
 func pcHandler(e *colly.HTMLElement){
 	var pc models.Pc
-
-	pc.Name = e.ChildText("ol.breadcrumb li:last-child")
-	pc.ImageURL = e.ChildAttr("img","src")
-	pc.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	
+	setBaseAttrs(e, pc.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -105,11 +108,8 @@ func pcHandler(e *colly.HTMLElement){
 
 func caseHandler(e *colly.HTMLElement){
 	var pcCase models.Case
-
-	pcCase.Name = e.ChildText("ol.breadcrumb li:last-child")
-	pcCase.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
-	pcCase.ImageURL = e.ChildAttr("img","src")
-	pcCase.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	
+	setBaseAttrs(e, pcCase.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -128,10 +128,8 @@ func caseHandler(e *colly.HTMLElement){
 
 func pcPrimeHandler(e *colly.HTMLElement){
 	var pc models.Pc
-
-	pc.Name = e.ChildText("ol.breadcrumb li:last-child")
-	pc.ImageURL = e.ChildAttr("img","src")
-	pc.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	
+	setBaseAttrs(e, pc.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -161,11 +159,8 @@ func pcPrimeHandler(e *colly.HTMLElement){
 func psuHandler(e *colly.HTMLElement){
 	var psu models.Psu
 
-	psu.Name = e.ChildText("ol.breadcrumb li:last-child")
-	psu.ImageURL = e.ChildAttr("img","src")
-	psu.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	psu.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-
+	setBaseAttrs(e, psu.BaseAttrs)
+	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
 
@@ -186,10 +181,7 @@ func psuHandler(e *colly.HTMLElement){
 func gpuHandler(e *colly.HTMLElement){
 	var gpu models.Gpu
 
-	gpu.Name = e.ChildText("ol.breadcrumb li:last-child")
-	gpu.ImageURL = e.ChildAttr("img","src")
-	gpu.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	gpu.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	setBaseAttrs(e, gpu.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -210,39 +202,11 @@ func gpuHandler(e *colly.HTMLElement){
 	fmt.Println(string(data))
 }
 
-func storageHandler(e *colly.HTMLElement){
-	var storage models.Storage
-
-	storage.Name = e.ChildText("ol.breadcrumb li:last-child")
-	storage.ImageURL = e.ChildAttr("img","src")
-	storage.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	storage.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-
-	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
-		category := el.ChildText("div.table_cell:nth-child(1)")
-
-		switch category{
-		case "Объем SSD":
-			storage.Capacity = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Объем HDD":
-			storage.Capacity = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Формфактор":
-			storage.FormFactor= el.ChildText("div.table_cell:nth-child(2)")
-		}
-	})
-
-	data,_ := json.MarshalIndent(storage,""," ")
-	fmt.Println(string(data))
-}
-
 func ramHandler(e *colly.HTMLElement){
 	var ram models.Ram
 
-	ram.Name = e.ChildText("ol.breadcrumb li:last-child")
-	ram.ImageURL = e.ChildAttr("img","src")
-	ram.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	ram.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-
+	setBaseAttrs(e, ram.BaseAttrs)
+	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
 
@@ -268,10 +232,7 @@ func ramHandler(e *colly.HTMLElement){
 func motherBoardHandler(e *colly.HTMLElement){
 	var motherboard models.Motherboard
 
-	motherboard.Name = e.ChildText("ol.breadcrumb li:last-child")
-	motherboard.ImageURL = e.ChildAttr("img","src")
-	motherboard.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	motherboard.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	setBaseAttrs(e, motherboard.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -297,10 +258,7 @@ func motherBoardHandler(e *colly.HTMLElement){
 func coolerHandler(e *colly.HTMLElement){
 	var cooler models.Cooler
 
-	cooler.Name = e.ChildText("ol.breadcrumb li:last-child")
-	cooler.ImageURL = e.ChildAttr("img","src")
-	cooler.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	cooler.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	setBaseAttrs(e, cooler.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -332,10 +290,7 @@ func coolerHandler(e *colly.HTMLElement){
 func cpuHandler(e *colly.HTMLElement){
 	var cpu models.Cpu
 
-	cpu.Name = e.ChildText("ol.breadcrumb li:last-child")
-	cpu.ImageURL = e.ChildAttr("img","src")
-	cpu.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	cpu.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
+	setBaseAttrs(e, cpu.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
@@ -365,11 +320,8 @@ func cpuHandler(e *colly.HTMLElement){
 func laptopHandler(e *colly.HTMLElement){
 	var laptop models.Laptop
 
-	laptop.Name = e.ChildText("ol.breadcrumb li:last-child")
-	laptop.ImageURL = e.ChildAttr("img","src")
-	laptop.Brand= e.ChildText("ol.breadcrumb li:nth-last-child(2)")	
-	laptop.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-
+	setBaseAttrs(e, laptop.BaseAttrs)
+	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		category := el.ChildText("div.table_cell:nth-child(1)")
 

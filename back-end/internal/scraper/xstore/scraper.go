@@ -1,7 +1,7 @@
 package xstore
 
 import (
-	"github.com/FatManlife/component-finder/back-end/internal/utils"
+	"github.com/FatManlife/component-finder/back-end/internal/models"
 )
 
 
@@ -10,7 +10,7 @@ func Run () error {
 	page := newPageCollector()
 	product := newProductCollector() 
 
-	productsLinks := make(chan utils.Link)
+	productsLinks := make(chan models.Link)
 	semaphor := make(chan struct{})
 
 	requestBodyProduct(category, page, product, &productsLinks, &semaphor)

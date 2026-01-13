@@ -1,10 +1,10 @@
 package models
 
-type Storage struct {
+type BaseProduct struct {
 	Name string `json:"name"`
 	ImageURL string `json:"image_url"`
 	Brand string `json:"brand"`
 	Price float64 `json:"price"`
-	Capacity int `json:"capacity"`
-	FormFactor string `json:"form_factor"`
+	Url string `json:"url"`
+	Website_id int `json:"website_id"`
 }

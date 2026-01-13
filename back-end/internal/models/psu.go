@@ -1,10 +1,7 @@
 package models
 
 type Psu struct {
-	Name string `json:"name" selector:"a.xp-title"`
-	ImageURL string `json:"image_url" selector:"a.img-wrap img" attr:"src"`
-	Brand string `json:"brand"`
-	Price float64 `json:"price"`	
+	BaseAttrs BaseProduct
 	Power int `json:"power"`
 	Efficiency string `json:"efficiency"`
 	Modularity string `json:"modularity"`

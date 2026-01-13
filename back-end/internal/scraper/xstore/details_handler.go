@@ -10,13 +10,134 @@ import (
 	"github.com/gocolly/colly"
 )
 
+func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
+	product.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
+	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
+	product.Price = utils.CastFloat64(e.ChildText("div.xp-price"))
+	product.Website_id = 1
+	product.Url = e.Request.URL.String()
+}
+
+func ssdHandler(e *colly.HTMLElement){
+	var ssd models.Ssd
+
+	setBaseAttrs(e, &ssd.BaseAttrs)
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec { 
+		case "Producator":
+			ssd.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Capacitatea totală a memoriei":
+			capacity := el.ChildText("span:nth-child(2)")
+			if strings.Contains(capacity, "TB"){
+				ssd.Capacity= utils.CastInt(strings.TrimSpace(capacity)) * 1000
+				return 
+			}
+			ssd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
+		case "Viteza maximă de scriere":
+			ssd.WritingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Viteza maximă de citire":
+			ssd.ReadingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Form Factor":
+			ssd.FormFactor= el.ChildText("span:nth-child(2)")
+		}
+	})
+
+	data, _ := json.MarshalIndent(ssd, "", "  ")
+	fmt.Println(string(data))
+}
+
+func hddHandler(e *colly.HTMLElement){
+	var hdd models.Hdd
+
+	setBaseAttrs(e, &hdd.BaseAttrs)
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec { 
+		case "Producator":
+			hdd.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Capacitatea totală a memoriei":
+			capacity := el.ChildText("span:nth-child(2)")
+
+			if strings.Contains(capacity, "TB"){
+				hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity)) * 1000
+				return 
+			}
+
+			hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
+		case "Viteza de rotație":
+			hdd.RotationSpeed= utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Form Factor":
+			hdd.FormFactor= el.ChildText("span:nth-child(2)")
+		}
+	})
+
+	data, _ := json.MarshalIndent(hdd, "", "  ")
+	fmt.Println(string(data))
+}
+
+func fanHandler(e *colly.HTMLElement){
+	var fan models.Fan
+
+	setBaseAttrs(e, &fan.BaseAttrs)
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec { 
+		case "Producator":
+			fan.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Tip răcire":
+			fan.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Iluminare":
+			fan.Ilumination = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Viteza maximă de rotație":
+			fan.FanRPM = utils.CastInt(el.ChildText("span:nth-child(2)")) 
+		case "Dimensiuni ventilator":
+			fan.Size = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Nivel zgomot":
+			fan.Noise = utils.CastFloat64(el.ChildText("span:nth-child(2)")) 
+		}
+	})
+
+	data, _ := json.MarshalIndent(fan, "", "  ")
+	fmt.Println(string(data))
+}
+
+func pcMiniHandler(e *colly.HTMLElement){
+	var pc models.PcMini
+
+	setBaseAttrs(e, &pc.BaseAttrs)	
+
+	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
+		spec := el.ChildText("span:nth-child(1)") 
+
+		switch spec {
+		case "Procesor":
+			pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Producator":
+			pc.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Model placă video":
+			pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM":
+			pc.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Unitate de stocare":
+			pc.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		}
+	})
+
+	data, _ := json.MarshalIndent(pc, "", "  ")
+	fmt.Println(string(data))
+}
+
 func laptopHandler(e *colly.HTMLElement){
 	var laptop models.Laptop	
-
-	laptop.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	laptop.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	laptop.Price = price
+	
+	setBaseAttrs(e, &laptop.BaseAttrs)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -25,10 +146,12 @@ func laptopHandler(e *colly.HTMLElement){
 		case "Diagonală":
 			laptop.Diagonal = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Producator":
-			laptop.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			laptop.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Procesor":
 			laptop.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Placă video":
+			laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Procesor Video":
 			laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		case "Capacitatea RAM":
 			laptop.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
@@ -46,10 +169,7 @@ func laptopHandler(e *colly.HTMLElement){
 func pcHandler(e *colly.HTMLElement){
 	var pc models.Pc
 
-	pc.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	pc.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	pc.Price = price
+	setBaseAttrs(e, &pc.BaseAttrs)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -79,17 +199,14 @@ func pcHandler(e *colly.HTMLElement){
 func aioHandler(e *colly.HTMLElement){
 	var aio models.Aio
 
-	aio.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	aio.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	aio.Price = price
+	setBaseAttrs(e, &aio.BaseAttrs)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			aio.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			aio.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Diagonală":
 			aio.Diagonal= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Procesor":
@@ -110,17 +227,14 @@ func aioHandler(e *colly.HTMLElement){
 func cpuHandler(e *colly.HTMLElement){
 	var cpu models.Cpu
 
-	cpu.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	cpu.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	cpu.Price = price
+	setBaseAttrs(e, &cpu.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			cpu.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			cpu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Numărul de nuclee":
 			cpu.Cores = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Numărul threads":
@@ -145,17 +259,14 @@ func cpuHandler(e *colly.HTMLElement){
 func motherboardHandler(e *colly.HTMLElement){
 	var motherboard models.Motherboard
 
-	motherboard.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	motherboard.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price :=  utils.CastFloat64(e.ChildText("div.xp-price"))
-	motherboard.Price = price
+	setBaseAttrs(e, &motherboard.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			motherboard.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			motherboard.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Chipset":
 			motherboard.Chipset = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Socket procesor":
@@ -163,11 +274,7 @@ func motherboardHandler(e *colly.HTMLElement){
 		case "Form-factor memorie operativă":
 			motherboard.FormFactorRam = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		case "Memorie maximă suportată":
-			motherboard.RamSupport = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Viteza adaptorului de rețea":
-			motherboard.NetWork = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Bluetooth":
-			motherboard.Blueetooth = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			motherboard.RamSupport = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		case "Form Factor placă de bază":
 			motherboard.FormFactor = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}	
@@ -180,25 +287,22 @@ func motherboardHandler(e *colly.HTMLElement){
 func ramHandler(e *colly.HTMLElement){
 	var ram models.Ram
 
-	ram.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	ram.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	ram.Price = price
+	setBaseAttrs(e, &ram.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			ram.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			ram.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Capacitatea totală a memoriei":
 			ram.Capacity = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Frecvență memorie":
 			ram.Speed = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Standard memorie operativă":
 			ram.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Form-factor memorie operativă":
-			ram.Compatibility = "Pc"
+		case "Aplicare (Utilizare)":
+			ram.Compatibility = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Numărul de plăci în set":
 			ram.Configuration = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		}
@@ -211,17 +315,12 @@ func ramHandler(e *colly.HTMLElement){
 func gpuHandler(e *colly.HTMLElement){
 	var gpu models.Gpu
 
-	gpu.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	gpu.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price :=  utils.CastFloat64(e.ChildText("div.xp-price"))
-	gpu.Price = price
+	setBaseAttrs(e, &gpu.BaseAttrs)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
-		case "Producator":
-			gpu.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Frecvența maximă a GPU-ului":
 			gpu.GpuFrequency = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Memorie video":
@@ -237,49 +336,16 @@ func gpuHandler(e *colly.HTMLElement){
 	fmt.Println(string(data))
 }
 
-func storageHandler(e *colly.HTMLElement){
-	var storage models.Storage
-
-	storage.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	storage.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	storage.Price = price
-
-	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
-		spec := el.ChildText("span:nth-child(1)") 
-
-		switch spec { 
-		case "Producator":
-			storage.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Capacitatea totală a memoriei":
-			unit := strings.Split(strings.TrimSpace(el.ChildText("span:nth-child(2)"))," ")[1]
-			if (unit == "TB"){
-				storage.Capacity = utils.CastInt(el.ChildText("span:nth-child(2)")) * 1000
-			} else {
-				storage.Capacity = utils.CastInt(el.ChildText("span:nth-child(2)")) 
-			}
-		case "Form Factor":
-			storage.FormFactor = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		}
-	})
-
-	data, _ := json.MarshalIndent(storage, "", "  ")
-	fmt.Println(string(data))
-}
-
 func caseHandler(e *colly.HTMLElement){
 	var pcCase models.Case
 
-	pcCase.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	pcCase.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	pcCase.Price = price
+	setBaseAttrs(e, &pcCase.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 		switch spec { 
 		case "Producator":
-			pcCase.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			pcCase.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Format":
 			pcCase.Format = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Compatibilitate form factor placă de bază":
@@ -294,17 +360,14 @@ func caseHandler(e *colly.HTMLElement){
 func psuHandler(e *colly.HTMLElement){
 	var psu models.Psu
 
-	psu.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	psu.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	psu.Price = price
+	setBaseAttrs(e, &psu.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			psu.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			psu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Puterea":
 			psu.Power = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Certificat 80+":
@@ -323,17 +386,14 @@ func psuHandler(e *colly.HTMLElement){
 func coolerHandler(e *colly.HTMLElement){
 	var cooler models.Cooler
 
-	cooler.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	cooler.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	price := utils.CastFloat64(e.ChildText("div.xp-price"))
-	cooler.Price = price
+	setBaseAttrs(e, &cooler.BaseAttrs)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec { 
 		case "Producator":
-			cooler.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			cooler.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Tip răcire":
 			cooler.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Iluminare":

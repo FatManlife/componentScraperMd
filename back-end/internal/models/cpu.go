@@ -1,10 +1,7 @@
 package models
 
 type Cpu struct {
-	Name string `json:"name"`
-	ImageURL string `json:"image_url"`
-	Brand string `json:"brand"`
-	Price float64 `json:"price"`	
+	BaseAttrs BaseProduct 
 	Cores int `json:"cores"`	
 	Threads int `json:"threads"`
 	BaseClock float64 `json:"base_clock"`

@@ -1,11 +1,9 @@
 package models
 
-type Laptop struct {
+type PcMini struct {
 	BaseAttrs BaseProduct
 	Cpu string `json:"cpu"`
 	Gpu string `json:"gpu"`
 	Ram string `json:"ram"`
 	Storage string `json:"storage"`
-	Diagonal string `json:"diagonal"`
-	Battery float64 `json:"battery"`
 }
