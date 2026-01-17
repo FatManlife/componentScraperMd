@@ -1,7 +1,6 @@
 package test
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -12,48 +11,20 @@ import (
 )
 
 func TestColly(){
-	c := collector.New("xstore.md",false)
+	c := collector.New("neocomputer.md",false)
 
 	// Extracting Computer category
-	c.OnHTML("div.container.page_product",func(e *colly.HTMLElement){
-		pcHandler(e)
+	c.OnHTML("main#mm-subwrapper",func(e *colly.HTMLElement){
+		aioHandler(e)
 	})
 	
-	c.Visit("https://xstore.md/calculatoare-pc/gaming/raptor-x07")
+	c.Visit("https://neocomputer.md/all-in-one-asus-a5702")
 }
 
-func pcHandler(e *colly.HTMLElement){
-	var pc models.Pc
-
-	if strings.Contains(strings.ToLower(strings.TrimSpace(e.ChildText("div.top-title h1"))),"setup"){
-		return
-	}
-
-	setBaseAttrs(e, &pc.BaseAttrs)	
-
-	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
-		spec := el.ChildText("span:nth-child(1)") 
-
-		switch spec {
-		case "Model placă de bază":
-			pc.Motherboard= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Model carcasă":
-			pc.Case = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Procesor":
-			pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Model placă video":
-			pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Capacitatea RAM":
-			pc.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Unitate de stocare":
-			pc.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Model sursa de alimentare":
-			pc.Psu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		}
-	})
-
-	data, _ := json.MarshalIndent(pc, "", "  ")
-	fmt.Println(string(data))
+func aioHandler(e *colly.HTMLElement){
+	var aio models.Aio
+	fmt.Println(aio)
+	//setBaseAttrs(e, &aio.BaseAttrs)	
 }
 
 

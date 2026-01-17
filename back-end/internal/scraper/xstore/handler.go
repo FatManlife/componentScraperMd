@@ -1,7 +1,6 @@
 package xstore
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 	"time"
@@ -153,37 +152,21 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 		category := e.Request.Ctx.Get("category")
 
 		switch category {
-			case "cpu":
-				cpuHandler(e)
-			case "motherboard":
-				motherboardHandler(e)
-			case "gpu":
-				gpuHandler(e)
-			case "ram":
-				ramHandler(e)
-			case "ssd":
-				ssdHandler(e)
-			case "hdd":
-				hddHandler(e)
-			case "fan":
-				fanHandler(e)
-			case "case":
-				caseHandler(e)
-			case "psu":
-				psuHandler(e)
-			case "cooler":
-				coolerHandler(e)
-			case "laptop":
-				laptopHandler(e)
-			case "pc":
-				pcHandler(e)
-			case "aio":
-				aioHandler(e)
-			case "pc_mini":
-				pcMiniHandler(e)
+			case "cpu": cpuHandler(e)
+			case "motherboard": motherboardHandler(e)
+			case "gpu": gpuHandler(e)
+			case "ram": ramHandler(e)
+			case "ssd": ssdHandler(e)
+			case "hdd": hddHandler(e)
+			case "fan": fanHandler(e)
+			case "case": caseHandler(e)
+			case "psu": psuHandler(e)
+			case "cooler": coolerHandler(e)
+			case "laptop": laptopHandler(e)
+			case "pc": pcHandler(e)
+			case "aio": aioHandler(e)
+			case "pc_mini": pcMiniHandler(e)
 		}
-
-		fmt.Println()
 	})	
 }
 

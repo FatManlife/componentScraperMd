@@ -11,7 +11,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
-var ruEng map[string]string = map[string]string {
+var specRuEng map[string]string = map[string]string {
 	"Жидкостное охлаждение":"Liquid cooling",
 	"Воздушное охлаждение" : "Air cooling",
 	"Вентилятор":"Air cooling",
@@ -21,7 +21,6 @@ var ruEng map[string]string = map[string]string {
 	"Для компьютера": "Pc",
 	"Для ноутбука": "Laptop",
 }
-
 
 func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
 	product.Name = e.ChildText("ol.breadcrumb li:last-child")
@@ -88,9 +87,9 @@ func fanHandler(e *colly.HTMLElement){
 
 		switch spec {
 		case "Тип":
-			fan.Type = ruEng[el.ChildText("div.table_cell:nth-child(2)")]
+			fan.Type = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Цвет подсветки":
-			fan.Ilumination = ruEng[el.ChildText("div.table_cell:nth-child(2)")]
+			fan.Ilumination = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Частота вращения":
 			fan.FanRPM = CastingIntFan(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Уровень шума":
@@ -171,6 +170,21 @@ func pcHandler(e *colly.HTMLElement){
 			pc.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
 		case "Объем SSD":
 			pc.Storage = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)) 
+		//Different Case
+		case "Процессор":
+			pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "Видеокарта":
+			pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
+		case "Оперативная память":
+			pc.Ram = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "SSD накопитель":
+			pc.Storage = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "Материнская плата":
+			pc.Motherboard = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
+		case "Блок питания":
+			pc.Psu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "Корпус":
+			pc.Case = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
 		}
 	})
 
@@ -195,36 +209,6 @@ func caseHandler(e *colly.HTMLElement){
 	})
 
 	data,_ := json.MarshalIndent(pcCase,""," ")
-	fmt.Println(string(data))
-}
-
-func pcPrimeHandler(e *colly.HTMLElement){
-	var pc models.Pc
-	
-	setBaseAttrs(e, &pc.BaseAttrs)
-
-	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
-		spec := el.ChildText("div.table_cell:nth-child(1)")
-
-		switch spec {
-		case "Процессор":
-			pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "Видеокарта":
-			pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
-		case "Оперативная память":
-			pc.Ram = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "SSD накопитель":
-			pc.Storage = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "Материнская плата":
-			pc.Motherboard = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
-		case "Блок питания":
-			pc.Psu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "Корпус":
-			pc.Case = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		}
-	})
-
-	data,_ := json.MarshalIndent(pc,""," ")
 	fmt.Println(string(data))
 }
 
@@ -290,7 +274,7 @@ func ramHandler(e *colly.HTMLElement){
 		case "Тип оперативной памяти":
 			ram.Type = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Вид":
-			ram.Compatibility = ruEng[el.ChildText("div.table_cell:nth-child(2)")]
+			ram.Compatibility = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Количество планок":
 			configuration := strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 			ram.Configuration = configuration + " x " + strconv.Itoa(ram.Capacity / utils.CastInt(configuration) ) + " GB"
@@ -337,9 +321,9 @@ func coolerHandler(e *colly.HTMLElement){
 
 		switch spec{
 		case "Тип":
-			cooler.Type= ruEng[el.ChildText("div.table_cell:nth-child(2)")]
+			cooler.Type= specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Цвет подсветки":
-			cooler.Ilumination = ruEng[el.ChildText("div.table_cell:nth-child(2)")]
+			cooler.Ilumination = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Частота вращения":
 			cooler.FanRPM = CastingIntFan(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Уровень шума":
