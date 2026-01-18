@@ -27,6 +27,7 @@ var categoryMap map[string]string = map[string]string {
 	"mini pc": "mini_pc",
 }
 
+// requestBodyProducts scrapes product links from category and page collectors, then scrapes product details from product collector.
 func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan models.Link) {
 	categoryColly.OnHTML("ul.dropdown-content.categories  li.nav-wrap",func(h *colly.HTMLElement) {
 		category := strings.TrimSpace(strings.ToLower(h.ChildText("a.submenu")))
@@ -59,12 +60,14 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		})
 	})
 
+// Pagination and product links
 	pageColly.OnHTML("div.row.products-list div.col-lg-4.col-6 a", func(h *colly.HTMLElement) {
 		category := h.Request.Ctx.Get("category")
 
 		*productLink <- models.Link{Url: h.Attr("href"), Category: category}
 	})
 
+// Iterate through products
 	for i := 0; i < 1; i++ {
 		go func (){
 			for link := range *productLink {
@@ -74,6 +77,19 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		}()
 	}
 
+// Next page
+	pageColly.OnHTML("li.page-nav.next a",func(h *colly.HTMLElement) {	
+		link := h.Attr("href")
+
+		if link == "" {
+			return
+		}
+
+		categoryCtx := collector.NewContext("category" ,h.Request.Ctx.Get("category"))
+		utils.SafeVisit(pageColly,link,categoryCtx)
+	})
+
+// Product details
 	productColly.OnHTML("div#product-product", func(h *colly.HTMLElement) {
 		category := h.Request.Ctx.Get("category")
 

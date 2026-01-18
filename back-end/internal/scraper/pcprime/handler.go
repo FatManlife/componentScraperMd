@@ -40,14 +40,15 @@ var categoryMap map[string]string = map[string]string{
 func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan models.Link){
 	preflink := "https://prime-pc.md/" 
 
-	categoryColly.OnHTML("ul.main_list.dropdown-menu > li",func(e *colly.HTMLElement){
-		category := categoryMap[strings.ToLower(strings.TrimSpace(e.DOM.Find("a").First().Text()))]
+	// Category extraction
+	categoryColly.OnHTML("ul.main_list.dropdown-menu > li",func(h *colly.HTMLElement){
+		category := categoryMap[strings.ToLower(strings.TrimSpace(h.DOM.Find("a").First().Text()))]
 		
 		if category == ""{
 			return 	
 		}
 
-		e.ForEach("div.submenu ul > li",func(i int, el *colly.HTMLElement) {
+		h.ForEach("div.submenu ul > li",func(i int, el *colly.HTMLElement) {
 			category = categoryMap[strings.TrimSpace(strings.ToLower(el.ChildText("a")))]
 
 			if category == "" {
@@ -80,44 +81,47 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		}()
 	}
 
-	pageColly.OnHTML("div#catalogue div.catalog_tab div.product", func (e *colly.HTMLElement)  {
-		category := e.Request.Ctx.Get("category") 
-		link := preflink + e.ChildAttr("a","href")
+	// Product links extraction
+	pageColly.OnHTML("div#catalogue div.catalog_tab div.product", func (h *colly.HTMLElement)  {
+		category := h.Request.Ctx.Get("category") 
+		link := preflink + h.ChildAttr("a","href")
 
 		chLink := models.Link{Category: category, Url: link}
 		*productLinks <- chLink	
 	})
 
-	 pageColly.OnHTML("i.pagination_next",func(e *colly.HTMLElement) {	
-		next := e.ChildAttr("a","href")
+	// next page extraction
+	 pageColly.OnHTML("i.pagination_next",func(h *colly.HTMLElement) {	
+		next := h.ChildAttr("a","href")
 
 		if next == "" {
 			return
 		}
 
 		link := preflink + next
-		categoryCtx := collector.NewContext("category" ,e.Request.Ctx.Get("category"))
+		categoryCtx := collector.NewContext("category" ,h.Request.Ctx.Get("category"))
 		utils.SafeVisit(pageColly,link,categoryCtx)
 	})
 
-	productColly.OnHTML("div.main_product.container", func (e *colly.HTMLElement)  {
-		category := e.Request.Ctx.Get("category")
+	// Product extraction
+	productColly.OnHTML("div.main_product.container", func (h *colly.HTMLElement)  {
+		category := h.Request.Ctx.Get("category")
 
 	 	switch category{
-		case "aio": aioHandler(e) 
-		case "cooler": coolerHandler(e)
-		case "cpu": cpuHandler(e)
-		case "fan": fanHandler(e)
-		case "case": caseHandler(e)
-		case "gpu": gpuHandler(e)
-		case "hdd": hddHandler(e)
-		case "laptop": laptopHandler(e)
-		case "motherboard": motherBoardHandler(e)
-		case "mini_pc": pcMiniHandler(e)
-		case "pc": pcHandler(e)
-		case "psu": psuHandler(e)
-		case "ram": ramHandler(e)
-		case "ssd": ssdHandler(e)
+		case "aio": aioHandler(h) 
+		case "cooler": coolerHandler(h)
+		case "cpu": cpuHandler(h)
+		case "fan": fanHandler(h)
+		case "case": caseHandler(h)
+		case "gpu": gpuHandler(h)
+		case "hdd": hddHandler(h)
+		case "laptop": laptopHandler(h)
+		case "motherboard": motherBoardHandler(h)
+		case "mini_pc": pcMiniHandler(h)
+		case "pc": pcHandler(h)
+		case "psu": psuHandler(h)
+		case "ram": ramHandler(h)
+		case "ssd": ssdHandler(h)
 		}
 	})	
 }
