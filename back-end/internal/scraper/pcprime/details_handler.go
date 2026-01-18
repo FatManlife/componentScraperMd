@@ -86,10 +86,6 @@ func fanHandler(e *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch spec {
-		case "Тип":
-			fan.Type = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
-		case "Цвет подсветки":
-			fan.Ilumination = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Частота вращения":
 			fan.FanRPM = CastingIntFan(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Уровень шума":
@@ -322,8 +318,6 @@ func coolerHandler(e *colly.HTMLElement){
 		switch spec{
 		case "Тип":
 			cooler.Type= specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
-		case "Цвет подсветки":
-			cooler.Ilumination = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
 		case "Частота вращения":
 			cooler.FanRPM = CastingIntFan(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Уровень шума":
@@ -360,8 +354,6 @@ func cpuHandler(e *colly.HTMLElement){
 			cpu.BaseClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Максимальная частота":
 			cpu.BoostClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Объем кэш памяти":
-			cpu.Cache = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Тип сокета":
 			cpu.Socket = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)")) 
 		case "Мощность TDP":

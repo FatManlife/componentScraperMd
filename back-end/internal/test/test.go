@@ -1,7 +1,9 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
@@ -14,17 +16,56 @@ func TestColly(){
 	c := collector.New("neocomputer.md",false)
 
 	// Extracting Computer category
-	c.OnHTML("main#mm-subwrapper",func(e *colly.HTMLElement){
-		aioHandler(e)
+	c.OnHTML("div#product-product",func(e *colly.HTMLElement){
+		fanHandler(e)
 	})
 	
-	c.Visit("https://neocomputer.md/all-in-one-asus-a5702")
+	c.Visit("https://neocomputer.md/xilence-performance-a-series-xpf120gargbpwm-white")
 }
 
-func aioHandler(e *colly.HTMLElement){
-	var aio models.Aio
-	fmt.Println(aio)
-	//setBaseAttrs(e, &aio.BaseAttrs)	
+func fanHandler(e *colly.HTMLElement){
+	var fan models.Fan
+
+	setBaseAttrs(e, &fan.BaseAttrs)	
+	tempName := strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
+
+	if strings.Contains(tempName, "Fan Hub"){
+		return
+	}
+
+	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
+		category := strings.TrimSpace(el.ChildText("span.spec__name"))
+
+		switch category {
+		case "Nivel zgomot": 
+			if m := regexp.MustCompile(`\d+(?:\.\d+)?`).FindAllString(strings.TrimSpace(el.ChildText("span.spec__value")), -1); len(m) > 0 {
+				fan.Noise = utils.CastFloat64(m[len(m)-1])
+			}
+		case "Nivelul zgomotului": 
+			if m := regexp.MustCompile(`\d+(?:\.\d+)?`).FindAllString(strings.TrimSpace(el.ChildText("span.spec__value")), -1); len(m) > 0 {
+				fan.Noise = utils.CastFloat64(m[len(m)-1])
+			}
+		case "Viteza de rotatie": 
+			if m := regexp.MustCompile(`(\d+)\D*$`).FindStringSubmatch(strings.TrimSpace(el.ChildText("span.spec__value"))); len(m) > 1 {
+				fan.FanRPM = utils.CastInt(m[1])
+			}
+		case "Viteza maximă a ventilatorului {rpm}":
+			if m := regexp.MustCompile(`(\d+)\D*$`).FindStringSubmatch(strings.TrimSpace(el.ChildText("span.spec__value"))); len(m) > 1 {
+				fan.FanRPM = utils.CastInt(m[1])
+			}
+		case "Viteza ventilatorului": 
+			if m := regexp.MustCompile(`(\d+)\D*$`).FindStringSubmatch(strings.TrimSpace(el.ChildText("span.spec__value"))); len(m) > 1 {
+				fan.FanRPM = utils.CastInt(m[1])
+			}
+		case "Dimensiune": fan.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Dimensiune ventilatoare incluse": fan.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Dimensiunile ventilatorului": fan.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Dimensiuni": fan.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
+		}
+	})
+
+	data,_:= json.MarshalIndent(fan,""," ")	
+	fmt.Println(string(data))
 }
 
 
@@ -40,10 +81,10 @@ var ruEng map[string]string = map[string]string {
 }
 
 func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
-	product.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
-	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
-	product.Price = utils.CastFloat64(e.ChildText("div.xp-price"))
-	product.Website_id = 1
+	product.Name = strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
+	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.product_container_wrap.container.p-lg-50 img", "src"))
+	product.Price = utils.CastFloat64(e.ChildText("div.product_container_wrap.container.p-lg-50 div.price__head.mb-12 span.price__current > span.value"))
+	product.Website_id = 3
 	product.Url = e.Request.URL.String()
 }
 

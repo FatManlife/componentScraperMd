@@ -1,0 +1,111 @@
+package neocomputer
+
+import (
+	"strings"
+	"time"
+
+	"github.com/FatManlife/component-finder/back-end/internal/collector"
+	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/utils"
+	"github.com/gocolly/colly"
+)
+
+var categoryMap map[string]string = map[string]string {
+	 "procesoare": "cpu",
+	"storage hdd": "hdd",
+	"storage ssd": "ssd",
+	"memorii ram": "ram",
+	"plăci de bază": "motherboard",
+	"plăci video": "gpu",
+	"carcase": "case",
+	"surse de alimentare": "psu",
+	"cooler procesoare": "cooler",
+	"cooler carcase": "fan",
+	"desktop pc": "pc",
+	"gaming pc": "pc",
+	"all-in-one pc": "aio",
+	"mini pc": "mini_pc",
+}
+
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan models.Link) {
+	categoryColly.OnHTML("ul.dropdown-content.categories  li.nav-wrap",func(h *colly.HTMLElement) {
+		category := strings.TrimSpace(strings.ToLower(h.ChildText("a.submenu")))
+
+		if strings.Contains(category, "laptopuri"){
+			link := "https://neocomputer.md/" + h.ChildAttr("a.submenu", "href")  + "/notebook"
+			utils.SafeVisit(pageColly, link, collector.NewContext("category", "laptop"))
+			return
+		} else if !strings.Contains(category, "pc") {
+			return
+		}
+
+		h.ForEach("div.subcategories ul.subcategories-list > li",func (_ int, el *colly.HTMLElement) {
+			category = strings.TrimSpace(strings.ToLower(el.DOM.Find("a").First().Text()))
+
+			if !strings.Contains(category, "componente") && !strings.Contains(category, "computere") {
+				return
+			}
+
+			el.ForEach("ul > li > a.sub-title",func (_ int, e *colly.HTMLElement) {
+				category := categoryMap[strings.TrimSpace(strings.ToLower(e.Text))]
+				
+				if category == "" {
+					return
+				}
+
+				link := "https://neocomputer.md/" + e.Attr("href")
+				utils.SafeVisit(pageColly, link, collector.NewContext("category", category))
+			})
+		})
+	})
+
+	pageColly.OnHTML("div.row.products-list div.col-lg-4.col-6 a", func(h *colly.HTMLElement) {
+		category := h.Request.Ctx.Get("category")
+
+		*productLink <- models.Link{Url: h.Attr("href"), Category: category}
+	})
+
+	for i := 0; i < 1; i++ {
+		go func (){
+			for link := range *productLink {
+				utils.SafeVisit(productColly, link.Url, collector.NewContext("category", link.Category))
+				time.Sleep(1000 * time.Millisecond)
+			}
+		}()
+	}
+
+	productColly.OnHTML("div#product-product", func(h *colly.HTMLElement) {
+		category := h.Request.Ctx.Get("category")
+
+		switch category {
+		case "cpu":
+			cpuHandler(h)
+		case "gpu":
+			gpuHandler(h)
+		case "motherboard":
+			motherboardHandler(h)
+		case "ram":
+			ramHandler(h)
+		case "hdd":
+			hddHandler(h)
+		case "ssd":
+			ssdHandler(h)
+		case "psu":
+			psuHandler(h)
+		case "case":
+			caseHandler(h)
+		case "cooler":
+			coolerHandler(h)
+		case "fan":
+			fanHandler(h)
+		case "pc":
+			pcHandler(h)
+		case "laptop":
+			laptopHandler(h)
+		case "aio":
+			aioHandler(h)
+		case "mini_pc":
+			pcMiniHandler(h)
+		}
+	})
+}

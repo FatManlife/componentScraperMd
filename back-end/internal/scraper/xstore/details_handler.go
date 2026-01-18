@@ -91,10 +91,6 @@ func fanHandler(e *colly.HTMLElement){
 		switch spec { 
 		case "Producator":
 			fan.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Tip răcire":
-			fan.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Iluminare":
-			fan.Ilumination = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Viteza maximă de rotație":
 			fan.FanRPM = utils.CastInt(el.ChildText("span:nth-child(2)")) 
 		case "Dimensiuni ventilator":
@@ -180,7 +176,7 @@ func pcHandler(e *colly.HTMLElement){
 
 		switch spec {
 		case "Model placă de bază":
-			pc.Motherboard= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			pc.Motherboard = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Model carcasă":
 			pc.Case = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Procesor":
@@ -247,8 +243,6 @@ func cpuHandler(e *colly.HTMLElement){
 			cpu.BoostClock = utils.CastFloat64(el.ChildText("span:nth-child(2)"))
 		case "Frecvența de bază":
 			cpu.BaseClock = utils.CastFloat64(el.ChildText("span:nth-child(2)"))
-		case "Cache L3":
-			cpu.Cache = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Degajarea de căldură (TDP)":
 			cpu.Tdp = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Socket procesor":
@@ -376,8 +370,6 @@ func psuHandler(e *colly.HTMLElement){
 			psu.Power = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Certificat 80+":
 			psu.Efficiency = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Cabluri detașabile":
-			psu.Modularity = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Form Factor":
 			psu.FormFactor = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		}
@@ -400,8 +392,6 @@ func coolerHandler(e *colly.HTMLElement){
 			cooler.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Tip răcire":
 			cooler.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Iluminare":
-			cooler.Ilumination = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Viteza maximă de rotație":
 			cooler.FanRPM = utils.CastInt(el.ChildText("span:nth-child(2)")) 
 		case "Dimensiuni ventilator":
