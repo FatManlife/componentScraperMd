@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
-	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -24,7 +24,7 @@ func TestColly(){
 }
 
 func fanHandler(e *colly.HTMLElement){
-	var fan models.Fan
+	var fan dto.Fan
 
 	setBaseAttrs(e, &fan.BaseAttrs)	
 	tempName := strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
@@ -80,7 +80,7 @@ var ruEng map[string]string = map[string]string {
 	"Для ноутбука": "Laptop",
 }
 
-func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
 	product.Name = strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
 	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.product_container_wrap.container.p-lg-50 img", "src"))
 	product.Price = utils.CastFloat64(e.ChildText("div.product_container_wrap.container.p-lg-50 div.price__head.mb-12 span.price__current > span.value"))

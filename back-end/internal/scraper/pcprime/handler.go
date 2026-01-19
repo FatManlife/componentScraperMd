@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
-	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -37,7 +37,7 @@ var categoryMap map[string]string = map[string]string{
 	"мини пк": "mini_pc",
 }
 
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan models.Link){
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link){
 	preflink := "https://prime-pc.md/" 
 
 	// Category extraction
@@ -86,7 +86,7 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		category := h.Request.Ctx.Get("category") 
 		link := preflink + h.ChildAttr("a","href")
 
-		chLink := models.Link{Category: category, Url: link}
+		chLink := dto.Link{Category: category, Url: link}
 		*productLinks <- chLink	
 	})
 

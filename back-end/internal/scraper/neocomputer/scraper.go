@@ -1,13 +1,13 @@
 package neocomputer
 
-import "github.com/FatManlife/component-finder/back-end/internal/models"
+import "github.com/FatManlife/component-finder/back-end/internal/models/dto"
 
 func Run(){
 	category := newCategoryColector()
 	page := newPageColector()
 	product := newProductCollector()
 
-	productLink := make(chan models.Link)
+	productLink := make(chan dto.Link)
 
 	requestBodyProducts(category, page, product, &productLink)
 

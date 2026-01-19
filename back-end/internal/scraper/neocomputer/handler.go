@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
-	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -28,7 +28,7 @@ var categoryMap map[string]string = map[string]string {
 }
 
 // requestBodyProducts scrapes product links from category and page collectors, then scrapes product details from product collector.
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan models.Link) {
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan dto.Link) {
 	categoryColly.OnHTML("ul.dropdown-content.categories  li.nav-wrap",func(h *colly.HTMLElement) {
 		category := strings.TrimSpace(strings.ToLower(h.ChildText("a.submenu")))
 
@@ -64,7 +64,7 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 	pageColly.OnHTML("div.row.products-list div.col-lg-4.col-6 a", func(h *colly.HTMLElement) {
 		category := h.Request.Ctx.Get("category")
 
-		*productLink <- models.Link{Url: h.Attr("href"), Category: category}
+		*productLink <- dto.Link{Url: h.Attr("href"), Category: category}
 	})
 
 // Iterate through products

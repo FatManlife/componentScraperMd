@@ -1,4 +1,4 @@
-package models
+package dto
 
 type Ssd struct {
 	BaseAttrs BaseProduct

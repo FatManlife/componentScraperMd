@@ -1,4 +1,4 @@
-package models
+package dto
 
 type Aio struct {
 	BaseAttrs BaseProduct 

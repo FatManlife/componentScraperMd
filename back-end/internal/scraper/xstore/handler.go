@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
-	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -34,7 +34,7 @@ var categoryMap map[string]string = map[string]string{
 
 }
 
-func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan models.Link, semaphor *chan struct{}){
+func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, semaphor *chan struct{}){
 	//Seting up filter for urls
 	var sentUrls sync.Map
 
@@ -126,7 +126,7 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 			return 
 		}
 
-		*productLinks <- models.Link{Category: category, Url: h.ChildAttr("a.img-wrap", "href")}
+		*productLinks <- dto.Link{Category: category, Url: h.ChildAttr("a.img-wrap", "href")}
 	})
 
 	//Unblocking the sempahor 

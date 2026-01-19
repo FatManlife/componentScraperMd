@@ -1,4 +1,4 @@
-package models
+package dto
 
 type Case struct {
 	BaseAttrs BaseProduct

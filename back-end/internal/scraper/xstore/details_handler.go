@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/FatManlife/component-finder/back-end/internal/models"
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
 
-func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
 	product.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
 	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
 	product.Price = utils.CastFloat64(e.ChildText("div.xp-price"))
@@ -19,7 +19,7 @@ func setBaseAttrs(e *colly.HTMLElement, product *models.BaseProduct){
 }
 
 func ssdHandler(e *colly.HTMLElement){
-	var ssd models.Ssd
+	var ssd dto.Ssd
 
 	setBaseAttrs(e, &ssd.BaseAttrs)
 
@@ -48,7 +48,7 @@ func ssdHandler(e *colly.HTMLElement){
 }
 
 func hddHandler(e *colly.HTMLElement){
-	var hdd models.Hdd
+	var hdd dto.Hdd
 
 	setBaseAttrs(e, &hdd.BaseAttrs)
 
@@ -76,7 +76,7 @@ func hddHandler(e *colly.HTMLElement){
 }
 
 func fanHandler(e *colly.HTMLElement){
-	var fan models.Fan
+	var fan dto.Fan
 
 	setBaseAttrs(e, &fan.BaseAttrs)
 
@@ -96,7 +96,7 @@ func fanHandler(e *colly.HTMLElement){
 }
 
 func pcMiniHandler(e *colly.HTMLElement){
-	var pc models.PcMini
+	var pc dto.PcMini
 
 	setBaseAttrs(e, &pc.BaseAttrs)	
 
@@ -117,7 +117,7 @@ func pcMiniHandler(e *colly.HTMLElement){
 }
 
 func laptopHandler(e *colly.HTMLElement){
-	var laptop models.Laptop	
+	var laptop dto.Laptop	
 	
 	setBaseAttrs(e, &laptop.BaseAttrs)	
 
@@ -141,7 +141,7 @@ func laptopHandler(e *colly.HTMLElement){
 }
 
 func pcHandler(e *colly.HTMLElement){
-	var pc models.Pc
+	var pc dto.Pc
 
 	if strings.Contains(strings.ToLower(strings.TrimSpace(e.ChildText("div.top-title h1"))),"setup"){
 		return
@@ -168,7 +168,7 @@ func pcHandler(e *colly.HTMLElement){
 }
 
 func aioHandler(e *colly.HTMLElement){
-	var aio models.Aio
+	var aio dto.Aio
 
 	setBaseAttrs(e, &aio.BaseAttrs)	
 
@@ -190,7 +190,7 @@ func aioHandler(e *colly.HTMLElement){
 }
 
 func cpuHandler(e *colly.HTMLElement){
-	var cpu models.Cpu
+	var cpu dto.Cpu
 
 	setBaseAttrs(e, &cpu.BaseAttrs)
 
@@ -213,7 +213,7 @@ func cpuHandler(e *colly.HTMLElement){
 }
 
 func motherboardHandler(e *colly.HTMLElement){
-	var motherboard models.Motherboard
+	var motherboard dto.Motherboard
 
 	setBaseAttrs(e, &motherboard.BaseAttrs)
 
@@ -235,7 +235,7 @@ func motherboardHandler(e *colly.HTMLElement){
 }
 
 func ramHandler(e *colly.HTMLElement){
-	var ram models.Ram
+	var ram dto.Ram
 
 	setBaseAttrs(e, &ram.BaseAttrs)
 
@@ -257,7 +257,7 @@ func ramHandler(e *colly.HTMLElement){
 }
 
 func gpuHandler(e *colly.HTMLElement){
-	var gpu models.Gpu
+	var gpu dto.Gpu
 
 	setBaseAttrs(e, &gpu.BaseAttrs)	
 
@@ -277,7 +277,7 @@ func gpuHandler(e *colly.HTMLElement){
 }
 
 func caseHandler(e *colly.HTMLElement){
-	var pcCase models.Case
+	var pcCase dto.Case
 
 	setBaseAttrs(e, &pcCase.BaseAttrs)
 
@@ -295,7 +295,7 @@ func caseHandler(e *colly.HTMLElement){
 }
 
 func psuHandler(e *colly.HTMLElement){
-	var psu models.Psu
+	var psu dto.Psu
 
 	setBaseAttrs(e, &psu.BaseAttrs)
 
@@ -315,7 +315,7 @@ func psuHandler(e *colly.HTMLElement){
 }
 
 func coolerHandler(e *colly.HTMLElement){
-	var cooler models.Cooler
+	var cooler dto.Cooler
 
 	setBaseAttrs(e, &cooler.BaseAttrs)
 
