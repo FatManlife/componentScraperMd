@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/FatManlife/component-finder/back-end/internal/config"
@@ -21,6 +22,10 @@ func main() {
 	}
 
 	if err := seed.SeedWeb(db); err != nil {
-		log.Fatal("Initial website creation failed:", err)
+		fmt.Println("Initial website creation failed:", err)
+	}
+
+	if err := seed.SeedCategory(db); err != nil {
+		fmt.Println("Initial category creation failed:", err)
 	}
 }

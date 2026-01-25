@@ -8,9 +8,10 @@ type Product struct {
 	Price float64 
 	URL string `gorm:"uniqueIndex;not null"`
 	WebsiteID int
+	CategoryID int
 
 	Aio *Aio `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Case *Case `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Case *PcCase `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Cooler *Cooler `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Cpu *Cpu `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Fan *Fan `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

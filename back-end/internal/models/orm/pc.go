@@ -10,5 +10,5 @@ type Pc struct {
 	Storage string 
 	Motherboard string 
 	Psu string 
-	Case string 
+	PcCase string 
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
+	"gorm.io/gorm"
 )
 
 var categoryMap map[string]string = map[string]string{
@@ -37,7 +38,7 @@ var categoryMap map[string]string = map[string]string{
 	"мини пк": "mini_pc",
 }
 
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link){
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, db *gorm.DB){
 	preflink := "https://prime-pc.md/" 
 
 	// Category extraction
@@ -108,20 +109,20 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		category := h.Request.Ctx.Get("category")
 
 	 	switch category{
-		case "aio": aioHandler(h) 
-		case "cooler": coolerHandler(h)
-		case "cpu": cpuHandler(h)
-		case "fan": fanHandler(h)
-		case "case": caseHandler(h)
-		case "gpu": gpuHandler(h)
-		case "hdd": hddHandler(h)
-		case "laptop": laptopHandler(h)
-		case "motherboard": motherBoardHandler(h)
-		case "mini_pc": pcMiniHandler(h)
-		case "pc": pcHandler(h)
-		case "psu": psuHandler(h)
-		case "ram": ramHandler(h)
-		case "ssd": ssdHandler(h)
+		case "aio": aioHandler(h, db, category) 
+		case "cooler": coolerHandler(h, db, category)
+		case "cpu": cpuHandler(h, db, category)
+		case "fan": fanHandler(h, db, category)
+		case "case": caseHandler(h, db, category)
+		case "gpu": gpuHandler(h, db, category)
+		case "hdd": hddHandler(h, db, category)
+		case "laptop": laptopHandler(h, db, category)
+		case "motherboard": motherBoardHandler(h, db, category)
+		case "mini_pc": pcMiniHandler(h, db, category)
+		case "pc": pcHandler(h, db, category)
+		case "psu": psuHandler(h, db, category)
+		case "ram": ramHandler(h, db, category)
+		case "ssd": ssdHandler(h, db, category)
 		}
 	})	
 }

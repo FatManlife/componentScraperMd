@@ -9,11 +9,7 @@ type Cooler struct {
     Noise         float64
     Size          string
 
-    Compatibility []CoolerCompatibility `gorm:"foreignKey:CoolerID"`
+    Compatibilities []CoolerCpu `gorm:"foreignKey:CoolerID;constraint:OnDelete:CASCADE"` 
 }
 
-type CoolerCompatibility struct {
-    ID            int    `gorm:"primaryKey;autoIncrement"`
-    CoolerID      int
-    Compatibility string
-}
+

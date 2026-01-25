@@ -5,23 +5,27 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/FatManlife/component-finder/back-end/internal/constants"
+	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
+	"gorm.io/gorm"
 )
 
-func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
 	product.Name = strings.TrimSpace(e.ChildText("div.top-title h1"))
 	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.row.prod_page img", "src"))
 	product.Price = utils.CastFloat64(e.ChildText("div.xp-price"))
-	product.Website_id = 1
+	product.Website_id = constants.WebIdMap["xstore"]
 	product.Url = e.Request.URL.String()
+	product.Category_id = constants.CategoryIdMap[category] 
 }
 
-func ssdHandler(e *colly.HTMLElement){
+func ssdHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var ssd dto.Ssd
 
-	setBaseAttrs(e, &ssd.BaseAttrs)
+	setBaseAttrs(e, &ssd.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -43,14 +47,19 @@ func ssdHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertSsd(db, &ssd); err != nil {
+		fmt.Println("Error inserting SSD:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(ssd, "", "  ")
 	fmt.Println(string(data))
 }
 
-func hddHandler(e *colly.HTMLElement){
+func hddHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var hdd dto.Hdd
 
-	setBaseAttrs(e, &hdd.BaseAttrs)
+	setBaseAttrs(e, &hdd.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -58,27 +67,32 @@ func hddHandler(e *colly.HTMLElement){
 		switch spec { 
 		case "Producator": hdd.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Capacitatea totală a memoriei":
-			capacity := strings.TrimSpace(e.ChildText("span:nth-child(2)"))
+			capacity := strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 
 			if strings.Contains(capacity, "TB"){
 				hdd.Capacity= utils.CastInt(capacity) * 1000
-				return 
+			} else {
+				hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
 			}
 
-			hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
 		case "Viteza de rotație": hdd.RotationSpeed= utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Form Factor": hdd.FormFactor= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}
 	})
 
+	if err := rawsql.InsertHdd(db, &hdd); err != nil {
+		fmt.Println("Error inserting HDD:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(hdd, "", "  ")
 	fmt.Println(string(data))
 }
 
-func fanHandler(e *colly.HTMLElement){
+func fanHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var fan dto.Fan
 
-	setBaseAttrs(e, &fan.BaseAttrs)
+	setBaseAttrs(e, &fan.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -91,14 +105,19 @@ func fanHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertFan(db, &fan); err != nil {
+		fmt.Println("Error inserting Fan:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(fan, "", "  ")
 	fmt.Println(string(data))
 }
 
-func pcMiniHandler(e *colly.HTMLElement){
+func pcMiniHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var pc dto.PcMini
 
-	setBaseAttrs(e, &pc.BaseAttrs)	
+	setBaseAttrs(e, &pc.BaseAttrs, category)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -112,14 +131,19 @@ func pcMiniHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertPcMini(db, &pc); err != nil {
+		fmt.Println("Error inserting Pc Mini:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(pc, "", "  ")
 	fmt.Println(string(data))
 }
 
-func laptopHandler(e *colly.HTMLElement){
+func laptopHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var laptop dto.Laptop	
 	
-	setBaseAttrs(e, &laptop.BaseAttrs)	
+	setBaseAttrs(e, &laptop.BaseAttrs, category)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -136,18 +160,23 @@ func laptopHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertLaptop(db, &laptop); err != nil {
+		fmt.Println("Error inserting Laptop:", err)
+		return
+	}
+
 	data,_ := json.MarshalIndent(laptop, "", " ")
 	fmt.Println(string(data))
 }
 
-func pcHandler(e *colly.HTMLElement){
+func pcHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var pc dto.Pc
 
 	if strings.Contains(strings.ToLower(strings.TrimSpace(e.ChildText("div.top-title h1"))),"setup"){
 		return
 	}
 
-	setBaseAttrs(e, &pc.BaseAttrs)	
+	setBaseAttrs(e, &pc.BaseAttrs, category)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -163,14 +192,19 @@ func pcHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertPc(db, &pc); err != nil {
+		fmt.Println("Error inserting Pc:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(pc, "", "  ")
 	fmt.Println(string(data))
 }
 
-func aioHandler(e *colly.HTMLElement){
+func aioHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var aio dto.Aio
 
-	setBaseAttrs(e, &aio.BaseAttrs)	
+	setBaseAttrs(e, &aio.BaseAttrs, category)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -185,14 +219,19 @@ func aioHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertAio(db, &aio); err != nil {
+		fmt.Println("Error inserting Aio:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(aio, "", "  ")
 	fmt.Println(string(data))
 }
 
-func cpuHandler(e *colly.HTMLElement){
+func cpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var cpu dto.Cpu
 
-	setBaseAttrs(e, &cpu.BaseAttrs)
+	setBaseAttrs(e, &cpu.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -208,14 +247,19 @@ func cpuHandler(e *colly.HTMLElement){
 		}	
 	})
 
+	if err := rawsql.InsertCpu(db, &cpu); err != nil {
+		fmt.Println("Error inserting CPU:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(cpu, "", "  ")
 	fmt.Println(string(data))
 }
 
-func motherboardHandler(e *colly.HTMLElement){
+func motherboardHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var motherboard dto.Motherboard
 
-	setBaseAttrs(e, &motherboard.BaseAttrs)
+	setBaseAttrs(e, &motherboard.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -230,14 +274,19 @@ func motherboardHandler(e *colly.HTMLElement){
 		}	
 	})
 
+	if err := rawsql.InsertMotherboard(db, &motherboard); err != nil {
+		fmt.Println("Error inserting Motherboard:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(motherboard, "", "  ")
 	fmt.Println(string(data))
 }
 
-func ramHandler(e *colly.HTMLElement){
+func ramHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var ram dto.Ram
 
-	setBaseAttrs(e, &ram.BaseAttrs)
+	setBaseAttrs(e, &ram.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -252,14 +301,19 @@ func ramHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertRam(db, &ram); err != nil {
+		fmt.Println("Error inserting Ram:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(ram, "", "  ")
 	fmt.Println(string(data))
 }
 
-func gpuHandler(e *colly.HTMLElement){
+func gpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var gpu dto.Gpu
 
-	setBaseAttrs(e, &gpu.BaseAttrs)	
+	setBaseAttrs(e, &gpu.BaseAttrs, category)	
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -272,14 +326,19 @@ func gpuHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertGpu(db, &gpu); err != nil {
+		fmt.Println("Error inserting GPU:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(gpu, "", "  ")
 	fmt.Println(string(data))
 }
 
-func caseHandler(e *colly.HTMLElement){
+func caseHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var pcCase dto.Case
 
-	setBaseAttrs(e, &pcCase.BaseAttrs)
+	setBaseAttrs(e, &pcCase.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -290,14 +349,19 @@ func caseHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertCase(db, &pcCase); err != nil {
+		fmt.Println("Error inserting Case:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(pcCase, "", "  ")
 	fmt.Println(string(data))
 }
 
-func psuHandler(e *colly.HTMLElement){
+func psuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var psu dto.Psu
 
-	setBaseAttrs(e, &psu.BaseAttrs)
+	setBaseAttrs(e, &psu.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -310,14 +374,19 @@ func psuHandler(e *colly.HTMLElement){
 		}
 	})
 
+	if err := rawsql.InsertPsu(db, &psu); err != nil {
+		fmt.Println("Error inserting PSU:", err)
+		return
+	}
+
 	data, _ := json.MarshalIndent(psu, "", "  ")
 	fmt.Println(string(data))
 }
 
-func coolerHandler(e *colly.HTMLElement){
+func coolerHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	var cooler dto.Cooler
 
-	setBaseAttrs(e, &cooler.BaseAttrs)
+	setBaseAttrs(e, &cooler.BaseAttrs, category)
 
 	e.ForEach("div.tab-content div.chars-item p", func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
@@ -342,6 +411,18 @@ func coolerHandler(e *colly.HTMLElement){
 			}
 		})
 	})
+
+	cooler_id, err := rawsql.InsertCooler(db, &cooler)
+
+	if err != nil {
+		fmt.Println("Error inserting Cooler:", err)
+		return
+	}
+
+	if err := rawsql.InsertCoolerCompatibility(db, cooler_id, cooler.Compatibility); err != nil {
+		fmt.Println("Error inserting Cooler Compatibility:", err)
+		return
+	}
 
 	data, _ := json.MarshalIndent(cooler, "", "  ")
 	fmt.Println(string(data))

@@ -9,6 +9,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
+	"gorm.io/gorm"
 )
 
 //Generalize the categories to send
@@ -30,11 +31,11 @@ var categoryMap map[string]string = map[string]string{
 	"coolere procesoare": "cooler",
 	"ventilatoare pc": "fan",
 	"all-in-one pc": "aio",
-	"mini pc": "pc_mini",
+	"mini pc": "mini_pc",
 
 }
 
-func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, semaphor *chan struct{}){
+func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, semaphor *chan struct{}, db *gorm.DB) {
 	//Seting up filter for urls
 	var sentUrls sync.Map
 
@@ -152,20 +153,20 @@ func requestBodyProduct(categoryColly *colly.Collector, pageColly *colly.Collect
 		category := h.Request.Ctx.Get("category")
 
 		switch category {
-			case "cpu": cpuHandler(h)
-			case "motherboard": motherboardHandler(h)
-			case "gpu": gpuHandler(h)
-			case "ram": ramHandler(h)
-			case "ssd": ssdHandler(h)
-			case "hdd": hddHandler(h)
-			case "fan": fanHandler(h)
-			case "case": caseHandler(h)
-			case "psu": psuHandler(h)
-			case "cooler": coolerHandler(h)
-			case "laptop": laptopHandler(h)
-			case "pc": pcHandler(h)
-			case "aio": aioHandler(h)
-			case "pc_mini": pcMiniHandler(h)
+			case "cpu": cpuHandler(h, db, category)
+			case "motherboard": motherboardHandler(h, db, category)
+			case "gpu": gpuHandler(h, db, category)
+			case "ram": ramHandler(h, db, category)
+			case "ssd": ssdHandler(h, db, category)
+			case "hdd": hddHandler(h, db, category)
+			case "fan": fanHandler(h, db, category)
+			case "case": caseHandler(h, db, category)
+			case "psu": psuHandler(h, db, category)
+			case "cooler": coolerHandler(h, db, category)
+			case "laptop": laptopHandler(h, db, category)
+			case "pc": pcHandler(h, db, category)
+			case "aio": aioHandler(h, db, category)
+			case "mini_pc": pcMiniHandler(h, db, category)
 		}
 	})	
 }

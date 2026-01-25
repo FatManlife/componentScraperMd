@@ -1,6 +1,6 @@
 package orm
 
-type Case struct {
+type PcCase struct {
 	ID         int `gorm:"primaryKey;autoIncrement"`
 	ProductID  int
 

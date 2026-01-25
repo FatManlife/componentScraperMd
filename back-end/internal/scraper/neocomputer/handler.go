@@ -8,6 +8,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
+	"gorm.io/gorm"
 )
 
 var categoryMap map[string]string = map[string]string {
@@ -28,7 +29,7 @@ var categoryMap map[string]string = map[string]string {
 }
 
 // requestBodyProducts scrapes product links from category and page collectors, then scrapes product details from product collector.
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan dto.Link) {
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan dto.Link, db *gorm.DB) {
 	categoryColly.OnHTML("ul.dropdown-content.categories  li.nav-wrap",func(h *colly.HTMLElement) {
 		category := strings.TrimSpace(strings.ToLower(h.ChildText("a.submenu")))
 
@@ -94,34 +95,20 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		category := h.Request.Ctx.Get("category")
 
 		switch category {
-		case "cpu":
-			cpuHandler(h)
-		case "gpu":
-			gpuHandler(h)
-		case "motherboard":
-			motherboardHandler(h)
-		case "ram":
-			ramHandler(h)
-		case "hdd":
-			hddHandler(h)
-		case "ssd":
-			ssdHandler(h)
-		case "psu":
-			psuHandler(h)
-		case "case":
-			caseHandler(h)
-		case "cooler":
-			coolerHandler(h)
-		case "fan":
-			fanHandler(h)
-		case "pc":
-			pcHandler(h)
-		case "laptop":
-			laptopHandler(h)
-		case "aio":
-			aioHandler(h)
-		case "mini_pc":
-			pcMiniHandler(h)
+		case "cpu": cpuHandler(h, db, category)
+		case "gpu": gpuHandler(h, db, category)
+		case "motherboard": motherboardHandler(h, db, category)
+		case "ram": ramHandler(h, db, category)
+		case "hdd": hddHandler(h, db, category)
+		case "ssd": ssdHandler(h, db, category)
+		case "psu": psuHandler(h, db, category)
+		case "case": caseHandler(h, db, category)
+		case "cooler": coolerHandler(h, db, category)
+		case "fan": fanHandler(h, db, category)	
+		case "pc": pcHandler(h, db, category)
+		case "laptop": laptopHandler(h, db, category)
+		case "aio": aioHandler(h, db, category)
+		case "mini_pc": pcMiniHandler(h, db, category)
 		}
 	})
 }

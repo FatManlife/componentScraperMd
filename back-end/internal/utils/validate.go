@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/gocolly/colly"
@@ -22,4 +23,18 @@ func SafeVisit(c *colly.Collector, url string, ctx *colly.Context) {
 	} else {
 		c.Visit(url)
 	}
+}
+
+func PopulateVisitedUrls(urls []string) {
+	for _, url := range urls {
+		visitedUrls.Store(url, true)
+	}
+}
+
+func PrintVisitedUrls() {
+    fmt.Println("Visited URLs:")
+    visitedUrls.Range(func(key, value any) bool {
+        fmt.Println(key.(string))
+        return true 
+    })
 }
