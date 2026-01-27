@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
+	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
-	"gorm.io/gorm"
 )
 
 var categoryMap map[string]string = map[string]string {
@@ -29,7 +29,10 @@ var categoryMap map[string]string = map[string]string {
 }
 
 // requestBodyProducts scrapes product links from category and page collectors, then scrapes product details from product collector.
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan dto.Link, db *gorm.DB) {
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLink *chan dto.Link, s *rawsql.Storage) {
+	//Setting up connection to the db	
+	storage := newDetailsHandler(s)
+
 	categoryColly.OnHTML("ul.dropdown-content.categories  li.nav-wrap",func(h *colly.HTMLElement) {
 		category := strings.TrimSpace(strings.ToLower(h.ChildText("a.submenu")))
 
@@ -95,20 +98,20 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		category := h.Request.Ctx.Get("category")
 
 		switch category {
-		case "cpu": cpuHandler(h, db, category)
-		case "gpu": gpuHandler(h, db, category)
-		case "motherboard": motherboardHandler(h, db, category)
-		case "ram": ramHandler(h, db, category)
-		case "hdd": hddHandler(h, db, category)
-		case "ssd": ssdHandler(h, db, category)
-		case "psu": psuHandler(h, db, category)
-		case "case": caseHandler(h, db, category)
-		case "cooler": coolerHandler(h, db, category)
-		case "fan": fanHandler(h, db, category)	
-		case "pc": pcHandler(h, db, category)
-		case "laptop": laptopHandler(h, db, category)
-		case "aio": aioHandler(h, db, category)
-		case "mini_pc": pcMiniHandler(h, db, category)
+		case "cpu": storage.cpuHandler(h, category)
+		case "gpu": storage.gpuHandler(h, category)
+		case "motherboard": storage.motherboardHandler(h, category)
+		case "ram": storage.ramHandler(h, category)
+		case "hdd": storage.hddHandler(h, category)
+		case "ssd": storage.ssdHandler(h, category)
+		case "psu": storage.psuHandler(h, category)
+		case "case": storage.caseHandler(h, category)
+		case "cooler": storage.coolerHandler(h, category)
+		case "fan": storage.fanHandler(h, category)	
+		case "pc": storage.pcHandler(h, category)
+		case "laptop": storage.laptopHandler(h, category)
+		case "aio": storage.aioHandler(h, category)
+		case "mini_pc": storage.pcMiniHandler(h, category)
 		}
 	})
 }

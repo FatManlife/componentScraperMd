@@ -1,12 +1,12 @@
 package xstore
 
 import (
+	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
-	"gorm.io/gorm"
 )
 
 
-func Run (db *gorm.DB) error {
+func Run (s *rawsql.Storage) error {
 	category := newCategoryCollector() 
 	page := newPageCollector()
 	product := newProductCollector() 
@@ -14,7 +14,7 @@ func Run (db *gorm.DB) error {
 	productsLinks := make(chan dto.Link)
 	semaphor := make(chan struct{})
 
-	requestBodyProduct(category, page, product, &productsLinks, &semaphor, db)
+	requestBodyProduct(category, page, product, &productsLinks, &semaphor, s)
 
 	category.Visit("https://xstore.md/componente-pc/racire")
 	category.Wait()

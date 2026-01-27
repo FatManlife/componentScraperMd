@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/FatManlife/component-finder/back-end/internal/collector"
+	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
-	"gorm.io/gorm"
 )
 
 var categoryMap map[string]string = map[string]string{
@@ -38,8 +38,9 @@ var categoryMap map[string]string = map[string]string{
 	"мини пк": "mini_pc",
 }
 
-func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, db *gorm.DB){
+func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collector, productColly *colly.Collector, productLinks *chan dto.Link, s *rawsql.Storage){
 	preflink := "https://prime-pc.md/" 
+	handler := newDetailsHandler(s)
 
 	// Category extraction
 	categoryColly.OnHTML("ul.main_list.dropdown-menu > li",func(h *colly.HTMLElement){
@@ -109,20 +110,20 @@ func requestBodyProducts(categoryColly *colly.Collector, pageColly *colly.Collec
 		category := h.Request.Ctx.Get("category")
 
 	 	switch category{
-		case "aio": aioHandler(h, db, category) 
-		case "cooler": coolerHandler(h, db, category)
-		case "cpu": cpuHandler(h, db, category)
-		case "fan": fanHandler(h, db, category)
-		case "case": caseHandler(h, db, category)
-		case "gpu": gpuHandler(h, db, category)
-		case "hdd": hddHandler(h, db, category)
-		case "laptop": laptopHandler(h, db, category)
-		case "motherboard": motherBoardHandler(h, db, category)
-		case "mini_pc": pcMiniHandler(h, db, category)
-		case "pc": pcHandler(h, db, category)
-		case "psu": psuHandler(h, db, category)
-		case "ram": ramHandler(h, db, category)
-		case "ssd": ssdHandler(h, db, category)
+		case "aio": handler.aioHandler(h, category) 
+		case "cooler": handler.coolerHandler(h, category)
+		case "cpu": handler.cpuHandler(h, category)
+		case "fan": handler.fanHandler(h, category)
+		case "case": handler.caseHandler(h, category)
+		case "gpu": handler.gpuHandler(h, category)
+		case "hdd": handler.hddHandler(h, category)
+		case "laptop": handler.laptopHandler(h, category)
+		case "motherboard": handler.motherBoardHandler(h, category)
+		case "mini_pc": handler.pcMiniHandler(h, category)
+		case "pc": handler.pcHandler(h, category)
+		case "psu": handler.psuHandler(h, category)
+		case "ram": handler.ramHandler(h, category)
+		case "ssd": handler.ssdHandler(h, category)
 		}
 	})	
 }

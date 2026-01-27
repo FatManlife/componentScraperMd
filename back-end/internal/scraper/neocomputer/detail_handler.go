@@ -11,8 +11,15 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
-	"gorm.io/gorm"
 )
+
+type handler struct {
+	storage *rawsql.Storage
+}
+
+func newDetailsHandler(s *rawsql.Storage) *handler{
+	return &handler{storage: s}
+}
 
 func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
 	product.Name = strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
@@ -23,7 +30,7 @@ func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category strin
 	product.Category_id = constants.CategoryIdMap[category]
 }
 
-func fanHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) fanHandler(e *colly.HTMLElement, category string){
 	var fan dto.Fan
 
 	setBaseAttrs(e, &fan.BaseAttrs, category)	
@@ -64,7 +71,7 @@ func fanHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertFan(db, &fan); err != nil {
+	if err := h.storage.InsertFan(&fan); err != nil {
 		fmt.Println("Error inserting Fan:", err)
 		return
 	}		
@@ -73,7 +80,7 @@ func fanHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func coolerHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) coolerHandler(e *colly.HTMLElement, category string){
 	var cooler dto.Cooler
 
 	setBaseAttrs(e, &cooler.BaseAttrs, category)	
@@ -113,14 +120,14 @@ func coolerHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	cooler_id, err := rawsql.InsertCooler(db, &cooler)
+	cooler_id, err := h.storage.InsertCooler(&cooler)
 
 	if err != nil {
 		fmt.Println("Error inserting Cooler:", err)
 		return
 	}
 
-	if err := rawsql.InsertCoolerCompatibility(db, cooler_id, cooler.Compatibility); err != nil {
+	if err := h.storage.InsertCoolerCompatibility(cooler_id, cooler.Compatibility); err != nil {
 		fmt.Println("Error inserting Cooler Compatibility:", err)
 		return
 	}
@@ -129,7 +136,7 @@ func coolerHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func psuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) psuHandler(e *colly.HTMLElement, category string){
 	var psu dto.Psu
 
 	setBaseAttrs(e, &psu.BaseAttrs, category)	
@@ -150,7 +157,7 @@ func psuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertPsu(db, &psu); err != nil {
+	if err := h.storage.InsertPsu(&psu); err != nil {
 		fmt.Println("Error inserting PSU:", err)
 		return
 	}
@@ -159,7 +166,7 @@ func psuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func caseHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) caseHandler(e *colly.HTMLElement, category string){
 	var pcCase dto.Case
 
 	setBaseAttrs(e, &pcCase.BaseAttrs, category)	
@@ -172,7 +179,7 @@ func caseHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertCase(db, &pcCase); err != nil {
+	if err := h.storage.InsertCase(&pcCase); err != nil {
 		fmt.Println("Error inserting Case:", err)
 		return
 	}
@@ -181,7 +188,7 @@ func caseHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func gpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) gpuHandler(e *colly.HTMLElement, category string){
 	var gpu dto.Gpu
 
 	setBaseAttrs(e, &gpu.BaseAttrs, category)	
@@ -203,7 +210,7 @@ func gpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertGpu(db, &gpu); err != nil {
+	if err := h.storage.InsertGpu(&gpu); err != nil {
 		fmt.Println("Error inserting GPU:", err)
 		return
 	}
@@ -212,7 +219,7 @@ func gpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func motherboardHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) motherboardHandler(e *colly.HTMLElement, category string){
 	var motherboard dto.Motherboard
 
 	setBaseAttrs(e, &motherboard.BaseAttrs, category)	
@@ -239,7 +246,7 @@ func motherboardHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertMotherboard(db, &motherboard); err != nil {
+	if err := h.storage.InsertMotherboard(&motherboard); err != nil {
 		fmt.Println("Error inserting Motherboard:", err)
 		return
 	}
@@ -248,7 +255,7 @@ func motherboardHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func ramHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) ramHandler(e *colly.HTMLElement, category string){
 	var ram dto.Ram
 
 	setBaseAttrs(e, &ram.BaseAttrs, category)	
@@ -274,7 +281,7 @@ func ramHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertRam(db, &ram); err != nil {
+	if err := h.storage.InsertRam(&ram); err != nil {
 		fmt.Println("Error inserting RAM:", err)
 		return
 	}
@@ -283,7 +290,7 @@ func ramHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func ssdHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) ssdHandler(e *colly.HTMLElement, category string){
 	var ssd dto.Ssd
 
 	setBaseAttrs(e, &ssd.BaseAttrs, category)	
@@ -299,7 +306,7 @@ func ssdHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertSsd(db, &ssd); err != nil {
+	if err := h.storage.InsertSsd(&ssd); err != nil {
 		fmt.Println("Error inserting SSD:", err)
 		return
 	}
@@ -308,7 +315,7 @@ func ssdHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func hddHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) hddHandler(e *colly.HTMLElement, category string){
 	var hdd dto.Hdd
 
 	setBaseAttrs(e, &hdd.BaseAttrs, category)	
@@ -323,7 +330,7 @@ func hddHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertHdd(db, &hdd); err != nil {
+	if err := h.storage.InsertHdd(&hdd); err != nil {
 		fmt.Println("Error inserting HDD:", err)
 		return
 	}
@@ -332,7 +339,7 @@ func hddHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func cpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) cpuHandler(e *colly.HTMLElement, category string){
 	var cpu dto.Cpu
 
 	setBaseAttrs(e, &cpu.BaseAttrs, category)	
@@ -351,7 +358,7 @@ func cpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertCpu(db, &cpu); err != nil {
+	if err := h.storage.InsertCpu(&cpu); err != nil {
 		fmt.Println("Error inserting CPU:", err)
 		return
 	}
@@ -360,7 +367,7 @@ func cpuHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func pcMiniHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) pcMiniHandler(e *colly.HTMLElement, category string){
 	var pc dto.PcMini
 
 	setBaseAttrs(e, &pc.BaseAttrs, category)	
@@ -377,7 +384,7 @@ func pcMiniHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertPcMini(db, &pc); err != nil {
+	if err := h.storage.InsertPcMini(&pc); err != nil {
 		fmt.Println("Error inserting PC Mini:", err)
 		return
 	}
@@ -386,7 +393,7 @@ func pcMiniHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func laptopHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) laptopHandler(e *colly.HTMLElement, category string){
 	var laptop dto.Laptop
 
 	setBaseAttrs(e, &laptop.BaseAttrs, category)	
@@ -405,7 +412,7 @@ func laptopHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertLaptop(db, &laptop); err != nil {
+	if err := h.storage.InsertLaptop(&laptop); err != nil {
 		fmt.Println("Error inserting Laptop:", err)
 		return
 	}
@@ -414,7 +421,7 @@ func laptopHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func aioHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) aioHandler(e *colly.HTMLElement, category string){
 	var aio dto.Aio
 
 	setBaseAttrs(e, &aio.BaseAttrs, category)	
@@ -433,7 +440,7 @@ func aioHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertAio(db, &aio); err != nil {
+	if err := h.storage.InsertAio(&aio); err != nil {
 		fmt.Println("Error inserting AIO:", err)
 		return
 	}
@@ -442,7 +449,7 @@ func aioHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 	fmt.Println(string(data))
 }
 
-func pcHandler(e *colly.HTMLElement, db *gorm.DB, category string){
+func (h *handler) pcHandler(e *colly.HTMLElement, category string){
 	var pc dto.Pc
 
 	setBaseAttrs(e, &pc.BaseAttrs, category)	
@@ -462,7 +469,7 @@ func pcHandler(e *colly.HTMLElement, db *gorm.DB, category string){
 		}
 	})
 
-	if err := rawsql.InsertPc(db, &pc); err != nil {
+	if err := h.storage.InsertPc(&pc); err != nil {
 		fmt.Println("Error inserting PC:", err)
 		return
 	}
