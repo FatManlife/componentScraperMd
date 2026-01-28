@@ -27,14 +27,13 @@ func aiosMapping(product orm.Product) dto.AioResponse{
 	}
 }
 
-func (s *AioService) GetAios(ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string,
-	 diagonal string, ram string, storage string, cpu string, gpu string) ([]dto.AioResponse, error) {
-	if min > max {
-		min = 0
-		max = 0
+func (s *AioService) GetAios(ctx context.Context, aioParams dto.AioParams) ([]dto.AioResponse, error) {
+	if aioParams.DefualtParams.Min > aioParams.DefualtParams.Max {
+		aioParams.DefualtParams.Min = 0
+		aioParams.DefualtParams.Max = 0
 	}
 
-	aios, err := s.repo.GetAios(ctx, limit, website, after, brand, min, max, order, diagonal, ram, storage, cpu, gpu)
+	aios, err := s.repo.GetAios(ctx, aioParams)
 
 	if err != nil {
 		return nil,  err

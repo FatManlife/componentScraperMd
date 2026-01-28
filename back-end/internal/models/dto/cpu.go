@@ -19,3 +19,13 @@ type CpuResponse struct {
 	Socket     string  `json:"socket"`
 	Tdp        int     `json:"tdp"`
 }
+
+type CpuParams struct {
+	DefaultParams ProductParams 
+	Cores      int	 
+	Threads    int     
+	BaseClock  float64
+	BoostClock float64
+	Socket     string  
+	Tdp        int     
+}

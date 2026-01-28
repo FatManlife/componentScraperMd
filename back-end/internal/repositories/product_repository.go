@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/models/orm"
 	"gorm.io/gorm"
 )
@@ -16,10 +17,10 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 }
 
 //implemnt Getting all products with filters
-func (r *ProductRepository) GetAllProducts(ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string) ([]orm.Product, error) {
+func (r *ProductRepository) GetAllProducts(ctx context.Context, productParams dto.ProductParams) ([]orm.Product, error) {
 	var products []orm.Product
 
-	q := applyCommonFilters(r.db, ctx, limit, website, after, brand, min, max, order) 	
+	q := applyCommonFilters(r.db, ctx, productParams) 	
 	
 	err := q.Find(&products).Error
 

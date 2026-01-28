@@ -11,3 +11,9 @@ type CaseResponse struct {
 	Format string `json:"format"`
 	MotherboardFormFactor string `json:"motherboard_form_factor"`	
 }
+
+type CaseParams struct {
+	DefaultParams ProductParams 
+	Format string 
+	MotherboardFormFactor string 
+}

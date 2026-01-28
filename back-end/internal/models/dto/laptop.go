@@ -19,3 +19,13 @@ type LaptopResponse struct {
 	Diagonal string `json:"diagonal"`
 	Battery float64 `json:"battery"`
 }
+
+type LaptopParams struct {
+	DefaultParams ProductParams 
+	Cpu string 
+	Gpu string 
+	Ram string 
+	Storage string 
+	Diagonal string 
+	Battery float64 
+}

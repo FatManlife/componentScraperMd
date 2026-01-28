@@ -13,3 +13,10 @@ type PsuResponse struct {
 	Efficiency string `json:"efficiency"`
 	FormFactor string `json:"form_factor"`
 }
+
+type PsuParams struct {
+	DefaultParams ProductParams 
+	Power int 
+	Efficiency string 
+	FormFactor string 
+}

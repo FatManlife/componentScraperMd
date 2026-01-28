@@ -13,3 +13,10 @@ type FanResponse struct {
 	Noise float64 `json:"noise"`
 	Size string `json:"size"`
 }	
+
+type FanParams struct {
+	DefaultParams ProductParams 
+	FanRPM int 
+	Noise float64 
+	Size string 
+}

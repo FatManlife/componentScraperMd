@@ -15,3 +15,11 @@ type PcMiniResponse struct {
 	Ram string `json:"ram"`
 	Storage string `json:"storage"`
 }
+
+type PcMiniParams struct {
+	DefaultParams ProductParams 
+	Cpu string 
+	Gpu string 
+	Ram string 
+	Storage string 
+}

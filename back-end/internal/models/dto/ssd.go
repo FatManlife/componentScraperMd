@@ -9,7 +9,15 @@ type Ssd struct {
 }
 
 type SsdResponse struct {
-	ProductResponse int
+	ProductResponse int `json:"product"`
+	Capacity       int `json:"capacity"` 
+	ReadingSpeed  int `json:"reading_speed"` 
+	WritingSpeed  int `json:"writing_speed"` 
+	FormFactor    string `json:"form_factor"`
+}
+
+type SsdParams struct {
+	DefaultParams ProductParams 
 	Capacity       int 
 	ReadingSpeed  int 
 	WritingSpeed  int 

@@ -17,3 +17,12 @@ type CoolerResponse struct {
 	Size string `json:"size"`
 	Compatibility []string `json:"compatibility"`
 }
+
+type CoolerParams struct {
+	DefaultParams ProductParams 
+	Type string 
+	FanRPM int 
+	Noise float64 
+	Size string 
+	Compatibility []string 
+}

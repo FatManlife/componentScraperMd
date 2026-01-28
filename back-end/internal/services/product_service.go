@@ -16,13 +16,13 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
-func (s *ProductService) GetProducts(ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string) ([]dto.ProductResponse, error) {
-	if min > max {
-		min = 0
-		max = 0
+func (s *ProductService) GetProducts(ctx context.Context, productParams dto.ProductParams) ([]dto.ProductResponse, error) {
+	if productParams.Min > productParams.Max {
+		productParams.Min = 0
+		productParams.Max = 0
 	}
 
-	products, err := s.repo.GetAllProducts(ctx, limit, website, after, brand, min, max, order)
+	products, err := s.repo.GetAllProducts(ctx, productParams)
 
 	if err != nil {
 		return nil,  err

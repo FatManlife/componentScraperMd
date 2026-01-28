@@ -17,3 +17,12 @@ type AioResponse struct {
 	Storage string `json:"storage"`
 	Gpu string `json:"gpu"`
 }
+
+type AioParams struct {
+	DefualtParams ProductParams
+	Diagonal string
+	Cpu string
+	Ram string
+	Storage string
+	Gpu string
+}

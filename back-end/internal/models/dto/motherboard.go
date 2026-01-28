@@ -17,3 +17,12 @@ type MotherboardResponse struct {
 	RamSupport string `json:"ram_support"`
 	FormFactorRam string `json:"form_factor_ram"`
 }
+
+type MotherboardParams struct {
+	DefaultParams ProductParams 
+	Chipset string 
+	Socket string 
+	FormFactor string 
+	RamSupport string 
+	FormFactorRam string 
+}

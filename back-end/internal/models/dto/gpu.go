@@ -15,3 +15,11 @@ type GpuResponse struct {
 	GpuFrequency int `json:"gpu_frequency"`
 	VramFrequency int `json:"vram_frequency"`
 }
+
+type GpuParams struct {
+	DefaultParams ProductParams 
+	Chipset string 
+	Vram int 
+	GpuFrequency int 
+	VramFrequency int 
+}

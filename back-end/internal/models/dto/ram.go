@@ -17,3 +17,12 @@ type RamResponse struct {
 	Compatibility string `json:"compatibility"`
 	Configuration string `json:"configuration"`
 }
+
+type RamParams struct {
+	DefaultParams ProductParams 
+	Capacity int 
+	Speed int 
+	Type string 
+	Compatibility string 
+	Configuration string 
+}

@@ -21,3 +21,14 @@ type PcResponse struct {
 	Psu string `json:"psu"`
 	Case string `json:"case"`
 }
+
+type PcParams struct {
+	DefaultParams ProductParams 
+	Cpu string 
+	Gpu string 
+	Ram string 
+	Storage string 
+	Motherboard string 
+	Psu string 
+	Case string 
+}

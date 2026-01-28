@@ -18,3 +18,13 @@ type ProductResponse struct {
 	Url string `json:"url"`
 	Website_id int `json:"website_id"`
 }
+
+type ProductParams struct {
+	Limit int
+	Website string
+	After int
+	Brand string
+	Min float64
+	Max float64
+	Order string
+}

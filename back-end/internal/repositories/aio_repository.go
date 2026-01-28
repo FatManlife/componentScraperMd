@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 
+	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/models/orm"
 	"gorm.io/gorm"
 )
@@ -15,32 +16,31 @@ func NewAioRepository(db *gorm.DB) *AioRepository {
 	return &AioRepository{db: db}
 }
 
-func (r *AioRepository) GetAios (ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string,
-	 diagonal string, ram string, storage string, cpu string, gpu string) ([]orm.Product, error) {
+func (r *AioRepository) GetAios (ctx context.Context, aioParams dto.AioParams) ([]orm.Product, error) {
 	var aios []orm.Product
 
-	q := applyCommonFilters(r.db, ctx, limit, website, after, brand, min, max, order)
+	q := applyCommonFilters(r.db, ctx, aioParams.DefualtParams)
 
 	q.Joins("JOIN aios on aios.product_id = products.id").Preload("Aio")
 
-	if diagonal != "" {
-		q = q.Where("aios.diagonal = ?", diagonal)
+	if aioParams.Diagonal != "" {
+		q = q.Where("aios.diagonal = ?", aioParams.Diagonal)
 	}
 
-	if ram != "" {
-		q = q.Where("aios.ram = ?", ram)
+	if aioParams.Ram != "" {
+		q = q.Where("aios.ram = ?", aioParams.Ram)
 	}
 
-	if storage != "" {
-		q = q.Where("aios.storage = ?", storage)
+	if aioParams.Storage != "" {
+		q = q.Where("aios.storage = ?", aioParams.Storage)
 	}
 
-	if cpu != "" {
-		q = q.Where("aios.cpu = ?", cpu)
+	if aioParams.Cpu != "" {
+		q = q.Where("aios.cpu = ?", aioParams.Cpu)
 	}
 
-	if gpu != "" {
-		q = q.Where("aios.gpu = ?", gpu)
+	if aioParams.Gpu != "" {
+		q = q.Where("aios.gpu = ?", aioParams.Gpu)
 	}
 
 	err := q.Find(&aios).Error
