@@ -15,10 +15,13 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) GetAllProducts(ctx context.Context ,limit int) ([]orm.Product, error) {
+//implemnt Getting all products with filters
+func (r *ProductRepository) GetAllProducts(ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string) ([]orm.Product, error) {
 	var products []orm.Product
 
-	err := r.db.WithContext(ctx).Limit(limit).Find(&products).Error
+	q := applyCommonFilters(r.db, ctx, limit, website, after, brand, min, max, order) 	
+	
+	err := q.Find(&products).Error
 
 	if err != nil {
 		return nil, err
@@ -26,3 +29,4 @@ func (r *ProductRepository) GetAllProducts(ctx context.Context ,limit int) ([]or
 
 	return products, nil
 }
+

@@ -24,30 +24,3 @@ func SeedWeb(db *gorm.DB) error {
 	return db.Create(&webs).Error
 }
 
-func SeedCategory(db *gorm.DB) error {
-	var c orm.Category
-	result := db.First(&c)
-
-	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nil 
-	}
-
-	categories := []orm.Category{
-		{Name: "aio"},
-		{Name: "case"},
-		{Name: "cooler"},
-		{Name: "cpu"},
-		{Name: "fan"},
-		{Name: "gpu"},
-		{Name: "hdd"},
-		{Name: "laptop"},
-		{Name: "motherboard"},
-		{Name: "pc mini"},
-		{Name: "pc"},
-		{Name: "psu"},
-		{Name: "ram"},
-		{Name: "ssd"},
-	}
-
-	return db.Create(&categories).Error
-}

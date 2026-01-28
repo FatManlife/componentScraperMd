@@ -32,20 +32,19 @@ var specRuEng map[string]string = map[string]string {
 	"Для ноутбука": "Laptop",
 }
 
-func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
 	product.Name = e.ChildText("ol.breadcrumb li:last-child")
 	product.ImageURL = e.ChildAttr("img","src")
 	product.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
 	product.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
 	product.Website_id = constants.WebIdMap["pcprime"]
 	product.Url = e.Request.URL.String()
-	product.Category_id = constants.CategoryIdMap[category]
 }
 
-func (h *handler) ssdHandler(e *colly.HTMLElement, category string){
+func (h *handler) ssdHandler(e *colly.HTMLElement){
 	var ssd dto.Ssd
 
-	setBaseAttrs(e, &ssd.BaseAttrs, category)
+	setBaseAttrs(e, &ssd.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -67,10 +66,10 @@ func (h *handler) ssdHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) hddHandler(e *colly.HTMLElement, category string){
+func (h *handler) hddHandler(e *colly.HTMLElement){
 	var hdd dto.Hdd
 
-	setBaseAttrs(e, &hdd.BaseAttrs, category)
+	setBaseAttrs(e, &hdd.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -91,10 +90,10 @@ func (h *handler) hddHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) fanHandler(e *colly.HTMLElement, category string){
+func (h *handler) fanHandler(e *colly.HTMLElement){
 	var fan dto.Fan
 
-	setBaseAttrs(e, &fan.BaseAttrs, category)
+	setBaseAttrs(e, &fan.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -115,10 +114,10 @@ func (h *handler) fanHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) aioHandler(e *colly.HTMLElement, category string){
+func (h *handler) aioHandler(e *colly.HTMLElement){
 	var aio dto.Aio
 
-	setBaseAttrs(e, &aio.BaseAttrs, category)
+	setBaseAttrs(e, &aio.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -141,10 +140,10 @@ func (h *handler) aioHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) pcMiniHandler(e *colly.HTMLElement, category string){
+func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 	var pc dto.Pc
 	
-	setBaseAttrs(e, &pc.BaseAttrs, category)
+	setBaseAttrs(e, &pc.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -166,10 +165,10 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) pcHandler(e *colly.HTMLElement, category string){
+func (h *handler) pcHandler(e *colly.HTMLElement){
 	var pc dto.Pc
 	
-	setBaseAttrs(e, &pc.BaseAttrs, category)
+	setBaseAttrs(e, &pc.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -199,10 +198,10 @@ func (h *handler) pcHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) caseHandler(e *colly.HTMLElement, category string){
+func (h *handler) caseHandler(e *colly.HTMLElement){
 	var pcCase dto.Case
 	
-	setBaseAttrs(e, &pcCase.BaseAttrs, category)
+	setBaseAttrs(e, &pcCase.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -222,10 +221,10 @@ func (h *handler) caseHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) psuHandler(e *colly.HTMLElement, category string){
+func (h *handler) psuHandler(e *colly.HTMLElement){
 	var psu dto.Psu
 
-	setBaseAttrs(e, &psu.BaseAttrs, category)
+	setBaseAttrs(e, &psu.BaseAttrs)
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -246,10 +245,10 @@ func (h *handler) psuHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) gpuHandler(e *colly.HTMLElement, category string){
+func (h *handler) gpuHandler(e *colly.HTMLElement){
 	var gpu dto.Gpu
 
-	setBaseAttrs(e, &gpu.BaseAttrs, category)
+	setBaseAttrs(e, &gpu.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -271,10 +270,10 @@ func (h *handler) gpuHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) ramHandler(e *colly.HTMLElement, category string){
+func (h *handler) ramHandler(e *colly.HTMLElement){
 	var ram dto.Ram
 
-	setBaseAttrs(e, &ram.BaseAttrs, category)
+	setBaseAttrs(e, &ram.BaseAttrs)
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -299,10 +298,10 @@ func (h *handler) ramHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) motherBoardHandler(e *colly.HTMLElement, category string){
+func (h *handler) motherBoardHandler(e *colly.HTMLElement){
 	var motherboard dto.Motherboard
 
-	setBaseAttrs(e, &motherboard.BaseAttrs, category)
+	setBaseAttrs(e, &motherboard.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -330,10 +329,10 @@ func (h *handler) motherBoardHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) coolerHandler(e *colly.HTMLElement, category string){
+func (h *handler) coolerHandler(e *colly.HTMLElement){
 	var cooler dto.Cooler
 
-	setBaseAttrs(e, &cooler.BaseAttrs, category)
+	setBaseAttrs(e, &cooler.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -368,10 +367,10 @@ func (h *handler) coolerHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) cpuHandler(e *colly.HTMLElement, category string){
+func (h *handler) cpuHandler(e *colly.HTMLElement){
 	var cpu dto.Cpu
 
-	setBaseAttrs(e, &cpu.BaseAttrs, category)
+	setBaseAttrs(e, &cpu.BaseAttrs)
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -395,10 +394,10 @@ func (h *handler) cpuHandler(e *colly.HTMLElement, category string){
 	fmt.Println(string(data))
 }
 
-func (h *handler) laptopHandler(e *colly.HTMLElement, category string){
+func (h *handler) laptopHandler(e *colly.HTMLElement){
 	var laptop dto.Laptop
 
-	setBaseAttrs(e, &laptop.BaseAttrs, category)
+	setBaseAttrs(e, &laptop.BaseAttrs)
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")

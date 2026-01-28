@@ -9,7 +9,6 @@ import (
 func Migrate(db *gorm.DB) error{
 	return db.AutoMigrate(
 		&orm.Website{},
-		&orm.Category{},
 		&orm.Product{},
 		&orm.Aio{},
 		&orm.PcCase{},
@@ -38,7 +37,6 @@ func DelteTables(db *gorm.DB) error{
 		&orm.PcCase{},
 		&orm.Cooler{},
 		&orm.Cpu{},
-		&orm.Category{},
 		&orm.CoolerCompatibility{},
 		&orm.CoolerCpu{},
 		&orm.Fan{},

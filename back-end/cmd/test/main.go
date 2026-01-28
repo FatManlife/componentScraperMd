@@ -25,8 +25,6 @@ func main() {
 			Brand:      product.Brand,
 			Price:      product.Price,
 			Url:        product.URL,
-			Website_id: product.WebsiteID,
-			Category_id: product.CategoryID,
 		}
 
 		dataJson, err := json.MarshalIndent(data, "", "  ")

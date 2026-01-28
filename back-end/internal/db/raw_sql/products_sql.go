@@ -16,14 +16,13 @@ func NewStorage(db *gorm.DB) *Storage {
 func (s *Storage) insertProduct(tx *gorm.DB, product *dto.BaseProduct) (int64, error) {
 	var lastId int64
 
-	err := tx.Raw("INSERT INTO products (name, image_url, brand, price, url, website_id, category_id) VALUES (?,?,?,?,?,?,?) RETURNING id",
+	err := tx.Raw("INSERT INTO products (name, image_url, brand, price, url, website_id) VALUES (?,?,?,?,?,?) RETURNING id",
 		product.Name,
 		product.ImageURL,
 		product.Brand,
 		product.Price,
 		product.Url,
 		product.Website_id,
-		product.Category_id,
 	).Scan(&lastId).Error 
 	
 	return lastId, err

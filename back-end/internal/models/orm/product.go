@@ -8,7 +8,6 @@ type Product struct {
 	Price float64 
 	URL string `gorm:"uniqueIndex;not null"`
 	WebsiteID int
-	CategoryID int
 
 	Aio *Aio `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Case *PcCase `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

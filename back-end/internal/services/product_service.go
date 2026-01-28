@@ -20,7 +20,6 @@ func productMapping(products []orm.Product) []dto.ProductResponse{
 			Price: product.Price,
 			Url: product.URL,
 			Website_id: product.WebsiteID,
-			Category_id: product.CategoryID,
 		}	
 
 		productList = append(productList, prod)
@@ -28,7 +27,6 @@ func productMapping(products []orm.Product) []dto.ProductResponse{
 
 	return productList		
 }
-
 
 type ProductService struct {
 	repo *repo.ProductRepository
@@ -38,12 +36,18 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
-func (s *ProductService) GetAllProducts(ctx context.Context, limit int) ([]dto.ProductResponse, error) {
-	pr, err := s.repo.GetAllProducts(ctx, limit)
+func (s *ProductService) GetProducts(ctx context.Context, limit int, website string, after int, brand string, min float64, max float64, order string) ([]dto.ProductResponse, error) {
+	if min > max {
+		min = 0
+		max = 0
+	}
+
+	products, err := s.repo.GetAllProducts(ctx, limit, website, after, brand, min, max, order)
 
 	if err != nil {
 		return nil,  err
 	}
 
-	return productMapping(pr), nil
+	return productMapping(products), nil
 }
+

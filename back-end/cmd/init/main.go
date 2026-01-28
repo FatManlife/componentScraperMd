@@ -24,8 +24,4 @@ func main() {
 	if err := seed.SeedWeb(db); err != nil {
 		fmt.Println("Initial website creation failed:", err)
 	}
-
-	if err := seed.SeedCategory(db); err != nil {
-		fmt.Println("Initial category creation failed:", err)
-	}
 }

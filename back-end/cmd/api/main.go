@@ -16,11 +16,17 @@ func main() {
 	productService := service.NewProductService(productRepo)
 	productHanlder := handler.NewProductHandler(productService)
 
+	//Aio Initalization
+	aioRepo := repo.NewAioRepository(db)
+	aioService := service.NewAioService(aioRepo)
+	aioHandler := handler.NewAioHandler(aioService)
+
 	//Initiazlie Gin Router
 	r := gin.Default()
 
 	//Http Requests products
-	r.GET("/products", productHanlder.GetAllProducts)
+	r.GET("/products", productHanlder.GetProducts)
+	r.GET("/aio", aioHandler.GetAios)
 
 	// listen and serve on
 	r.Run(":8080") 
