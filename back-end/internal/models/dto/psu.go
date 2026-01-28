@@ -6,3 +6,10 @@ type Psu struct {
 	Efficiency string `json:"efficiency"`
 	FormFactor string `json:"form_factor"`
 }
+
+type PsuResponse struct {
+	Product ProductResponse
+	Power int `json:"power"`
+	Efficiency string `json:"efficiency"`
+	FormFactor string `json:"form_factor"`
+}

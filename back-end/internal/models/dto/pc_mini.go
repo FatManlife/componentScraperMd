@@ -7,3 +7,11 @@ type PcMini struct {
 	Ram string `json:"ram"`
 	Storage string `json:"storage"`
 }
+
+type PcMiniResponse struct {
+	Product ProductResponse
+	Cpu string `json:"cpu"`
+	Gpu string `json:"gpu"`
+	Ram string `json:"ram"`
+	Storage string `json:"storage"`
+}

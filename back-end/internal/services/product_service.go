@@ -4,29 +4,9 @@ import (
 	"context"
 
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
-	"github.com/FatManlife/component-finder/back-end/internal/models/orm"
 	repo "github.com/FatManlife/component-finder/back-end/internal/repositories"
 )
 
-func productMapping(products []orm.Product) []dto.ProductResponse{
-	productList := []dto.ProductResponse{}
-
-	for _, product := range products {
-		prod := dto.ProductResponse{
-			ID: product.ID,
-			Name: product.Name,
-			ImageURL: product.ImageURL,
-			Brand: product.Brand,
-			Price: product.Price,
-			Url: product.URL,
-			Website_id: product.WebsiteID,
-		}	
-
-		productList = append(productList, prod)
-	}
-
-	return productList		
-}
 
 type ProductService struct {
 	repo *repo.ProductRepository
@@ -48,6 +28,13 @@ func (s *ProductService) GetProducts(ctx context.Context, limit int, website str
 		return nil,  err
 	}
 
-	return productMapping(products), nil
+	var productResponses []dto.ProductResponse
+
+	for _, product := range products {
+		productResponses = append(productResponses, productMapping(product))
+	}
+
+	return productResponses, nil
 }
+
 

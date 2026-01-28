@@ -7,3 +7,11 @@ type Ssd struct {
 	WritingSpeed int `json:"writing_speed"`	
 	FormFactor string `json:"form_factor"`
 }
+
+type SsdResponse struct {
+	ProductResponse int
+	Capacity       int 
+	ReadingSpeed  int 
+	WritingSpeed  int 
+	FormFactor    string
+}

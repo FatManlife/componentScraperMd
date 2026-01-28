@@ -10,3 +10,14 @@ type Pc struct {
 	Psu string `json:"psu"`
 	Case string `json:"case"`
 }
+
+type PcResponse struct {
+	Product ProductResponse
+	Cpu string `json:"cpu"`
+	Gpu string `json:"gpu"`
+	Ram string `json:"ram"`
+	Storage string `json:"storage"`
+	Motherboard string `json:"motherboard"`
+	Psu string `json:"psu"`
+	Case string `json:"case"`
+}

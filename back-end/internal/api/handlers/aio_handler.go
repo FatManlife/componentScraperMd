@@ -23,7 +23,14 @@ func (h *AioHandler) GetAios(c *gin.Context) {
 		return
 	}
 
-	products, err := h.service.GetAios(ctx, filters.limit, filters.website, filters.after, filters.brand, filters.min, filters.max, filters.sort)
+	diagonal := c.DefaultQuery("diagonal","")
+	ram := c.DefaultQuery("ram","")
+	cpu := c.DefaultQuery("cpu","")
+	gpu := c.DefaultQuery("gpu","")
+	storage := c.DefaultQuery("storage","")
+
+	products, err := h.service.GetAios(ctx, filters.limit, filters.website, filters.after, filters.brand, filters.min, filters.max, filters.sort,
+		diagonal, ram, storage, cpu, gpu)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
