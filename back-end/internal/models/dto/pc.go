@@ -24,11 +24,11 @@ type PcResponse struct {
 
 type PcParams struct {
 	DefaultParams ProductParams 
-	Cpu string 
-	Gpu string 
-	Ram string 
-	Storage string 
-	Motherboard string 
-	Psu string 
-	Case string 
+	Cpu string `form:"cpu"`
+	Gpu string `form:"gpu"`
+	Ram string `form:"ram"`
+	Storage string `form:"storage"`
+	Motherboard string `form:"motherboard"`
+	Psu string `form:"psu"`
+	Case string `form:"case"`
 }

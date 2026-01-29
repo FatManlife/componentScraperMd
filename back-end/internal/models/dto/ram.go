@@ -20,9 +20,9 @@ type RamResponse struct {
 
 type RamParams struct {
 	DefaultParams ProductParams 
-	Capacity int 
-	Speed int 
-	Type string 
-	Compatibility string 
-	Configuration string 
+	Capacity int `form:"capacity"`
+	Speed int `form:"speed"`
+	Type string `form:"type"`
+	Compatibility string `form:"compatibility"`
+	Configuration string `form:"configuration"`
 }

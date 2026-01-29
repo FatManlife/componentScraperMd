@@ -18,8 +18,8 @@ type GpuResponse struct {
 
 type GpuParams struct {
 	DefaultParams ProductParams 
-	Chipset string 
-	Vram int 
-	GpuFrequency int 
-	VramFrequency int 
+	Chipset string `form:"chipset"`
+	Vram int `form:"vram"`
+	GpuFrequency int `form:"gpu_frequency"`
+	VramFrequency int `form:"vram_frequency"`
 }

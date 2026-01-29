@@ -14,6 +14,6 @@ type CaseResponse struct {
 
 type CaseParams struct {
 	DefaultParams ProductParams 
-	Format string 
-	MotherboardFormFactor string 
+	Format string `form:"format"`
+	MotherboardFormFactor string `form:"motherboard_form_factor"`
 }

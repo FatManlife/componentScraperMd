@@ -19,10 +19,10 @@ type AioResponse struct {
 }
 
 type AioParams struct {
-	DefualtParams ProductParams
-	Diagonal string
-	Cpu string
-	Ram string
-	Storage string
-	Gpu string
+	DefaultParams ProductParams
+	Diagonal string `form:"diagonal"`
+	Cpu string `form:"cpu"`
+	Ram string `form:"ram"`
+	Storage string `form:"storage"`
+	Gpu string `form:"gpu"`
 }

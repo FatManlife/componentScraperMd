@@ -19,15 +19,10 @@ func (h *AioHandler) GetAios(c *gin.Context) {
 
 	var aioParams dto.AioParams
 
-	if err := extractProductParams(c, &aioParams.DefualtParams); err != nil {
+	if err := c.BindQuery(&aioParams); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
-	}
-
-	aioParams.Diagonal = c.DefaultQuery("diagonal","")
-	aioParams.Ram = c.DefaultQuery("ram","")
-	aioParams.Cpu = c.DefaultQuery("cpu","")
-	aioParams.Gpu = c.DefaultQuery("gpu","")
-	aioParams.Storage = c.DefaultQuery("storage","")
+	}	
 
 	products, err := h.service.GetAios(ctx, aioParams)
 

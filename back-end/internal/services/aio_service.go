@@ -28,11 +28,8 @@ func aiosMapping(product orm.Product) dto.AioResponse{
 }
 
 func (s *AioService) GetAios(ctx context.Context, aioParams dto.AioParams) ([]dto.AioResponse, error) {
-	if aioParams.DefualtParams.Min > aioParams.DefualtParams.Max {
-		aioParams.DefualtParams.Min = 0
-		aioParams.DefualtParams.Max = 0
-	}
-
+	checkDefaultParams(&aioParams.DefaultParams)
+	
 	aios, err := s.repo.GetAios(ctx, aioParams)
 
 	if err != nil {

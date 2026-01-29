@@ -20,9 +20,9 @@ type CoolerResponse struct {
 
 type CoolerParams struct {
 	DefaultParams ProductParams 
-	Type string 
-	FanRPM int 
-	Noise float64 
-	Size string 
-	Compatibility []string 
+	Type string `form:"type"`
+	FanRPM int `form:"fan_rpm"`
+	Noise float64 `form:"noise"`
+	Size string `form:"size"`
+	Compatibility []string `form:"compatibility"`
 }

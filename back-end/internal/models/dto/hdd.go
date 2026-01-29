@@ -16,7 +16,7 @@ type HddResponse struct {
 
 type HddParams struct {
 	DefaultParams ProductParams 
-	Capacity int 
-	RotationSpeed int 
-	FormFactor string 
+	Capacity int `form:"capacity"`
+	RotationSpeed int `form:"rotation_speed"`
+	FormFactor string `form:"form_factor"`
 }

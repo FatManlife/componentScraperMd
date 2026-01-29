@@ -18,8 +18,8 @@ type PcMiniResponse struct {
 
 type PcMiniParams struct {
 	DefaultParams ProductParams 
-	Cpu string 
-	Gpu string 
-	Ram string 
-	Storage string 
+	Cpu string `form:"cpu"`
+	Gpu string `form:"gpu"`
+	Ram string `form:"ram"`
+	Storage string `form:"storage"`
 }

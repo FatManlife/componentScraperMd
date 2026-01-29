@@ -22,10 +22,10 @@ type CpuResponse struct {
 
 type CpuParams struct {
 	DefaultParams ProductParams 
-	Cores      int	 
-	Threads    int     
-	BaseClock  float64
-	BoostClock float64
-	Socket     string  
-	Tdp        int     
+	Cores      int	`form:"cores"` 
+	Threads    int     `form:"threads"`
+	BaseClock  float64 `form:"base_clock"`
+	BoostClock float64 `form:"boost_clock"`
+	Socket     string  `form:"socket"`
+	Tdp        int     `form:"tdp"`
 }

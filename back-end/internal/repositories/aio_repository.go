@@ -19,7 +19,7 @@ func NewAioRepository(db *gorm.DB) *AioRepository {
 func (r *AioRepository) GetAios (ctx context.Context, aioParams dto.AioParams) ([]orm.Product, error) {
 	var aios []orm.Product
 
-	q := applyCommonFilters(r.db, ctx, aioParams.DefualtParams)
+	q := getDefaultProduct(r.db, ctx, aioParams.DefaultParams)
 
 	q.Joins("JOIN aios on aios.product_id = products.id").Preload("Aio")
 

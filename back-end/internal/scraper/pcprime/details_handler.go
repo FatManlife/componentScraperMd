@@ -127,7 +127,7 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 		case "Модель видеокарты": aio.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем оперативной памяти": aio.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
 		case "Объем SSD": aio.Storage=strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)) 
-		case "Экран": aio.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])
+		case "Экран": aio.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"\"")[0])
 		}
 	})
 
@@ -407,7 +407,7 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		case "Видеокарта": laptop.Gpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"Интегрированная","Integrated",1))
 		case "Оперативная память": laptop.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
 		case "Накопитель": laptop.Storage = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Диагональ экрана": laptop.Diagonal = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Диагональ экрана": laptop.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"\"")[0])
 		case "Аккумулятор": laptop.Battery = castingFloat64Laptop(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})

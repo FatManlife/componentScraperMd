@@ -20,9 +20,9 @@ type MotherboardResponse struct {
 
 type MotherboardParams struct {
 	DefaultParams ProductParams 
-	Chipset string 
-	Socket string 
-	FormFactor string 
-	RamSupport string 
-	FormFactorRam string 
+	Chipset string `form:"chipset"`
+	Socket string `form:"socket"`
+	FormFactor string `form:"form_factor"`
+	RamSupport string `form:"ram_support"`
+	FormFactorRam string `form:"form_factor_ram"`
 }

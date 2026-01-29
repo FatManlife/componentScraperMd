@@ -155,7 +155,7 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec {
-		case "Diagonală": laptop.Diagonal = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Diagonală": laptop.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"),"\"")[0])
 		case "Producator": laptop.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Procesor": laptop.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Placă video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
@@ -217,7 +217,7 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 
 		switch spec { 
 		case "Producator": aio.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Diagonală": aio.Diagonal= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Diagonală": aio.Diagonal= strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"),"\"")[0])
 		case "Procesor": aio.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Capacitatea RAM": aio.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		case "Unitate de stocare": aio.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func applyCommonFilters(db *gorm.DB ,ctx context.Context, params dto.ProductParams) *gorm.DB{
+func getDefaultProduct(db *gorm.DB ,ctx context.Context, params dto.ProductParams) *gorm.DB{
 	q := db.Model(&orm.Product{}).WithContext(ctx)
 
 	if params.After > 0 {

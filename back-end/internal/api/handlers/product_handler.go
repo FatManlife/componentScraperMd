@@ -19,7 +19,7 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 
 	var productParams dto.ProductParams
 
-	if err := extractProductParams(c ,&productParams); err != nil {
+	if err := c.BindQuery(&productParams); err != nil {
 		return
 	}
 	

@@ -20,7 +20,7 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 func (r *ProductRepository) GetAllProducts(ctx context.Context, productParams dto.ProductParams) ([]orm.Product, error) {
 	var products []orm.Product
 
-	q := applyCommonFilters(r.db, ctx, productParams) 	
+	q := getDefaultProduct(r.db, ctx, productParams) 	
 	
 	err := q.Find(&products).Error
 

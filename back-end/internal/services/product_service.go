@@ -17,10 +17,7 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 }
 
 func (s *ProductService) GetProducts(ctx context.Context, productParams dto.ProductParams) ([]dto.ProductResponse, error) {
-	if productParams.Min > productParams.Max {
-		productParams.Min = 0
-		productParams.Max = 0
-	}
+	checkDefaultParams(&productParams)	
 
 	products, err := s.repo.GetAllProducts(ctx, productParams)
 

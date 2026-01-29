@@ -16,7 +16,7 @@ type FanResponse struct {
 
 type FanParams struct {
 	DefaultParams ProductParams 
-	FanRPM int 
-	Noise float64 
-	Size string 
+	FanRPM int 	`form:"fan_rpm"`
+	Noise float64 `form:"noise"`
+	Size string `form:"size"`
 }

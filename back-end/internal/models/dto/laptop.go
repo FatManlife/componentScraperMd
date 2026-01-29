@@ -22,10 +22,10 @@ type LaptopResponse struct {
 
 type LaptopParams struct {
 	DefaultParams ProductParams 
-	Cpu string 
-	Gpu string 
-	Ram string 
-	Storage string 
-	Diagonal string 
-	Battery float64 
+	Cpu string `form:"cpu"` 
+	Gpu string `form:"gpu"`
+	Ram string `form:"ram"`
+	Storage string `form:"storage"`
+	Diagonal string `form:"diagonal"`
+	Battery float64 `form:"battery"`
 }

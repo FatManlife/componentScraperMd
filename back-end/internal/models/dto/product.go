@@ -20,11 +20,11 @@ type ProductResponse struct {
 }
 
 type ProductParams struct {
-	Limit int
-	Website string
-	After int
-	Brand string
-	Min float64
-	Max float64
-	Order string
+	Limit   int     `form:"limit"`
+	Website string  `form:"website"`
+	After   int     `form:"after"`
+	Brand   string  `form:"brand"`
+	Min     float64 `form:"min"`
+	Max     float64 `form:"max"`
+	Order   string  `form:"order"`
 }
