@@ -16,36 +16,34 @@ func NewAioRepository(db *gorm.DB) *AioRepository {
 	return &AioRepository{db: db}
 }
 
-func (r *AioRepository) GetAios (ctx context.Context, aioParams dto.AioParams) ([]orm.Product, error) {
+func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]orm.Product, error) {
 	var aios []orm.Product
 
-	q := getDefaultProduct(r.db, ctx, aioParams.DefaultParams)
+	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
 	q.Joins("JOIN aios on aios.product_id = products.id").Preload("Aio")
 
-	if aioParams.Diagonal != "" {
-		q = q.Where("aios.diagonal = ?", aioParams.Diagonal)
+	if params.Diagonal != "" {
+		q = q.Where("aios.diagonal = ?", params.Diagonal)
 	}
 
-	if aioParams.Ram != "" {
-		q = q.Where("aios.ram = ?", aioParams.Ram)
+	if params.Ram != "" {
+		q = q.Where("aios.ram = ?", params.Ram)
 	}
 
-	if aioParams.Storage != "" {
-		q = q.Where("aios.storage = ?", aioParams.Storage)
+	if params.Storage != "" {
+		q = q.Where("aios.storage = ?", params.Storage)
 	}
 
-	if aioParams.Cpu != "" {
-		q = q.Where("aios.cpu = ?", aioParams.Cpu)
+	if params.Cpu != "" {
+		q = q.Where("aios.cpu = ?", params.Cpu)
 	}
 
-	if aioParams.Gpu != "" {
-		q = q.Where("aios.gpu = ?", aioParams.Gpu)
+	if params.Gpu != "" {
+		q = q.Where("aios.gpu = ?", params.Gpu)
 	}
 
-	err := q.Find(&aios).Error
-
-	if err != nil {
+	if err := q.Find(&aios).Error ; err != nil {
 		return nil, err
 	}
 

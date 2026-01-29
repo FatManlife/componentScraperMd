@@ -16,28 +16,26 @@ func NewPsuRepository(db *gorm.DB) *PsuRepository {
 	return &PsuRepository{db: db}
 }
 
-func (r *PsuRepository) GetPsus(ctx context.Context, psuParams *dto.PsuParams) ([]orm.Product, error) {
+func (r *PsuRepository) GetPsus(ctx context.Context, params dto.PsuParams) ([]orm.Product, error) {
 	var psus []orm.Product
 
-	q := getDefaultProduct(r.db, ctx, psuParams.DefaultParams)
+	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
 	q.Joins("JOIN psus on psus.product_id = products.id").Preload("Psu")
 
-	if psuParams.FormFactor != "" {
-		q = q.Where("psus.form_factor = ?", psuParams.FormFactor)
+	if params.FormFactor != "" {
+		q = q.Where("psus.form_factor = ?", params.FormFactor)
 	}
 
-	if psuParams.Efficiency != "" {
-		q = q.Where("psus.efficiency = ?", psuParams.Efficiency)
+	if params.Efficiency != "" {
+		q = q.Where("psus.efficiency ILIKE ?", params.Efficiency)
 	}
 
-	if psuParams.Power != 0 {
-		q = q.Where("psus.power = ?", psuParams.Power)
+	if params.Power != 0 {
+		q = q.Where("psus.power = ?", params.Power)
 	}
 
-	err := q.Find(&psus).Error
-
-	if err != nil {
+	if err := q.Find(&psus).Error ; err != nil {
 		return nil, err
 	}
 

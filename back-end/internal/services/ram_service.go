@@ -27,10 +27,10 @@ func ramMapping(product orm.Product) dto.RamResponse {
 	}
 }
 
-func (s *RamService) GetRams(ctx context.Context, ramParams dto.RamParams) ([]dto.RamResponse, error) {
-	checkDefaultParams(&ramParams.DefaultParams)
+func (s *RamService) GetRams(ctx context.Context, params dto.RamParams) ([]dto.RamResponse, error) {
+	checkDefaultParams(&params.DefaultParams)
 
-	rams, err := s.repo.GetRams(ctx, ramParams)
+	rams, err := s.repo.GetRams(ctx, params)
 
 	if err != nil {
 		return nil, err

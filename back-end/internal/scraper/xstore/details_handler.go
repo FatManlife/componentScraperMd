@@ -375,7 +375,7 @@ func (h *handler) psuHandler(e *colly.HTMLElement){
 		switch spec { 
 		case "Producator": psu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Puterea": psu.Power = utils.CastInt(el.ChildText("span:nth-child(2)"))
-		case "Certificat 80+": psu.Efficiency = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Certificat 80+": psu.Efficiency = strings.TrimSpace(strings.ReplaceAll(el.ChildText("span:nth-child(2)"), "+", " PLUS"))
 		case "Form Factor": psu.FormFactor = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		}
 	})

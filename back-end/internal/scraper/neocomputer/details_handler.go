@@ -152,9 +152,13 @@ func (h *handler) psuHandler(e *colly.HTMLElement){
 		switch spec {
 		case "Form factor": psu.FormFactor = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Putere sursa (W)": psu.Power = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
-		case "Certificat 80+": psu.Efficiency = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Certificat 80+": psu.Efficiency = strings.TrimSpace(strings.ReplaceAll(el.ChildText("span.spec__value"), "+", " PLUS"))
 		}
 	})
+
+	if psu.Efficiency == "" || psu.Efficiency == "Nu" {
+		psu.Efficiency = "Standard"
+	}
 
 	if err := h.storage.InsertPsu(&psu); err != nil {
 		fmt.Println("Error inserting PSU:", err)

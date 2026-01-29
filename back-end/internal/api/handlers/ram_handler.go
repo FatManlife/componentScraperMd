@@ -17,14 +17,14 @@ func NewRamHandler(service *service.RamService) *RamHandler {
 func (h *RamHandler) GetRams(c *gin.Context){
 	ctx := c.Request.Context()
 
-	var ramParams dto.RamParams
+	var params dto.RamParams
 
-	if err := c.BindQuery(&ramParams); err != nil {
+	if err := c.BindQuery(&params); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 
-	products, err := h.service.GetRams(ctx, ramParams)
+	products, err := h.service.GetRams(ctx, params)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})

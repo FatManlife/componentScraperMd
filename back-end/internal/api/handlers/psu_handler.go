@@ -14,17 +14,17 @@ func NewPsuHandler(service *service.PsuService) *PsuHandler {
 	return &PsuHandler{service: service}
 }
 
-func (h *PsuHandler) GetPsusHandler(c *gin.Context) {
+func (h *PsuHandler) GetPsus(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var psuParams dto.PsuParams
+	var params dto.PsuParams
 
-	if err := c.BindQuery(&psuParams);  err != nil {
+	if err := c.BindQuery(&params);  err != nil {
 		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 
-	psus, err := h.service.GetPsus(ctx, &psuParams)
+	psus, err := h.service.GetPsus(ctx, params)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to get PSUs"})

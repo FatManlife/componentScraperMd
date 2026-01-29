@@ -16,10 +16,10 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
-func (s *ProductService) GetProducts(ctx context.Context, productParams dto.ProductParams) ([]dto.ProductResponse, error) {
-	checkDefaultParams(&productParams)	
+func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductResponse, error) {
+	checkDefaultParams(&params)	
 
-	products, err := s.repo.GetAllProducts(ctx, productParams)
+	products, err := s.repo.GetAllProducts(ctx, params)
 
 	if err != nil {
 		return nil,  err

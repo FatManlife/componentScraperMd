@@ -17,13 +17,14 @@ func NewProductHandler(service *service.ProductService) *ProductHandler {
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var productParams dto.ProductParams
+	var params dto.ProductParams
 
-	if err := c.BindQuery(&productParams); err != nil {
+	if err := c.BindQuery(&params); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 	
-	products, err := h.service.GetProducts(ctx, productParams)
+	products, err := h.service.GetProducts(ctx, params)
 	
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})

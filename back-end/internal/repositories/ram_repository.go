@@ -16,36 +16,34 @@ func NewRamRepository(db *gorm.DB) *RamRepository {
 	return &RamRepository{db: db}
 }
 
-func (r *RamRepository) GetRams(ctx context.Context, ramParams dto.RamParams, ) ([]orm.Product, error) {
+func (r *RamRepository) GetRams(ctx context.Context, params dto.RamParams, ) ([]orm.Product, error) {
 	var ram []orm.Product
 
-	q := getDefaultProduct(r.db, ctx, ramParams.DefaultParams)
+	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
 	q.Joins("JOIN rams on rams.product_id = products.id").Preload("Ram")
 
-	if ramParams.Capacity != 0{
-		q = q.Where("rams.capacity = ?", ramParams.Capacity)
+	if params.Capacity != 0{
+		q = q.Where("rams.capacity = ?", params.Capacity)
 	}
 
-	if ramParams.Speed != 0{
-		q = q.Where("rams.speed = ?", ramParams.Speed)
+	if params.Speed != 0{
+		q = q.Where("rams.speed = ?", params.Speed)
 	}
 
-	if ramParams.Type != ""{
-		q = q.Where("rams.type = ?", ramParams.Type)
+	if params.Type != ""{
+		q = q.Where("rams.type = ?", params.Type)
 	}
 
-	if ramParams.Compatibility != ""{
-		q = q.Where("rams.compatibility = ?", ramParams.Compatibility)
+	if params.Compatibility != ""{
+		q = q.Where("rams.compatibility = ?", params.Compatibility)
 	}
 
-	if ramParams.Configuration != ""{
-		q = q.Where("rams.configuration = ?", ramParams.Configuration)
+	if params.Configuration != ""{
+		q = q.Where("rams.configuration = ?", params.Configuration)
 	}
 
-	err := q.Find(&ram).Error
-
-	if err != nil {
+	if err := q.Find(&ram).Error; err != nil {
 		return nil, err
 	}
 

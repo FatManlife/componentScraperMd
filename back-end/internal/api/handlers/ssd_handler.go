@@ -14,17 +14,17 @@ func NewSSDHandler(service *service.SSDService) *SSDHandler {
 	return &SSDHandler{service: service}
 }
 
-func (h *SSDHandler) GetSsdsHandler(c *gin.Context) {
+func (h *SSDHandler) GetSsds(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var ssdParams dto.SsdParams
+	var params dto.SsdParams
 
-	if err := c.BindQuery(&ssdParams); err != nil {
+	if err := c.BindQuery(&params); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
 	}
 
-	products, err := h.service.GetSsds(ctx, ssdParams)
+	products, err := h.service.GetSsds(ctx, params)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})

@@ -25,10 +25,10 @@ func psuMapping(product orm.Product) dto.PsuResponse {
 	}
 }
 
-func (s *PsuService) GetPsus(ctx context.Context, psuParams *dto.PsuParams) ([]dto.PsuResponse, error) {
-	checkDefaultParams(&psuParams.DefaultParams)
+func (s *PsuService) GetPsus(ctx context.Context, params dto.PsuParams) ([]dto.PsuResponse, error) {
+	checkDefaultParams(&params.DefaultParams)
 
-	psus, err := s.repo.GetPsus(ctx, psuParams)
+	psus, err := s.repo.GetPsus(ctx, params)
 
 	if err != nil {
 		return nil, err

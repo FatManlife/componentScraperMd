@@ -231,10 +231,14 @@ func (h *handler) psuHandler(e *colly.HTMLElement){
 
 		switch spec {
 		case "Мощность БП": psu.Power = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Сертификат БП": psu.Efficiency = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Сертификат БП": psu.Efficiency = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2)"), "+", " PLUS"))
 		case "Форм-фактор": psu.FormFactor = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
+
+	if psu.Efficiency == "" {
+		psu.Efficiency = "Standard"
+	}
 
 	if err := h.storage.InsertPsu(&psu); err != nil {
 		fmt.Println("Error inserting PSU:", err)

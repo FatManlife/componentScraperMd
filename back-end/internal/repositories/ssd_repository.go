@@ -16,32 +16,30 @@ func NewSSDRepository(db *gorm.DB) *SSDRepository {
 	return &SSDRepository{db: db}
 }
 
-func (r *SSDRepository) GetSsds(ctx context.Context, ssdParams dto.SsdParams) ([]orm.Product, error) {
+func (r *SSDRepository) GetSsds(ctx context.Context, params dto.SsdParams) ([]orm.Product, error) {
 	var ssds []orm.Product
 
-	q := getDefaultProduct(r.db, ctx, ssdParams.DefaultParams) 
+	q := getDefaultProduct(r.db, ctx, params.DefaultParams) 
 
 	q.Joins("JOIN ssds on ssds.product_id = products.id").Preload("Ssd")
 
-	if ssdParams.FormFactor != "" {
-		q = q.Where("ssds.form_factor = ?", ssdParams.FormFactor)
+	if params.FormFactor != "" {
+		q = q.Where("ssds.form_factor = ?", params.FormFactor)
 	}
 
-	if ssdParams.Capacity != 0 {
-		q = q.Where("ssds.capacity = ?", ssdParams.Capacity)
+	if params.Capacity != 0 {
+		q = q.Where("ssds.capacity = ?", params.Capacity)
 	}
 
-	if ssdParams.ReadingSpeed != 0 {
-		q = q.Where("ssds.reading_speed = ?", ssdParams.ReadingSpeed)
+	if params.ReadingSpeed != 0 {
+		q = q.Where("ssds.reading_speed = ?", params.ReadingSpeed)
 	}
 
-	if ssdParams.WritingSpeed != 0 {
-		q = q.Where("ssds.writing_speed = ?", ssdParams.WritingSpeed)
+	if params.WritingSpeed != 0 {
+		q = q.Where("ssds.writing_speed = ?", params.WritingSpeed)
 	}
 
-	err := q.Find(&ssds).Error
-
-	if err != nil {
+	if err := q.Find(&ssds).Error; err != nil {
 		return nil, err
 	}
 

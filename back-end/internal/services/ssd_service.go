@@ -26,10 +26,10 @@ func ssdsMapping(product orm.Product) dto.SsdResponse {
 	}
 }
 
-func (s *SSDService) GetSsds(ctx context.Context, ssdParams dto.SsdParams) ([]dto.SsdResponse, error) {
-	checkDefaultParams(&ssdParams.DefaultParams)
+func (s *SSDService) GetSsds(ctx context.Context, params dto.SsdParams) ([]dto.SsdResponse, error) {
+	checkDefaultParams(&params.DefaultParams)
 	
-	ssds, err := s.repo.GetSsds(ctx, ssdParams)
+	ssds, err := s.repo.GetSsds(ctx, params)
 
 	if err != nil {
 		return nil, err

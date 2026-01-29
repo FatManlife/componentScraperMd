@@ -17,14 +17,12 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 }
 
 //implemnt Getting all products with filters
-func (r *ProductRepository) GetAllProducts(ctx context.Context, productParams dto.ProductParams) ([]orm.Product, error) {
+func (r *ProductRepository) GetAllProducts(ctx context.Context, params dto.ProductParams) ([]orm.Product, error) {
 	var products []orm.Product
 
-	q := getDefaultProduct(r.db, ctx, productParams) 	
+	q := getDefaultProduct(r.db, ctx, params) 	
 	
-	err := q.Find(&products).Error
-
-	if err != nil {
+	if err := q.Find(&products).Error; err != nil {
 		return nil, err
 	}
 

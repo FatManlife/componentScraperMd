@@ -17,14 +17,14 @@ func NewAioHandler(service *service.AioService) *AioHandler {
 func (h *AioHandler) GetAios(c *gin.Context) {
 	ctx := c.Request.Context()
 
-	var aioParams dto.AioParams
+	var params dto.AioParams
 
-	if err := c.BindQuery(&aioParams); err != nil {
+	if err := c.BindQuery(&params); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid query parameters"})
 		return
 	}	
 
-	products, err := h.service.GetAios(ctx, aioParams)
+	products, err := h.service.GetAios(ctx, params)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
