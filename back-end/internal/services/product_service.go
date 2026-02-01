@@ -5,6 +5,7 @@ import (
 
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	repo "github.com/FatManlife/component-finder/back-end/internal/repositories"
+	"github.com/FatManlife/component-finder/back-end/internal/utils"
 )
 
 
@@ -17,8 +18,6 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 }
 
 func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductResponse, error) {
-	checkDefaultParams(&params)	
-
 	products, err := s.repo.GetAllProducts(ctx, params)
 
 	if err != nil {
@@ -28,10 +27,8 @@ func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductPara
 	var productResponses []dto.ProductResponse
 
 	for _, product := range products {
-		productResponses = append(productResponses, productMapping(product))
+		productResponses = append(productResponses, utils.ProductMapping(product))
 	}
 
 	return productResponses, nil
 }
-
-

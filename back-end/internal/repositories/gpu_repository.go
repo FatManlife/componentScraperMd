@@ -26,14 +26,23 @@ func (r *GpuRepository) GetGpus(ctx context.Context, params dto.GpuParams) ([]or
 	if params.Chipset != "" {
 		q = q.Where("gpus.chipset = ?", params.Chipset)
 	}
-	if params.Vram != 0 {
-		q = q.Where("gpus.vram = ?", params.Vram)
+	if params.MinVram > 0 {
+		q = q.Where("gpus.vram >= ?", params.MinVram)
 	}
-	if params.GpuFrequency != 0 {
-		q = q.Where("gpus.gpu_frequency = ?", params.GpuFrequency)
+	if params.MaxVram > 0 {
+		q = q.Where("gpus.vram <= ?", params.MaxVram)
 	}
-	if params.VramFrequency != 0 {
-		q = q.Where("gpus.vram_frequency = ?", params.VramFrequency)
+	if params.MinGpuFrequency > 0 {
+		q = q.Where("gpus.gpu_frequency >= ?", params.MinGpuFrequency)
+	}
+	if params.MaxGpuFrequency > 0 {
+		q = q.Where("gpus.gpu_frequency <= ?", params.MaxGpuFrequency)
+	}
+	if params.MinVramFrequency > 0 {
+		q = q.Where("gpus.vram_frequency >= ?", params.MinVramFrequency)
+	}
+	if params.MaxVramFrequency > 0 {
+		q = q.Where("gpus.vram_frequency <= ?", params.MaxVramFrequency)
 	}
 
 	if err := q.Find(&gpu).Error; err != nil {

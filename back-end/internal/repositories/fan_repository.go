@@ -27,12 +27,20 @@ func (r *FanRepository) GetFans(ctx context.Context, params dto.FanParams) ([]or
 		q = q.Where("fans.size = ?", params.Size)
 	}
 
-	if params.FanRPM!= 0 {
-		q = q.Where("fans.fan_rpm = ?", params.FanRPM)
+	if params.MinFanRPM > 0 {
+		q = q.Where("fans.fan_rpm >= ?", params.MinFanRPM)
 	}
 
-	if params.Noise != 0 {
-		q = q.Where("fans.noise = ?", params.Noise)
+	if params.MinNoise > 0 {
+		q = q.Where("fans.noise >= ?", params.MinNoise)
+	}
+
+	if params.MaxFanRPM > 0 {
+		q = q.Where("fans.fan_rpm <= ?", params.MaxFanRPM)
+	}
+
+	if params.MaxNoise > 0 {
+		q = q.Where("fans.noise <= ?", params.MaxNoise)
 	}
 
 	if err := q.Find(&fans).Error; err != nil {

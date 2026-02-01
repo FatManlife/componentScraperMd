@@ -22,30 +22,21 @@ func (r *PcRepository) GetPcs(ctx context.Context, params dto.PcParams) ([]orm.P
 	q := getDefaultProduct(r.db,ctx,params.DefaultParams)
 
 	q.Joins("JOIN pcs on pcs.product_id = products.id").Preload("Pc")
+	
+	if len(params.Cpu) > 0 {
+		q = q.Where("pcs.cpu IN ?", params.Cpu)
+	}
 
-	if params.Case != "" {
-		q = q.Where("pcs.case = ?", params.Case)
+	if len(params.Gpu) > 0 {
+		q = q.Where("pcs.gpu IN ?", params.Gpu)
 	}
-	if params.Cpu != "" {
-		q = q.Where("pcs.cpu = ?", params.Cpu)
+	
+	if len(params.Ram) > 0 {
+		q = q.Where("pcs.ram IN ?", params.Ram)
 	}
-	if params.Gpu != "" {
-		q = q.Where("pcs.gpu = ?", params.Gpu)
-	}
-	if params.Motherboard != "" {
-		q = q.Where("pcs.motherboard = ?", params.Motherboard)
-	}
-	if params.Psu != "" {
-		q = q.Where("pcs.psu = ?", params.Psu)
-	}
-	if params.Ram != "" {
-		q = q.Where("pcs.ram = ?", params.Ram)
-	}
-	if params.Storage != "" {
-		q = q.Where("pcs.storage = ?", params.Storage)
-	}
-	if params.Motherboard != "" {
-		q = q.Where("pcs.motherboard = ?", params.Motherboard)
+
+	if len(params.Storage) > 0 {
+		q = q.Where("pcs.storage IN ?", params.Storage)
 	}
 	
 	if err := q.Find(&pcs).Error; err != nil {

@@ -21,18 +21,19 @@ func newDetailsHandler(s *rawsql.Storage) *handler{
 	return &handler{storage: s}
 }
 
-func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
 	product.Name = strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
 	product.ImageURL = strings.TrimSpace(e.ChildAttr("div.product_container_wrap.container.p-lg-50 img", "src"))
 	product.Price = utils.CastFloat64(e.ChildText("div.product_container_wrap.container.p-lg-50 div.price__head.mb-12 span.price__current > span.value"))
 	product.Website_id = constants.WebIdMap["neocomputer"]
+	product.Category = category
 	product.Url = e.Request.URL.String()
 }
 
 func (h *handler) fanHandler(e *colly.HTMLElement){
 	var fan dto.Fan
 
-	setBaseAttrs(e, &fan.BaseAttrs)	
+	setBaseAttrs(e, &fan.BaseAttrs, "fan")	
 	tempName := strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
 
 	if strings.Contains(tempName, "Fan Hub"){
@@ -82,7 +83,7 @@ func (h *handler) fanHandler(e *colly.HTMLElement){
 func (h *handler) coolerHandler(e *colly.HTMLElement){
 	var cooler dto.Cooler
 
-	setBaseAttrs(e, &cooler.BaseAttrs)	
+	setBaseAttrs(e, &cooler.BaseAttrs, "cooler")	
 	tempName := strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
 
 	if strings.Contains(tempName, "Mounting Kit"){
@@ -101,7 +102,7 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 			if m := regexp.MustCompile(`(\d+)\D*$`).FindStringSubmatch(el.ChildText("span.spec__value")); len(m) > 1 {
 				cooler.FanRPM = utils.CastInt(m[1])
 			}
-		case "Producator": cooler.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Producator": cooler.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Dimensiunile ventilatorului": cooler.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Dimensiune": cooler.Size = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Tip racire": cooler.Type = strings.TrimSpace(el.ChildText("span.spec__value"))
@@ -138,7 +139,7 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 func (h *handler) psuHandler(e *colly.HTMLElement){
 	var psu dto.Psu
 
-	setBaseAttrs(e, &psu.BaseAttrs)	
+	setBaseAttrs(e, &psu.BaseAttrs, "psu")	
 
 	tempName := strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15"))
 
@@ -172,7 +173,7 @@ func (h *handler) psuHandler(e *colly.HTMLElement){
 func (h *handler) caseHandler(e *colly.HTMLElement){
 	var pcCase dto.Case
 
-	setBaseAttrs(e, &pcCase.BaseAttrs)	
+	setBaseAttrs(e, &pcCase.BaseAttrs, "case")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -194,7 +195,7 @@ func (h *handler) caseHandler(e *colly.HTMLElement){
 func (h *handler) gpuHandler(e *colly.HTMLElement){
 	var gpu dto.Gpu
 
-	setBaseAttrs(e, &gpu.BaseAttrs)	
+	setBaseAttrs(e, &gpu.BaseAttrs, "gpu")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -206,8 +207,8 @@ func (h *handler) gpuHandler(e *colly.HTMLElement){
 		case "Model placa video": gpu.Chipset = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Frecventa memorie {MHz}": gpu.VramFrequency = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Frecvență memorie": gpu.VramFrequency = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
-		case "Producător GPU": gpu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Producător Chipset": gpu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Producător GPU": gpu.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
+		case "Producător Chipset": gpu.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Memorie | VGA": gpu.Vram = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Capacitate memorie": gpu.Vram = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 		}
@@ -225,7 +226,7 @@ func (h *handler) gpuHandler(e *colly.HTMLElement){
 func (h *handler) motherboardHandler(e *colly.HTMLElement){
 	var motherboard dto.Motherboard
 
-	setBaseAttrs(e, &motherboard.BaseAttrs)	
+	setBaseAttrs(e, &motherboard.BaseAttrs, "motherboard")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -261,7 +262,7 @@ func (h *handler) motherboardHandler(e *colly.HTMLElement){
 func (h *handler) ramHandler(e *colly.HTMLElement){
 	var ram dto.Ram
 
-	setBaseAttrs(e, &ram.BaseAttrs)	
+	setBaseAttrs(e, &ram.BaseAttrs, "ram")	
 
 	//Reggex to extract configuration from name
 	re := regexp.MustCompile(`Kit\s+of\s+(\d+)`)
@@ -296,7 +297,7 @@ func (h *handler) ramHandler(e *colly.HTMLElement){
 func (h *handler) ssdHandler(e *colly.HTMLElement){
 	var ssd dto.Ssd
 
-	setBaseAttrs(e, &ssd.BaseAttrs)	
+	setBaseAttrs(e, &ssd.BaseAttrs, "ssd")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -321,7 +322,7 @@ func (h *handler) ssdHandler(e *colly.HTMLElement){
 func (h *handler) hddHandler(e *colly.HTMLElement){
 	var hdd dto.Hdd
 
-	setBaseAttrs(e, &hdd.BaseAttrs)	
+	setBaseAttrs(e, &hdd.BaseAttrs, "hdd")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -345,13 +346,13 @@ func (h *handler) hddHandler(e *colly.HTMLElement){
 func (h *handler) cpuHandler(e *colly.HTMLElement){
 	var cpu dto.Cpu
 
-	setBaseAttrs(e, &cpu.BaseAttrs)	
+	setBaseAttrs(e, &cpu.BaseAttrs, "cpu")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 
 		switch spec {
-		case "Producator": cpu.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Producator": cpu.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Frecvență bază": cpu.BaseClock = utils.CastFloat64(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Frecvență turbo maximă": cpu.BoostClock = utils.CastFloat64(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "TDP": cpu.Tdp = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
@@ -373,7 +374,7 @@ func (h *handler) cpuHandler(e *colly.HTMLElement){
 func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 	var pc dto.PcMini
 
-	setBaseAttrs(e, &pc.BaseAttrs)	
+	setBaseAttrs(e, &pc.BaseAttrs, "pc_mini")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -399,7 +400,7 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 func (h *handler) laptopHandler(e *colly.HTMLElement){
 	var laptop dto.Laptop
 
-	setBaseAttrs(e, &laptop.BaseAttrs)	
+	setBaseAttrs(e, &laptop.BaseAttrs, "laptop")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -411,7 +412,7 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		case "Capacitate stocare (GB)": laptop.Storage = strings.TrimSpace(el.ChildText("span.spec__value")) + " GB "
 		case "Tip unitate stocare": laptop.Storage += strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Procesor placa video": laptop.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Seria laptop": laptop.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Seria laptop": laptop.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		}
 	})
 
@@ -427,7 +428,7 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 func (h *handler) aioHandler(e *colly.HTMLElement){
 	var aio dto.Aio
 
-	setBaseAttrs(e, &aio.BaseAttrs)	
+	setBaseAttrs(e, &aio.BaseAttrs, "aio")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
@@ -439,7 +440,7 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 		case "Capacitate stocare (GB)": aio.Storage = strings.TrimSpace(el.ChildText("span.spec__value")) + " GB "
 		case "Tip unitate stocare": aio.Storage += strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Procesor placa video": aio.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Seria all-in-one PC": aio.BaseAttrs.Brand = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Seria all-in-one PC": aio.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		}
 	})
 
@@ -455,7 +456,7 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 func (h *handler) pcHandler(e *colly.HTMLElement){
 	var pc dto.Pc
 
-	setBaseAttrs(e, &pc.BaseAttrs)	
+	setBaseAttrs(e, &pc.BaseAttrs, "pc")	
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))

@@ -2,9 +2,9 @@ package dto
 
 type Fan struct {
 	BaseAttrs BaseProduct
-	FanRPM int `json:"fan_rpm"`
-	Noise float64 `json:"noise"`
-	Size string `json:"size"`
+	FanRPM int 
+	Noise float64
+	Size string 
 }
 
 type FanResponse struct {
@@ -16,7 +16,9 @@ type FanResponse struct {
 
 type FanParams struct {
 	DefaultParams ProductParams 
-	FanRPM int 	`form:"fan_rpm"`
-	Noise float64 `form:"noise"`
+	MinFanRPM int 	`form:"min_fan_rpm"`
+	MaxFanRPM int 	`form:"max_fan_rpm"`
+	MinNoise float64 `form:"min_noise"`
+	MaxNoise float64 `form:"max_noise"`
 	Size string `form:"size"`
 }

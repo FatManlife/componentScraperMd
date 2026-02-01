@@ -1,12 +1,13 @@
 package dto
 
 type BaseProduct struct {
-	Name string `json:"name"`
-	ImageURL string `json:"image_url"`
-	Brand string `json:"brand"`
-	Price float64 `json:"price"`
-	Url string `json:"url"`
-	Website_id int `json:"website_id"`
+	Name string 
+	ImageURL string 
+	Brand string 
+	Price float64 
+	Url string 
+	Category string 
+	Website_id int 
 }
 
 type ProductResponse struct {
@@ -16,14 +17,15 @@ type ProductResponse struct {
 	Brand string `json:"brand"`
 	Price float64 `json:"price"`
 	Url string `json:"url"`
+	Category string	`json:"category"`
 	Website_id int `json:"website_id"`
 }
 
 type ProductParams struct {
 	Limit   int     `form:"limit"`
-	Website string  `form:"website"`
+	Website []string  `form:"website"`
 	After   int     `form:"after"`
-	Brand   string  `form:"brand"`
+	Brand   []string  `form:"brand"`
 	Min     float64 `form:"min"`
 	Max     float64 `form:"max"`
 	Order   string  `form:"order"`

@@ -23,24 +23,24 @@ func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]o
 
 	q.Joins("JOIN aios on aios.product_id = products.id").Preload("Aio")
 
-	if params.Diagonal != "" {
-		q = q.Where("aios.diagonal = ?", params.Diagonal)
+	if len(params.Diagonal) > 0 {
+		q = q.Where("aios.diagonal IN ?", params.Diagonal)
 	}
 
-	if params.Ram != "" {
-		q = q.Where("aios.ram = ?", params.Ram)
+	if len(params.Ram) > 0 { 
+		q = q.Where("aios.ram IN ?", params.Ram)
 	}
 
-	if params.Storage != "" {
-		q = q.Where("aios.storage = ?", params.Storage)
+	if len(params.Storage) > 0 {
+		q = q.Where("aios.storage IN ?", params.Storage)
 	}
 
-	if params.Cpu != "" {
-		q = q.Where("aios.cpu = ?", params.Cpu)
+	if len(params.Cpu) > 0 {
+		q = q.Where("aios.cpu IN ?", params.Cpu)
 	}
 
-	if params.Gpu != "" {
-		q = q.Where("aios.gpu = ?", params.Gpu)
+	if len(params.Gpu) > 0 {
+		q = q.Where("aios.gpu IN ?", params.Gpu)
 	}
 
 	if err := q.Find(&aios).Error ; err != nil {

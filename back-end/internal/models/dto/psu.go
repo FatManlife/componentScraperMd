@@ -2,9 +2,9 @@ package dto
 
 type Psu struct {
 	BaseAttrs BaseProduct
-	Power int `json:"power"`
-	Efficiency string `json:"efficiency"`
-	FormFactor string `json:"form_factor"`
+	Power int 
+	Efficiency string 
+	FormFactor string 
 }
 
 type PsuResponse struct {
@@ -16,7 +16,8 @@ type PsuResponse struct {
 
 type PsuParams struct {
 	DefaultParams ProductParams 
-	Power int `form:"power"`
-	Efficiency string `form:"efficiency"`
-	FormFactor string `form:"form_factor"`
+	MinPower int `form:"min_power"`
+	MaxPower int `form:"max_power"`
+	Efficiency []string `form:"efficiency"`
+	FormFactor []string `form:"form_factor"`
 }

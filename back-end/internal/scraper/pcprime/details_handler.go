@@ -32,19 +32,20 @@ var specRuEng map[string]string = map[string]string {
 	"Для ноутбука": "Laptop",
 }
 
-func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct){
+func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
 	product.Name = e.ChildText("ol.breadcrumb li:last-child")
 	product.ImageURL = e.ChildAttr("img","src")
 	product.Price = utils.CastFloat64(e.ChildAttr("div.productPrice b","data-price"))
-	product.Brand = e.ChildText("ol.breadcrumb li:nth-last-child(2)")
+	product.Brand = strings.ToLower(strings.TrimSpace(e.ChildText("ol.breadcrumb li:nth-last-child(2)")))
 	product.Website_id = constants.WebIdMap["pcprime"]
+	product.Category = category
 	product.Url = e.Request.URL.String()
 }
 
 func (h *handler) ssdHandler(e *colly.HTMLElement){
 	var ssd dto.Ssd
 
-	setBaseAttrs(e, &ssd.BaseAttrs)
+	setBaseAttrs(e, &ssd.BaseAttrs, "ssd")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -69,7 +70,7 @@ func (h *handler) ssdHandler(e *colly.HTMLElement){
 func (h *handler) hddHandler(e *colly.HTMLElement){
 	var hdd dto.Hdd
 
-	setBaseAttrs(e, &hdd.BaseAttrs)
+	setBaseAttrs(e, &hdd.BaseAttrs, "hdd")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -93,7 +94,7 @@ func (h *handler) hddHandler(e *colly.HTMLElement){
 func (h *handler) fanHandler(e *colly.HTMLElement){
 	var fan dto.Fan
 
-	setBaseAttrs(e, &fan.BaseAttrs)
+	setBaseAttrs(e, &fan.BaseAttrs, "fan")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -117,7 +118,7 @@ func (h *handler) fanHandler(e *colly.HTMLElement){
 func (h *handler) aioHandler(e *colly.HTMLElement){
 	var aio dto.Aio
 
-	setBaseAttrs(e, &aio.BaseAttrs)
+	setBaseAttrs(e, &aio.BaseAttrs, "aio")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -141,9 +142,9 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 }
 
 func (h *handler) pcMiniHandler(e *colly.HTMLElement){
-	var pc dto.Pc
+	var pc dto.PcMini
 	
-	setBaseAttrs(e, &pc.BaseAttrs)
+	setBaseAttrs(e, &pc.BaseAttrs, "pc_mini")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -156,8 +157,8 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 		}
 	})
 
-	if err := h.storage.InsertPc(&pc); err != nil {
-		fmt.Println("Error inserting PC:", err)
+	if err := h.storage.InsertPcMini(&pc); err != nil {
+		fmt.Println("Error inserting PC Mini:", err)
 		return
 	}
 
@@ -168,7 +169,7 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 func (h *handler) pcHandler(e *colly.HTMLElement){
 	var pc dto.Pc
 	
-	setBaseAttrs(e, &pc.BaseAttrs)
+	setBaseAttrs(e, &pc.BaseAttrs, "pc")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -201,7 +202,7 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 func (h *handler) caseHandler(e *colly.HTMLElement){
 	var pcCase dto.Case
 	
-	setBaseAttrs(e, &pcCase.BaseAttrs)
+	setBaseAttrs(e, &pcCase.BaseAttrs, "case")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -224,7 +225,7 @@ func (h *handler) caseHandler(e *colly.HTMLElement){
 func (h *handler) psuHandler(e *colly.HTMLElement){
 	var psu dto.Psu
 
-	setBaseAttrs(e, &psu.BaseAttrs)
+	setBaseAttrs(e, &psu.BaseAttrs, "psu")
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -252,7 +253,7 @@ func (h *handler) psuHandler(e *colly.HTMLElement){
 func (h *handler) gpuHandler(e *colly.HTMLElement){
 	var gpu dto.Gpu
 
-	setBaseAttrs(e, &gpu.BaseAttrs)
+	setBaseAttrs(e, &gpu.BaseAttrs, "gpu")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -277,7 +278,7 @@ func (h *handler) gpuHandler(e *colly.HTMLElement){
 func (h *handler) ramHandler(e *colly.HTMLElement){
 	var ram dto.Ram
 
-	setBaseAttrs(e, &ram.BaseAttrs)
+	setBaseAttrs(e, &ram.BaseAttrs, "ram")
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -305,7 +306,7 @@ func (h *handler) ramHandler(e *colly.HTMLElement){
 func (h *handler) motherBoardHandler(e *colly.HTMLElement){
 	var motherboard dto.Motherboard
 
-	setBaseAttrs(e, &motherboard.BaseAttrs)
+	setBaseAttrs(e, &motherboard.BaseAttrs, "motherboard")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -336,7 +337,7 @@ func (h *handler) motherBoardHandler(e *colly.HTMLElement){
 func (h *handler) coolerHandler(e *colly.HTMLElement){
 	var cooler dto.Cooler
 
-	setBaseAttrs(e, &cooler.BaseAttrs)
+	setBaseAttrs(e, &cooler.BaseAttrs, "cooler")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -374,7 +375,7 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 func (h *handler) cpuHandler(e *colly.HTMLElement){
 	var cpu dto.Cpu
 
-	setBaseAttrs(e, &cpu.BaseAttrs)
+	setBaseAttrs(e, &cpu.BaseAttrs, "cpu")
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
@@ -401,7 +402,7 @@ func (h *handler) cpuHandler(e *colly.HTMLElement){
 func (h *handler) laptopHandler(e *colly.HTMLElement){
 	var laptop dto.Laptop
 
-	setBaseAttrs(e, &laptop.BaseAttrs)
+	setBaseAttrs(e, &laptop.BaseAttrs, "laptop")
 	
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")

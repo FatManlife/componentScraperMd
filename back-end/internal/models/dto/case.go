@@ -2,8 +2,8 @@ package dto
 
 type Case struct {
 	BaseAttrs BaseProduct
-	Format string `json:"format"`
-	MotherboardFormFactor string `json:"motherboard_form_factor"`	
+	Format string
+	MotherboardFormFactor string	
 }
 
 type CaseResponse struct {
@@ -14,6 +14,6 @@ type CaseResponse struct {
 
 type CaseParams struct {
 	DefaultParams ProductParams 
-	Format string `form:"format"`
-	MotherboardFormFactor string `form:"motherboard_form_factor"`
+	Format []string `form:"format"`
+	MotherboardFormFactor []string `form:"motherboard_form_factor"`
 }

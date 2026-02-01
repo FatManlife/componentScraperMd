@@ -33,4 +33,3 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 
 	c.JSON(200, products)
 }
-

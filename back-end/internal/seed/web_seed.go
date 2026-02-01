@@ -16,9 +16,9 @@ func SeedWeb(db *gorm.DB) error {
 	}
 
 	webs := []orm.Website{
-		{Name: "Neocomputer", URL: "https://neocomputer.md/", Image: "https://neocomputer.md/image/catalog/logo.png"},
-		{Name: "Xstore", URL: "https://xstore.md/", Image: "https://xstore.md/img/logo.png"},
-		{Name: "PcPrime", URL: "https://prime-pc.md/", Image: "https://prime-pc.md/design/MegaPrime/images/logo.png"},
+		{Name: "neocomputer", URL: "https://neocomputer.md/", Image: "https://neocomputer.md/image/catalog/logo.png"},
+		{Name: "xstore", URL: "https://xstore.md/", Image: "https://xstore.md/img/logo.png"},
+		{Name: "pcprime", URL: "https://prime-pc.md/", Image: "https://prime-pc.md/design/MegaPrime/images/logo.png"},
 	}
 
 	return db.Create(&webs).Error

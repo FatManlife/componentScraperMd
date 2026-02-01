@@ -23,24 +23,32 @@ func (r *RamRepository) GetRams(ctx context.Context, params dto.RamParams, ) ([]
 
 	q.Joins("JOIN rams on rams.product_id = products.id").Preload("Ram")
 
-	if params.Capacity != 0{
-		q = q.Where("rams.capacity = ?", params.Capacity)
+	if params.MinCapacity > 0{
+		q = q.Where("rams.capacity >= ?", params.MinCapacity)
 	}
 
-	if params.Speed != 0{
-		q = q.Where("rams.speed = ?", params.Speed)
+	if params.MaxCapacity > 0{
+		q = q.Where("rams.capacity <= ?", params.MaxCapacity)
 	}
 
-	if params.Type != ""{
-		q = q.Where("rams.type = ?", params.Type)
+	if params.MinSpeed > 0{
+		q = q.Where("rams.speed >= ?", params.MinSpeed)
 	}
 
-	if params.Compatibility != ""{
-		q = q.Where("rams.compatibility = ?", params.Compatibility)
+	if params.MaxSpeed > 0{
+		q = q.Where("rams.speed <= ?", params.MaxSpeed)
 	}
 
-	if params.Configuration != ""{
-		q = q.Where("rams.configuration = ?", params.Configuration)
+	if len(params.Type) > 0{ 
+		q = q.Where("rams.type IN ?", params.Type)
+	}
+
+	if len(params.Compatibility) > 0{
+		q = q.Where("rams.compatibility IN ?", params.Compatibility)
+	}
+
+	if len(params.Configuration) > 0{ 
+		q = q.Where("rams.configuration IN ?", params.Configuration)
 	}
 
 	if err := q.Find(&ram).Error; err != nil {

@@ -23,16 +23,24 @@ func (r *HddRepository) GetHdds(ctx context.Context, params dto.HddParams) ([]or
 
 	q.Joins("JOIN hdds ON hdds.product_id = products.id").Preload("Hdd")
 
-	if params.Capacity != 0 {
-		q = q.Where("hdds.capacity = ?", params.Capacity)
+	if params.MinCapacity > 0 {
+		q = q.Where("hdds.capacity >= ?", params.MinCapacity)
 	}
 
-	if params.RotationSpeed != 0 {
-		q = q.Where("hdds.rpm = ?", params.RotationSpeed)
+	if params.MaxCapacity > 0 {
+		q = q.Where("hdds.capacity <= ?", params.MaxCapacity)
 	}
 
-	if params.FormFactor != "" {
-		q = q.Where("hdds.interface = ?", params.FormFactor)
+	if params.MinRotationSpeed > 0 {
+		q = q.Where("hdds.rotation_speed >= ?", params.MinRotationSpeed)
+	}
+
+	if params.MaxRotationSpeed > 0 {
+		q = q.Where("hdds.rotation_speed <= ?", params.MaxRotationSpeed)
+	}
+	
+	if len(params.FormFactor) > 0 {
+		q = q.Where("hdds.interface IN ?", params.FormFactor)
 	}
 
 	if err:= q.Find(&hdds).Error; err != nil {

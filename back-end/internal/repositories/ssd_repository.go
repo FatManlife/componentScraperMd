@@ -21,22 +21,34 @@ func (r *SSDRepository) GetSsds(ctx context.Context, params dto.SsdParams) ([]or
 
 	q := getDefaultProduct(r.db, ctx, params.DefaultParams) 
 
-	q.Joins("JOIN ssds on ssds.product_id = products.id").Preload("Ssd")
+	q.Joins("Join ssds on ssds.product_id = products.id")
 
-	if params.FormFactor != "" {
-		q = q.Where("ssds.form_factor = ?", params.FormFactor)
+	if len(params.FormFactor) != 0 {
+		q = q.Where("ssds.form_factor IN ?", params.FormFactor)
 	}
 
-	if params.Capacity != 0 {
-		q = q.Where("ssds.capacity = ?", params.Capacity)
+	if params.MaxCapacity > 0 {
+		q = q.Where("ssds.capacity <= ?", params.MaxCapacity)
 	}
 
-	if params.ReadingSpeed != 0 {
-		q = q.Where("ssds.reading_speed = ?", params.ReadingSpeed)
+	if params.MinCapacity > 0 {
+		q = q.Where("ssds.capacity >= ?", params.MinCapacity)
 	}
 
-	if params.WritingSpeed != 0 {
-		q = q.Where("ssds.writing_speed = ?", params.WritingSpeed)
+	if params.MaxReadingSpeed > 0 {
+		q = q.Where("ssds.reading_speed <= ?", params.MaxReadingSpeed)
+	}
+
+	if params.MinReadingSpeed > 0 {
+		q = q.Where("ssds.reading_speed >= ?", params.MinReadingSpeed)
+	}
+
+	if params.MaxWritingSpeed > 0 {
+		q = q.Where("ssds.writing_speed <= ?", params.MaxWritingSpeed)
+	}
+
+	if params.MinWritingSpeed > 0 {
+		q = q.Where("ssds.writing_speed >= ?", params.MinWritingSpeed)
 	}
 
 	if err := q.Find(&ssds).Error; err != nil {

@@ -16,24 +16,24 @@ func NewPcMiniRepository(db *gorm.DB) *PcMiniRepository {
 	return &PcMiniRepository{db: db}
 }
 
-func (r *PcMiniRepository) GetPcMinis(ctx context.Context, params dto.PcMiniParams) ([]orm.Product,error) {
+func (r *PcMiniRepository) GetPcMinis(ctx context.Context, params dto.PcParams) ([]orm.Product,error) {
 	var pcMinis []orm.Product
 
 	q := getDefaultProduct(r.db,ctx,params.DefaultParams)
 
 	q.Joins("Join pc_minis ON pc_minis.product_id = products.id").Preload("PcMini")
 
-	if params.Cpu != "" {
-		q = q.Where("pc_minis.cpu = ?", params.Cpu)
+	if len(params.Cpu) > 0 {
+		q = q.Where("pc_minis.cpu IN ?", params.Cpu)
 	}
-	if params.Gpu != "" {
-		q = q.Where("pc_minis.gpu = ?", params.Gpu)
+	if len(params.Gpu) > 0 {
+		q = q.Where("pc_minis.gpu IN ?", params.Gpu)
 	}
-	if params.Ram != "" {
-		q = q.Where("pc_minis.ram = ?", params.Ram)
+	if len(params.Ram) > 0 {
+		q = q.Where("pc_minis.ram IN ?", params.Ram)
 	}
-	if params.Storage != "" {
-		q = q.Where("pc_minis.storage = ?", params.Storage)
+	if len(params.Storage) > 0 {
+		q = q.Where("pc_minis.storage IN ?", params.Storage)
 	}
 	
 	if err := q.Find(&pcMinis).Error; err != nil {

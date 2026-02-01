@@ -7,6 +7,7 @@ type Product struct {
 	Brand string 
 	Price float64 
 	URL string `gorm:"uniqueIndex;not null"`
+	Category string
 	WebsiteID int
 
 	Aio *Aio `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

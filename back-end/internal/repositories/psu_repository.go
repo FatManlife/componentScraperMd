@@ -23,16 +23,20 @@ func (r *PsuRepository) GetPsus(ctx context.Context, params dto.PsuParams) ([]or
 
 	q.Joins("JOIN psus on psus.product_id = products.id").Preload("Psu")
 
-	if params.FormFactor != "" {
-		q = q.Where("psus.form_factor = ?", params.FormFactor)
+	if len(params.FormFactor) > 0 {
+		q = q.Where("psus.form_factor IN ?", params.FormFactor)
 	}
 
-	if params.Efficiency != "" {
-		q = q.Where("psus.efficiency ILIKE ?", params.Efficiency)
+	if len(params.Efficiency) > 0 {
+		q = q.Where("psus.efficiency IN ?", params.Efficiency)
 	}
 
-	if params.Power != 0 {
-		q = q.Where("psus.power = ?", params.Power)
+	if params.MinPower != 0 {
+		q = q.Where("psus.power >= ?", params.MinPower)
+	}
+
+	if params.MaxPower != 0 {
+		q = q.Where("psus.power <= ?", params.MaxPower)
 	}
 
 	if err := q.Find(&psus).Error ; err != nil {

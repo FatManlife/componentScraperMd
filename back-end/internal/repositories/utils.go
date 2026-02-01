@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
 	"github.com/FatManlife/component-finder/back-end/internal/models/orm"
@@ -15,19 +16,20 @@ func getDefaultProduct(db *gorm.DB ,ctx context.Context, params dto.ProductParam
 		q = q.Where("products.id > ?", params.After)
 	}	
 
-	if params.Website != "" {
-		q = q.Joins("JOIN websites ON websites.id = products.website_id").Where("websites.name ILIKE ?", params.Website)
+	if len(params.Website) > 0 {
+		q = q.Joins("JOIN websites ON websites.id = products.website_id").Where("websites.name IN ?", params.Website)
 	}
 
-	if params.Brand != "" {
-		q = q.Where("products.brand ILIKE ?", params.Brand)
+	if len(params.Brand) > 0 {
+		fmt.Println("Filtering by brand:", params.Brand)
+		q = q.Where("products.brand IN ?", params.Brand)
 	}
 
-	if params.Min != 0 {
+	if params.Min >  0 {
 		q = q.Where("products.price >= ?", params.Min)
 	}
 
-	if params.Max != 0 {
+	if params.Max > 0 {
 		q = q.Where("products.price <= ?", params.Max)
 	}
 

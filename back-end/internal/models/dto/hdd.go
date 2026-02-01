@@ -2,9 +2,9 @@ package dto
 
 type Hdd struct  {
 	BaseAttrs BaseProduct
-	Capacity int `json:"capacity"`
-	RotationSpeed int `json:"rotation_speed"`	
-	FormFactor string `json:"form_factor"`
+	Capacity int 
+	RotationSpeed int 	
+	FormFactor string 
 }
 
 type HddResponse struct {
@@ -16,7 +16,9 @@ type HddResponse struct {
 
 type HddParams struct {
 	DefaultParams ProductParams 
-	Capacity int `form:"capacity"`
-	RotationSpeed int `form:"rotation_speed"`
-	FormFactor string `form:"form_factor"`
+	MinCapacity int `form:"min_capacity"`
+	MaxCapacity int `form:"max_capacity"`
+	MinRotationSpeed int `form:"min_rotation_speed"`
+	MaxRotationSpeed int `form:"max_rotation_speed"`
+	FormFactor []string `form:"form_factor"`
 }

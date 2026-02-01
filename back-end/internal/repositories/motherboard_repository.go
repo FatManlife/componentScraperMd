@@ -23,22 +23,18 @@ func (r *MotherboardRepository) GetMotherboards(ctx context.Context, params dto.
 
 	q.Joins("Join motherboards ON motherboards.product_id = products.id").Preload("Motherboard")
 
-	if params.Chipset != "" {
-		q = q.Where("motherboards.chipset = ?", params.Chipset)
+	if len(params.Chipset) > 0 {
+		q = q.Where("motherboards.chipset IN ?", params.Chipset)
 	}
-	if params.Socket != "" {
-		q = q.Where("motherboards.socket = ?", params.Socket)
+
+	if len(params.Socket) > 0 {
+		q = q.Where("motherboards.socket IN ?", params.Socket)
 	}
-	if params.FormFactor != "" {
-		q = q.Where("motherboards.form_factor = ?", params.FormFactor)
+
+	if len(params.FormFactor) > 0 {
+		q = q.Where("motherboards.form_factor IN ?", params.FormFactor)
 	}
-	if params.RamSupport != "" {
-		q = q.Where("motherboards.ram_support = ?", params.RamSupport)
-	}
-	if params.FormFactorRam != "" {
-		q = q.Where("motherboards.form_factor_ram = ?", params.FormFactorRam)
-	}
-	
+		
 	if err := q.Find(&motherboards).Error; err != nil {
 		return nil, err
 	}

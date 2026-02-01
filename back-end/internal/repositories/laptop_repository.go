@@ -23,29 +23,25 @@ func (r *LaptopRepository) GetLaptops(ctx context.Context, params dto.LaptopPara
 
 	q.Joins("JOIN laptops ON laptops.product_id = products.id").Preload("Laptop")
 
-	if params.Cpu != "" {
-		q = q.Where("laptops.cpu = ?", params.Cpu)
+	if len(params.Cpu) > 0 {
+		q = q.Where("laptops.cpu IN ?", params.Cpu)
 	}
 
-	if params.Gpu != "" {
-		q = q.Where("laptops.gpu = ?", params.Gpu)
+	if len(params.Gpu) > 0 {
+		q = q.Where("laptops.gpu IN ?", params.Gpu)
 	}
 
-	if params.Ram != "" {
-		q = q.Where("laptops.ram = ?", params.Ram)
+	if len(params.Ram) > 0 {
+		q = q.Where("laptops.ram IN ?", params.Ram)
 	}
 
-	if params.Storage != "" {
-		q = q.Where("laptops.storage = ?", params.Storage)
+	if len(params.Storage) > 0 {
+		q = q.Where("laptops.storage IN ?", params.Storage)
 	}
 
-	if params.Diagonal != "" {
-		q = q.Where("laptops.diagonal = ?", params.Diagonal)
-	}
-
-	if params.Battery != 0 {
-		q = q.Where("laptops.battery = ?", params.Battery)
-	}
+	if len(params.Diagonal) > 0 {
+		q = q.Where("laptops.diagonal IN ?", params.Diagonal)
+	}	
 
 	if err := q.Find(&laptops).Error; err != nil {
 		return nil, err

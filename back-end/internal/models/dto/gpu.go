@@ -2,10 +2,10 @@ package dto
 
 type Gpu struct {
 	BaseAttrs BaseProduct
-	Chipset string `json:"chipset"`
-	Vram int `json:"vram"`
-	GpuFrequency int `json:"gpu_frequency"`
-	VramFrequency int `json:"vram_frequency"`
+	Chipset string 
+	Vram int 
+	GpuFrequency int 
+	VramFrequency int
 }
 
 type GpuResponse struct {
@@ -19,7 +19,10 @@ type GpuResponse struct {
 type GpuParams struct {
 	DefaultParams ProductParams 
 	Chipset string `form:"chipset"`
-	Vram int `form:"vram"`
-	GpuFrequency int `form:"gpu_frequency"`
-	VramFrequency int `form:"vram_frequency"`
+	MinVram int `form:"min_vram"`
+	MaxVram int `form:"max_vram"`
+	MinGpuFrequency int `form:"min_gpu_frequency"`
+	MaxGpuFrequency int `form:"max_gpu_frequency"`
+	MinVramFrequency int `form:"min_vram_frequency"`
+	MaxVramFrequency int `form:"max_vram_frequency"`
 }

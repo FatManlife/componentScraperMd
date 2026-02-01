@@ -23,12 +23,12 @@ func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]or
 
 	q.Joins("JOIN cpus ON cpus.product_id = products.id").Preload("Cpu")
 
-	if params.Cores != 0 {
-		q = q.Where("cpus.cores = ?", params.Cores)
+	if len(params.Cores) > 0 {
+		q = q.Where("cpus.cores IN ?", params.Cores)
 	}
 
-	if params.Threads != 0 {
-		q = q.Where("cpus.threads = ?", params.Threads)
+	if len(params.Threads) > 0 {
+		q = q.Where("cpus.threads IN ?", params.Threads)
 	}
 
 	if params.BaseClock != 0 {
@@ -37,10 +37,6 @@ func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]or
 
 	if params.BoostClock != 0 {
 		q = q.Where("cpus.boost_clock = ?", params.BoostClock)
-	}
-
-	if params.Tdp != 0 {
-		q = q.Where("cpus.tdp = ?", params.Tdp)
 	}
 
 	if params.Socket != "" {
