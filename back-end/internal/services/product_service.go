@@ -17,17 +17,17 @@ func NewProductService(repo *repo.ProductRepository) *ProductService {
 	return &ProductService{repo: repo}
 }
 
-func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductResponse, error) {
+func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductsResponse, error) {
 	products, err := s.repo.GetAllProducts(ctx, params)
 
 	if err != nil {
 		return nil,  err
 	}
 
-	var productResponses []dto.ProductResponse
+	var productResponses []dto.ProductsResponse
 
 	for _, product := range products {
-		productResponses = append(productResponses, utils.ProductMapping(product))
+		productResponses = append(productResponses, utils.ProductsMapping(product))
 	}
 
 	return productResponses, nil

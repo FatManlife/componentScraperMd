@@ -22,17 +22,29 @@ func CoolerMapping(product orm.Product) dto.CoolerResponse {
 	}
 }
 
-func ProductMapping(product orm.Product) dto.ProductResponse{
-	return dto.ProductResponse{
+func ProductsMapping(product orm.Product) dto.ProductsResponse{
+	return dto.ProductsResponse{
 			ID: product.ID,
 			Name: product.Name,
 			ImageURL: product.ImageURL,
 			Brand: product.Brand,
 			Price: product.Price,
-			Url: product.URL,
 			Category: product.Category,
 			Website_id: product.WebsiteID,
-		}	
+	}	
+}
+
+func ProductMapping(product orm.Product) dto.ProductResponse{
+	return dto.ProductResponse{
+			ID: product.ID,
+			Name: product.Name,
+			ImageURL: product.ImageURL,
+			Url: product.URL,
+			Brand: product.Brand,
+			Price: product.Price,
+			Category: product.Category,
+			Website_id: product.WebsiteID,
+	}	
 }
 
 func HddMapping(product orm.Product) dto.HddResponse {

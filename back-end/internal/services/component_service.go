@@ -18,17 +18,17 @@ func NewComponentService[T any, P any](getAll func (ctx context.Context, params 
 	return &ComponentService[T, P]{getAll: getAll, getByID: getByID, mapper: mapper}
 }
 
-func (s *ComponentService[T, P]) GetComponents (ctx context.Context, params P) ([]dto.ProductResponse, error) {
+func (s *ComponentService[T, P]) GetComponents (ctx context.Context, params P) ([]dto.ProductsResponse, error) {
 	products, err := s.getAll(ctx, params)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var mappedProducts []dto.ProductResponse
+	var mappedProducts []dto.ProductsResponse
 
 	for _, product := range products {
-		mappedProducts = append(mappedProducts, utils.ProductMapping(product))
+		mappedProducts = append(mappedProducts, utils.ProductsMapping(product))
 	}
 
 	return mappedProducts, nil

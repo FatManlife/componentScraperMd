@@ -7,6 +7,7 @@ import (
 	repo "github.com/FatManlife/component-finder/back-end/internal/repositories"
 	service "github.com/FatManlife/component-finder/back-end/internal/services"
 	projUtils "github.com/FatManlife/component-finder/back-end/internal/utils"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -90,9 +91,10 @@ func main() {
 
 	//Initiazlie Gin Router
 	r := gin.Default()
+	r.Use(cors.Default())
 
 	//Http Requests products getters
-	r.GET("/product", productHanlder.GetProducts)
+	r.GET("/", productHanlder.GetProducts)
 
 	//Http Requests component getters
 	//Cooler
