@@ -33,3 +33,19 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 
 	c.JSON(200, products)
 }
+
+func (h *ProductHandler) GetProductsCount(c *gin.Context) {
+	ctx := c.Request.Context()
+
+	category := c.Query("category")
+
+	count, err := h.service.GetProductsCount(ctx, category)
+
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{"count": count})
+}
+

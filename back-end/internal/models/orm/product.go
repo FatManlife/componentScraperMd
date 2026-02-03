@@ -10,6 +10,7 @@ type Product struct {
 	Category string
 	WebsiteID int
 
+	Website Website `gorm:"foreignKey:WebsiteID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Aio *Aio `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Case *PcCase `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Cooler *Cooler `gorm:"foreignKey:ProductId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

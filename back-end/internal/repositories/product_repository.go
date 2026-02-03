@@ -16,6 +16,22 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
+func (r *ProductRepository) GetProductsCount(ctx context.Context, category string)(int64, error){
+	var count int64
+
+	q := r.db.WithContext(ctx).Model(&orm.Product{})
+
+	if category != "" {
+		q = q.Where("category = ?", category)
+	}
+
+	if err := q.Count(&count).Error; err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 //implemnt Getting all products with filters
 func (r *ProductRepository) GetAllProducts(ctx context.Context, params dto.ProductParams) ([]orm.Product, error) {
 	var products []orm.Product
@@ -74,4 +90,20 @@ func (r *ProductRepository) GetProductByID(ctx context.Context, id int) (*orm.Pr
 	}
 
 	return &product, nil
+}
+
+func (r *ProductRepository) GetAllPrices(ctx context.Context, category string) ([]float64, error) {
+	var prices []float64
+
+	q := r.db.WithContext(ctx).Model(&orm.Product{}).Select("DISTINCT price").Order("price ASC")
+
+	if category != "" {
+		q = q.Where("category = ?", category)
+	}
+
+	if err := q.Pluck("price", &prices).Error; err != nil {
+		return nil, err
+	}
+
+	return prices, nil
 }

@@ -17,7 +17,8 @@ type ProductsResponse struct {
 	Brand string `json:"brand"`
 	Price float64 `json:"price"`
 	Category string	`json:"category"`
-	Website_id int `json:"website_id"`
+	Website string `json:"website"`
+	WebsiteImg string `json:"website_image"`
 }
 
 type ProductResponse struct {
@@ -28,14 +29,14 @@ type ProductResponse struct {
 	Price float64 `json:"price"`
 	Url string `json:"url"`
 	Category string	`json:"category"`
-	Website_id int `json:"website_id"`
+	Website string `json:"website"`
+	WebsiteImg string `json:"website_image"`
 }
 
 type ProductParams struct {
 	Name string `form:"name"`
-	Limit   int     `form:"limit"`
 	Website []string  `form:"website"`
-	After   int     `form:"after"`
+	Offset int     `form:"offset"`
 	Min     float64 `form:"min"`
 	Max     float64 `form:"max"`
 	Order   string  `form:"order"`

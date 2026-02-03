@@ -89,14 +89,25 @@ func main() {
 	coolerService := service.NewComponentService[dto.CoolerResponse, dto.CoolerParams](coolerRepo.GetCoolers, productRepo.GetProductByID,projUtils.CoolerMapping) 
 	coolerHandler := handler.NewComponentHandler(coolerService)
 
+	//Filter Initialization
+	websiteRepo := repo.NewWebsiteRepository(db)
+	filterService := service.NewFilterService(websiteRepo, productRepo)
+	filterHandler := handler.NewFilterHandler(filterService)
+
 	//Initiazlie Gin Router
 	r := gin.Default()
 	r.Use(cors.Default())
 
 	//Http Requests products getters
 	r.GET("/", productHanlder.GetProducts)
+	r.GET("/count", productHanlder.GetProductsCount)
 
 	//Http Requests component getters
+	//Filters
+	filters := r.Group("/filter")
+	{
+		filters.GET("", filterHandler.GetDefaultFilters)
+	}
 	//Cooler
 	cooler := r.Group("/cooler")
 	{

@@ -10,11 +10,7 @@ import (
 )
 
 func getDefaultProduct(db *gorm.DB ,ctx context.Context, params dto.ProductParams) *gorm.DB{
-	q := db.Model(&orm.Product{}).WithContext(ctx)
-
-	if params.After > 0 {
-		q = q.Where("products.id > ?", params.After)
-	}	
+	q := db.Model(&orm.Product{}).WithContext(ctx)	
 
 	if len(params.Website) > 0 {
 		q = q.Joins("JOIN websites ON websites.id = products.website_id").Where("websites.name IN ?", params.Website)
@@ -45,9 +41,14 @@ func getDefaultProduct(db *gorm.DB ,ctx context.Context, params dto.ProductParam
 
 	q = q.Order(productOrder)
 
-	if params.Limit > 0 {
-		q = q.Limit(params.Limit)
+
+	q = q.Limit(24)
+
+	if params.Offset > 1 {
+		q = q.Offset((params.Offset - 1) * 24)
 	}
-	
+
+	q = q.Preload("Website")
+
 	return q
 }

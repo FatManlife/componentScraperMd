@@ -30,7 +30,8 @@ func ProductsMapping(product orm.Product) dto.ProductsResponse{
 			Brand: product.Brand,
 			Price: product.Price,
 			Category: product.Category,
-			Website_id: product.WebsiteID,
+			Website: product.Website.Name,
+			WebsiteImg: product.Website.Image,
 	}	
 }
 
@@ -43,7 +44,8 @@ func ProductMapping(product orm.Product) dto.ProductResponse{
 			Brand: product.Brand,
 			Price: product.Price,
 			Category: product.Category,
-			Website_id: product.WebsiteID,
+			Website: product.Website.Name,
+			WebsiteImg: product.Website.Image,
 	}	
 }
 

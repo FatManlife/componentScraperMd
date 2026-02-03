@@ -32,3 +32,8 @@ func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductPara
 
 	return productResponses, nil
 }
+
+
+func (s *ProductService) GetProductsCount(ctx context.Context, category string)(int64, error){
+	return s.repo.GetProductsCount(ctx, category)
+}

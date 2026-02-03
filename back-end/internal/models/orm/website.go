@@ -5,6 +5,4 @@ type Website struct {
 	Name string
 	URL  string
 	Image string
-
-	Products []Product `gorm:"foreignKey:WebsiteID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

@@ -6,7 +6,8 @@ export type Product = {
     price: number;
     url: string;
     category: string;
-    website_id: number;
+    website: string;
+    website_image: string;
 };
 
 export type Products = {
@@ -16,7 +17,8 @@ export type Products = {
     brand: string;
     price: number;
     category: string;
-    website_id: number;
+    website: string;
+    website_image: string;
 };
 
 export type ProductResponse = Products[];
@@ -25,10 +27,33 @@ export type ProductOrder = "products.id ASC" | "price_asc" | "price_desc";
 
 export type ProductParams = {
     name?: string;
-    limit?: number;
     website?: string[];
-    after?: number;
+    page?: number;
     min?: number;
     max?: number;
     order?: ProductOrder;
+};
+
+export type AioResponse = {
+    product: Product;
+    diagonal: string;
+    cpu: string;
+    ram: string;
+    storage: string;
+    gpu: string;
+};
+
+export type AioParams = {
+    defaultParams: ProductParams;
+    diagonal?: string[];
+    cpu?: string[];
+    ram?: string[];
+    storage?: string[];
+    gpu?: string[];
+};
+
+export type DefaultFilters = {
+    websites: string[];
+    prices: number[];
+    order: string[];
 };
