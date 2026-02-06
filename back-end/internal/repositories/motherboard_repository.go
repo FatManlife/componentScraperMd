@@ -16,8 +16,9 @@ func NewMotherboardRepository(db *gorm.DB) *MotherboardRepository {
 	return &MotherboardRepository{db: db}
 }
 
-func (r *MotherboardRepository) GetMotherboards(ctx context.Context, params dto.MotherboardParams) ([]orm.Product, error) {
+func (r *MotherboardRepository) GetMotherboards(ctx context.Context, params dto.MotherboardParams) ([]orm.Product, int64, error) {
 	var motherboards []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db,ctx, params.DefaultParams)
 
@@ -35,9 +36,45 @@ func (r *MotherboardRepository) GetMotherboards(ctx context.Context, params dto.
 		q = q.Where("motherboards.form_factor IN ?", params.FormFactor)
 	}
 		
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	setLimits(q, params.DefaultParams.Offset)
+
 	if err := q.Find(&motherboards).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return motherboards, count, nil	
+}
+
+func (r *MotherboardRepository) GetChipset(ctx context.Context) ([]string, error) {
+	var chipsets []string
+
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("chipset", &chipsets).Error; err != nil {
 		return nil, err
 	}
 
-	return motherboards, nil	
+	return chipsets, nil
+}
+
+func (r *MotherboardRepository) GetSocket(ctx context.Context) ([]string, error) {
+	var sockets []string
+
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("socket", &sockets).Error; err != nil {
+		return nil, err
+	}
+
+	return sockets, nil
+}
+
+func (r *MotherboardRepository) GetFormFactor(ctx context.Context) ([]string, error) {
+	var formFactors []string
+
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("form_factor", &formFactors).Error; err != nil {
+		return nil, err
+	}
+
+	return formFactors, nil
 }

@@ -6,7 +6,7 @@ type Ram struct {
 	Speed int 
 	Type string 
 	Compatibility string 
-	Configuration string 
+	Configuration int
 }
 
 type RamResponse struct {
@@ -15,7 +15,7 @@ type RamResponse struct {
 	Speed int `json:"speed"`
 	Type string `json:"type"`
 	Compatibility string `json:"compatibility"`
-	Configuration string `json:"configuration"`
+	Configuration int `json:"configuration"`
 }
 
 type RamParams struct {
@@ -26,5 +26,5 @@ type RamParams struct {
 	MaxSpeed int`form:"max_speed"`
 	Type []string `form:"type"`
 	Compatibility []string `form:"compatibility"`
-	Configuration []string `form:"configuration"`
+	Configuration []int `form:"configuration"`
 }

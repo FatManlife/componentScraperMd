@@ -4,8 +4,8 @@ type Aio struct {
 	BaseAttrs BaseProduct 
 	Diagonal string 
 	Cpu string 
-	Ram string 
-	Storage string 
+	Ram int 
+	Storage int 
 	Gpu string 
 }
 
@@ -13,8 +13,8 @@ type AioResponse struct {
 	Product ProductResponse
 	Diagonal string `json:"diagonal"`
 	Cpu string `json:"cpu"`
-	Ram string `json:"ram"`
-	Storage string `json:"storage"`
+	Ram int `json:"ram"`
+	Storage int `json:"storage"`
 	Gpu string `json:"gpu"`
 }
 
@@ -22,7 +22,7 @@ type AioParams struct {
 	DefaultParams ProductParams
 	Diagonal []string `form:"diagonal"`
 	Cpu []string `form:"cpu"`
-	Ram []string `form:"ram"`
-	Storage []string `form:"storage"`
+	Ram []int `form:"ram"`
+	Storage []int `form:"storage"`
 	Gpu []string `form:"gpu"`
 }

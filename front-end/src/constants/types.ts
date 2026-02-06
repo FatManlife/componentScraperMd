@@ -21,7 +21,10 @@ export type Products = {
     website_image: string;
 };
 
-export type ProductResponse = Products[];
+export type ProductResponse = {
+    count: number;
+    products: Product[];
+};
 
 export type ProductOrder = "products.id ASC" | "price_asc" | "price_desc";
 

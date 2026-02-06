@@ -36,11 +36,13 @@ function ProductListLayout({
 
                 <div className="flex gap-6">
                     <Sidebar filters={filters} />
-                    
+
                     <div className="flex-1 flex flex-col">
-                        <div className="min-h-[800px]">
+                        <div className="min-h-200">
                             {loading && (
-                                <div className="text-center text-gray-600 py-20">Loading...</div>
+                                <div className="text-center text-gray-600 py-20">
+                                    Loading...
+                                </div>
                             )}
 
                             {error && (
@@ -49,7 +51,9 @@ function ProductListLayout({
                                 </div>
                             )}
 
-                            {data && !loading && <ProductList products={data} />}
+                            {data && !loading && (
+                                <ProductList products={data} />
+                            )}
                         </div>
 
                         <div className="h-16 flex items-center justify-center mt-6">

@@ -24,7 +24,7 @@ type CpuParams struct {
 	DefaultParams ProductParams 
 	Cores      []int	`form:"cores"` 
 	Threads    []int     `form:"threads"`
-	BaseClock  float64 `form:"base_clock"`
-	BoostClock float64 `form:"boost_clock"`
-	Socket     string  `form:"socket"`
+	BaseClock  []float64 `form:"base_clock"`
+	BoostClock []float64 `form:"boost_clock"`
+	Socket     []string  `form:"socket"`
 }

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FetchAio } from "../api/components";
-import { FetchProductCount } from "../api/products";
 import { FetchFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
@@ -14,7 +13,7 @@ import type {
 
 function Aio() {
     const [searchParams] = useSearchParams();
-    const [totalCount, setTotalCount] = useState<number | null>(null);
+    //const [totalCount, setTotalCount] = useState<number | null>(null);
     const [filters, setFilters] = useState<DefaultFilters | null>(null);
 
     const params = useMemo<AioParams>(() => {
@@ -52,21 +51,21 @@ function Aio() {
     useEffect(() => {
         execute();
         // Fetch count for AIO category
-        FetchProductCount("aio").then(setTotalCount).catch(console.error);
         // Fetch filters for AIO category
         FetchFilters("aio").then(setFilters).catch(console.error);
     }, [params]);
 
     return (
-        <ProductListLayout
-            title="AIO Products"
-            loading={loading}
-            error={error}
-            data={data}
-            currentPage={params.defaultParams.page || 1}
-            totalCount={totalCount}
-            filters={filters}
-        />
+        // <ProductListLayout
+        //     title="AIO Products"
+        //     loading={loading}
+        //     error={error}
+        //     data={data}
+        //     currentPage={params.defaultParams.page || 1}
+        //     totalCount={data?.count ?? null}
+        //     filters={filters}
+        // />
+        <div></div>
     );
 }
 

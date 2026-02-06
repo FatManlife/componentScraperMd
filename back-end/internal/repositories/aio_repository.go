@@ -16,8 +16,9 @@ func NewAioRepository(db *gorm.DB) *AioRepository {
 	return &AioRepository{db: db}
 }
 
-func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]orm.Product, error) {
+func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]orm.Product, int64, error) {
 	var aios []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
@@ -43,9 +44,60 @@ func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]o
 		q = q.Where("aios.gpu IN ?", params.Gpu)
 	}
 
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+	
+	setLimits(q,params.DefaultParams.Offset)
+
 	if err := q.Find(&aios).Error ; err != nil {
+		return nil, 0, err
+	}
+
+	return aios, count, nil
+}
+
+func (r *AioRepository) GetDiagonlas(ctx context.Context) ([]string, error) {
+	var diagonals []string
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("diagonal", &diagonals).Error ; err != nil {
 		return nil, err
 	}
 
-	return aios, nil
+	return diagonals, nil
+}
+
+func (r *AioRepository) GetRams(ctx context.Context) ([]int, error) {
+	var rams []int
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("ram", &rams).Error ; err != nil {
+		return nil, err
+	}
+
+	return rams, nil
+}
+
+func (r *AioRepository) GetStorages(ctx context.Context) ([]int, error) {
+	var storages []int
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("storage", &storages).Error ; err != nil {
+		return nil, err
+	}
+
+	return storages, nil
+}
+
+func (r *AioRepository) GetCpus(ctx context.Context) ([]string, error) {
+	var cpus []string
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("cpu", &cpus).Error ; err != nil {
+		return nil, err
+	}
+
+	return cpus, nil
+}
+
+func (r *AioRepository) GetGpus(ctx context.Context) ([]string, error) {
+	var gpus []string
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("gpu", &gpus).Error ; err != nil {
+		return nil, err
+	}
+
+	return gpus, nil
 }

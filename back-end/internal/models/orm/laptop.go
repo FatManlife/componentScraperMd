@@ -6,8 +6,8 @@ type Laptop struct {
 	
 	Cpu string 
 	Gpu string 
-	Ram string 
-	Storage string 
-	Diagonal string 
+	Ram int
+	Storage int
+	Diagonal float64 
 	Battery float64 
 }

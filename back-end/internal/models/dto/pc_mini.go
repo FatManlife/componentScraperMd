@@ -4,15 +4,16 @@ type PcMini struct {
 	BaseAttrs BaseProduct
 	Cpu string 
 	Gpu string 
-	Ram string 
-	Storage string 
+	Ram int
+	Storage int 
 }
 
 type PcMiniResponse struct {
 	Product ProductResponse
 	Cpu string `json:"cpu"`
 	Gpu string `json:"gpu"`
-	Ram string `json:"ram"`
-	Storage string `json:"storage"`
+	Ram int `json:"ram"`
+	Storage int `json:"storage"`
 }
+
 

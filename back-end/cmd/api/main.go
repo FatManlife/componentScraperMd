@@ -14,85 +14,111 @@ import (
 func main() {
 	db := config.ConnDb()
 
+	//Website Initalization
+	websiteRepo := repo.NewWebsiteRepository(db)
+
 	//Product Initalization
 	productRepo := repo.NewProductRepository(db)
-	productService := service.NewProductService(productRepo)
+	productService := service.NewProductService(productRepo, websiteRepo)
 	productHanlder := handler.NewProductHandler(productService)
 		
 	//Sdd Initalization
 	ssdRepo := repo.NewSSDRepository(db)
-	ssdService := service.NewComponentService[dto.SsdResponse, dto.SsdParams](ssdRepo.GetSsds, productRepo.GetProductByID,projUtils.SsdMapping) 
-	ssdHandler := handler.NewComponentHandler(ssdService)
+	ssdService := service.NewSsdService(ssdRepo)
+	ssdGenericService := service.NewComponentService[dto.SsdResponse, dto.SsdParams](ssdRepo.GetSsds, productRepo.GetProductByID,projUtils.SsdMapping) 
+	ssdGenericHandler := handler.NewComponentHandler(ssdGenericService)
+	ssdSpecHandler := handler.NewSpecHandler[dto.SsdSpecs](productService.GetDefaultSpecs,ssdService.GetSpecs,"ssd")
 
 	//Ram Initalization
 	ramRepo := repo.NewRamRepository(db)
-	ramService := service.NewComponentService[dto.RamResponse, dto.RamParams](ramRepo.GetRams, productRepo.GetProductByID,projUtils.RamMapping) 
-	ramHandler := handler.NewComponentHandler(ramService)
+	ramService := service.NewRamService(ramRepo)
+	ramGenericService := service.NewComponentService[dto.RamResponse, dto.RamParams](ramRepo.GetRams, productRepo.GetProductByID,projUtils.RamMapping) 
+	ramGenericHandler := handler.NewComponentHandler(ramGenericService)
+	ramSpecHandler := handler.NewSpecHandler[dto.RamSpecs](productService.GetDefaultSpecs,ramService.GetSpecs,"ram")
 
 	//PSU Initalization
 	psuRepo := repo.NewPsuRepository(db)
-	psuService := service.NewComponentService[dto.PsuResponse, dto.PsuParams](psuRepo.GetPsus, productRepo.GetProductByID,projUtils.PsuMapping) 
-	psuHandler := handler.NewComponentHandler(psuService)
+	psuService := service.NewPsuService(psuRepo)
+	psuGenericService := service.NewComponentService[dto.PsuResponse, dto.PsuParams](psuRepo.GetPsus, productRepo.GetProductByID,projUtils.PsuMapping) 
+	psuGenericHandler := handler.NewComponentHandler(psuGenericService)
+	psuSpecHandler := handler.NewSpecHandler[dto.PsuSpecs](productService.GetDefaultSpecs,psuService.GetSpecs,"psu")
 
 	//Pc Mini Initalization
 	pcMiniRepo := repo.NewPcMiniRepository(db)
-	pcMiniService := service.NewComponentService[dto.PcMiniResponse, dto.PcParams](pcMiniRepo.GetPcMinis, productRepo.GetProductByID,projUtils.PcMiniMapping) 
-	pcMiniHandler := handler.NewComponentHandler(pcMiniService)
+	pcMiniService := service.NewPcMiniService(pcMiniRepo)
+	pcMiniGenericService := service.NewComponentService[dto.PcMiniResponse, dto.PcParams](pcMiniRepo.GetPcMinis, productRepo.GetProductByID,projUtils.PcMiniMapping) 
+	pcMiniGenericHandler := handler.NewComponentHandler(pcMiniGenericService)
+	pcMiniSpecHandler := handler.NewSpecHandler[dto.PcSpecs](productService.GetDefaultSpecs,pcMiniService.GetSpecs,"pc_mini")
 	
 	//Pc Initalization
 	pcRepo := repo.NewPcRepository(db)
-	pcService := service.NewComponentService[dto.PcResponse, dto.PcParams](pcRepo.GetPcs, productRepo.GetProductByID,projUtils.PcMapping) 
-	pcHandler := handler.NewComponentHandler(pcService)
+	pcService := service.NewPcService(pcRepo)
+	pcGenericService := service.NewComponentService[dto.PcResponse, dto.PcParams](pcRepo.GetPcs, productRepo.GetProductByID,projUtils.PcMapping) 
+	pcGenericHandler := handler.NewComponentHandler(pcGenericService)
+	pcSpecHandler := handler.NewSpecHandler[dto.PcSpecs](productService.GetDefaultSpecs,pcService.GetSpecs,"pc")
 
 	//Motherboard Initalization
 	mbRepo := repo.NewMotherboardRepository(db)
-	mbService := service.NewComponentService[dto.MotherboardResponse, dto.MotherboardParams](mbRepo.GetMotherboards, productRepo.GetProductByID,projUtils.MbMapping) 
-	mbHandler := handler.NewComponentHandler(mbService)
+	mbService := service.NewMotherboardService(mbRepo)
+	mbGenericService := service.NewComponentService[dto.MotherboardResponse, dto.MotherboardParams](mbRepo.GetMotherboards, productRepo.GetProductByID,projUtils.MbMapping) 
+	mbGenericHandler := handler.NewComponentHandler(mbGenericService)
+	mbSpecHandler := handler.NewSpecHandler[dto.MotherboardSpecs](productService.GetDefaultSpecs,mbService.GetSpecs,"motherboard")
 
 	//Laptop Initalization
 	laptopRepo := repo.NewLaptopRepository(db)
-	laptopService := service.NewComponentService[dto.LaptopResponse, dto.LaptopParams](laptopRepo.GetLaptops, productRepo.GetProductByID,projUtils.LaptopMapping) 
-	laptopHandler := handler.NewComponentHandler(laptopService)
+	laptopService := service.NewLaptopService(laptopRepo)
+	laptopGenericService := service.NewComponentService[dto.LaptopResponse, dto.LaptopParams](laptopRepo.GetLaptops, productRepo.GetProductByID,projUtils.LaptopMapping) 
+	laptopGenericHandler := handler.NewComponentHandler(laptopGenericService)
+	laptopSpecHandler := handler.NewSpecHandler[dto.LaptopSpecs](productService.GetDefaultSpecs,laptopService.GetSpecs,"laptop")
 
 	//Gpus Initalization
 	gpuRepo := repo.NewGpuRepository(db)
-	gpuService := service.NewComponentService[dto.GpuResponse, dto.GpuParams](gpuRepo.GetGpus, productRepo.GetProductByID,projUtils.GpuMapping)
-	gpuHandler := handler.NewComponentHandler(gpuService)
+	gpuService := service.NewGpuService(gpuRepo)
+	gpuGenericService := service.NewComponentService[dto.GpuResponse, dto.GpuParams](gpuRepo.GetGpus, productRepo.GetProductByID,projUtils.GpuMapping)
+	gpuGenericHandler := handler.NewComponentHandler(gpuGenericService)
+	gpuSpecHandler := handler.NewSpecHandler[dto.GpuSpecs](productService.GetDefaultSpecs,gpuService.GetSpecs,"gpu")
 
 	//Fans Initalization
 	fanRepo := repo.NewFanRepository(db)
-	fanService := service.NewComponentService[dto.FanResponse, dto.FanParams](fanRepo.GetFans, productRepo.GetProductByID,projUtils.FanMapping)
-	fanHandler := handler.NewComponentHandler(fanService)
+	fanService := service.NewFanService(fanRepo)
+	fanGenericService := service.NewComponentService[dto.FanResponse, dto.FanParams](fanRepo.GetFans, productRepo.GetProductByID,projUtils.FanMapping)
+	fanGenericHandler := handler.NewComponentHandler(fanGenericService)
+	fanSpecHandler := handler.NewSpecHandler[dto.FanSpecs](productService.GetDefaultSpecs,fanService.GetSpecs,"fan")
 
 	//Aio Initalization
 	aioRepo := repo.NewAioRepository(db)
-	aioService := service.NewComponentService[dto.AioResponse, dto.AioParams](aioRepo.GetAios, productRepo.GetProductByID,projUtils.AioMapping) 
-	aioHandler := handler.NewComponentHandler(aioService)
+	aioService := service.NewAioService(aioRepo)
+	aioGenericService := service.NewComponentService[dto.AioResponse, dto.AioParams](aioRepo.GetAios, productRepo.GetProductByID,projUtils.AioMapping) 
+	aioGenericHandler := handler.NewComponentHandler(aioGenericService)
+	aioSpecHandler:= handler.NewSpecHandler[dto.AioSpecs](productService.GetDefaultSpecs,aioService.GetSpecs,"aio")
 
 	//Cpu Initalization
 	cpuRepo := repo.NewCpuRepository(db)
-	cpuService := service.NewComponentService[dto.CpuResponse, dto.CpuParams](cpuRepo.GetCpus, productRepo.GetProductByID,projUtils.CpuMapping) 
-	cpuHandler := handler.NewComponentHandler(cpuService)
+	cpuService := service.NewCpuService(cpuRepo)
+	cpuGenericService := service.NewComponentService[dto.CpuResponse, dto.CpuParams](cpuRepo.GetCpus, productRepo.GetProductByID,projUtils.CpuMapping) 
+	cpuGenericHandler := handler.NewComponentHandler(cpuGenericService)
+	cpuSpecHandler := handler.NewSpecHandler[dto.CpuSpecs](productService.GetDefaultSpecs,cpuService.GetSpecs,"cpu")
 	
 	//Case Initialization
 	caseRepo := repo.NewCaseRepository(db)
-	caseService := service.NewComponentService[dto.CaseResponse, dto.CaseParams](caseRepo.GetCases, productRepo.GetProductByID,projUtils.CaseMapping) 
-	caseHandler := handler.NewComponentHandler(caseService)
+	caseService := service.NewCaseService(caseRepo)
+	caseGenericService := service.NewComponentService[dto.CaseResponse, dto.CaseParams](caseRepo.GetCases, productRepo.GetProductByID,projUtils.CaseMapping) 
+	caseGenericHandler := handler.NewComponentHandler(caseGenericService)
+	caseSpecHandler := handler.NewSpecHandler[dto.CaseSpecs](productService.GetDefaultSpecs,caseService.GetSpecs,"case")
 	
-	//Case HDD Initalization
+	//HDD Initalization
 	hddRepo := repo.NewHddRepository(db)
-	hddService := service.NewComponentService[dto.HddResponse, dto.HddParams](hddRepo.GetHdds, productRepo.GetProductByID,projUtils.HddMapping) 
-	hddHandler := handler.NewComponentHandler(hddService)
+	hddService := service.NewHddService(hddRepo)
+	hddGenericService := service.NewComponentService[dto.HddResponse, dto.HddParams](hddRepo.GetHdds, productRepo.GetProductByID,projUtils.HddMapping) 
+	hddGenericHandler := handler.NewComponentHandler(hddGenericService)
+	hddSpecHandler := handler.NewSpecHandler[dto.HddSpecs](productService.GetDefaultSpecs,hddService.GetSpecs,"hdd")
 
 	//Cooler Initalization
 	coolerRepo := repo.NewCoolerRepository(db)
-	coolerService := service.NewComponentService[dto.CoolerResponse, dto.CoolerParams](coolerRepo.GetCoolers, productRepo.GetProductByID,projUtils.CoolerMapping) 
-	coolerHandler := handler.NewComponentHandler(coolerService)
-
-	//Filter Initialization
-	websiteRepo := repo.NewWebsiteRepository(db)
-	filterService := service.NewFilterService(websiteRepo, productRepo)
-	filterHandler := handler.NewFilterHandler(filterService)
+	coolerGenericService := service.NewComponentService[dto.CoolerResponse, dto.CoolerParams](coolerRepo.GetCoolers, productRepo.GetProductByID,projUtils.CoolerMapping) 
+	coolerService := service.NewCoolerService(coolerRepo)
+	coolerGenericHandler := handler.NewComponentHandler(coolerGenericService)
+	coolerSpecHandler := handler.NewSpecHandler[dto.CoolerSpecs](productService.GetDefaultSpecs,coolerService.GetSpecs,"cooler")
 
 	//Initiazlie Gin Router
 	r := gin.Default()
@@ -100,97 +126,106 @@ func main() {
 
 	//Http Requests products getters
 	r.GET("/", productHanlder.GetProducts)
-	r.GET("/count", productHanlder.GetProductsCount)
+	r.GET("/spec", productHanlder.GetDefaultSpecs)
 
-	//Http Requests component getters
-	//Filters
-	filters := r.Group("/filter")
-	{
-		filters.GET("", filterHandler.GetDefaultFilters)
-	}
+	//Http Requests component getters	
 	//Cooler
 	cooler := r.Group("/cooler")
 	{
-		cooler.GET("", coolerHandler.GetComponents)
-		cooler.GET("/:id", coolerHandler.GetComponentByID)
+		cooler.GET("", coolerGenericHandler.GetComponents)
+		cooler.GET("/spec", coolerSpecHandler.GetComponentSpecs)
+		cooler.GET("/:id", coolerGenericHandler.GetComponentByID)
 	}
 	//Hdd
 	hdd := r.Group("/hdd")
 	{
-		hdd.GET("", hddHandler.GetComponents)
-		hdd.GET("/:id", hddHandler.GetComponentByID)
+		hdd.GET("", hddGenericHandler.GetComponents)
+		hdd.GET("/spec", hddSpecHandler.GetComponentSpecs)
+		hdd.GET("/:id", hddGenericHandler.GetComponentByID)
 	}
 	//SSD
 	ssd := r.Group("/ssd")
 	{
-		ssd.GET("", ssdHandler.GetComponents)
-		ssd.GET("/:id", ssdHandler.GetComponentByID)
+		ssd.GET("", ssdGenericHandler.GetComponents)
+		ssd.GET("/spec", ssdSpecHandler.GetComponentSpecs)
+		ssd.GET("/:id", ssdGenericHandler.GetComponentByID)
 	}
 	//RAM
 	ram := r.Group("/ram")
 	{
-	ram.GET("", ramHandler.GetComponents)
-	ram.GET("/:id", ramHandler.GetComponentByID)
+		ram.GET("", ramGenericHandler.GetComponents)
+		ram.GET("/spec", ramSpecHandler.GetComponentSpecs)
+		ram.GET("/:id", ramGenericHandler.GetComponentByID)
 	}
 	//PSU
 	psu := r.Group("/psu")
 	{
-		psu.GET("", psuHandler.GetComponents)
-		psu.GET("/:id", psuHandler.GetComponentByID)
+		psu.GET("", psuGenericHandler.GetComponents)
+		psu.GET("/spec", psuSpecHandler.GetComponentSpecs)
+		psu.GET("/:id", psuGenericHandler.GetComponentByID)
 	}
 	//PC Mini
 	pcmini := r.Group("/pcmini")
 	{
-		pcmini.GET("", pcMiniHandler.GetComponents)
-		pcmini.GET("/:id", pcMiniHandler.GetComponentByID)
+		pcmini.GET("", pcMiniGenericHandler.GetComponents)
+		pcmini.GET("/spec", pcMiniSpecHandler.GetComponentSpecs)
+		pcmini.GET("/:id", pcMiniGenericHandler.GetComponentByID)
 	}
 	//PC
 	pc := r.Group("/pc")
 	{
-		pc.GET("", pcHandler.GetComponents)
-		pc.GET("/:id", pcHandler.GetComponentByID)
+		pc.GET("", pcGenericHandler.GetComponents)
+		pc.GET("/spec", pcSpecHandler.GetComponentSpecs)
+		pc.GET("/:id", pcGenericHandler.GetComponentByID)
 	}
 	//Motherboard
 	motherboard := r.Group("/motherboard")
 	{
-		motherboard.GET("", mbHandler.GetComponents)
-		motherboard.GET("/:id", mbHandler.GetComponentByID)
+		motherboard.GET("", mbGenericHandler.GetComponents)
+		motherboard.GET("/spec", mbSpecHandler.GetComponentSpecs)
+		motherboard.GET("/:id", mbGenericHandler.GetComponentByID)
 	}
 	//Laptop
 	laptop := r.Group("/laptop")
 	{
-		laptop.GET("", laptopHandler.GetComponents)
-		laptop.GET("/:id", laptopHandler.GetComponentByID)
+		laptop.GET("", laptopGenericHandler.GetComponents)
+		laptop.GET("/spec", laptopSpecHandler.GetComponentSpecs)
+		laptop.GET("/:id", laptopGenericHandler.GetComponentByID)
 	}
 	//GPU
 	gpu := r.Group("/gpu")
 	{
-		gpu.GET("", gpuHandler.GetComponents)
-		gpu.GET("/:id", gpuHandler.GetComponentByID)
+		gpu.GET("", gpuGenericHandler.GetComponents)
+		gpu.GET("/spec", gpuSpecHandler.GetComponentSpecs)
+		gpu.GET("/:id", gpuGenericHandler.GetComponentByID)
 	}
 	//Fan
 	fan := r.Group("/fan")
 	{
-		fan.GET("", fanHandler.GetComponents)
-		fan.GET("/:id", fanHandler.GetComponentByID)
+		fan.GET("", fanGenericHandler.GetComponents)
+		fan.GET("/spec", fanSpecHandler.GetComponentSpecs)
+		fan.GET("/:id", fanGenericHandler.GetComponentByID)
 	}
 	//AIO
 	aio := r.Group("/aio")
 	{
-		aio.GET("", aioHandler.GetComponents)
-		aio.GET("/:id", aioHandler.GetComponentByID)
+		aio.GET("", aioGenericHandler.GetComponents)	
+		aio.GET("/spec", aioSpecHandler.GetComponentSpecs)
+		aio.GET("/:id", aioGenericHandler.GetComponentByID)
 	}
 	//CPU
 	cpu := r.Group("/cpu")
 	{
-		cpu.GET("", cpuHandler.GetComponents)
-		cpu.GET("/:id", cpuHandler.GetComponentByID)
+		cpu.GET("", cpuGenericHandler.GetComponents)
+		cpu.GET("/spec", cpuSpecHandler.GetComponentSpecs)
+		cpu.GET("/:id", cpuGenericHandler.GetComponentByID)
 	}
 	//Case
 	pcCase := r.Group("/case")
 	{
-		pcCase.GET("", caseHandler.GetComponents)
-		pcCase.GET("/:id", caseHandler.GetComponentByID)
+		pcCase.GET("", caseGenericHandler.GetComponents)
+		pcCase.GET("/spec", caseSpecHandler.GetComponentSpecs)
+		pcCase.GET("/:id", caseGenericHandler.GetComponentByID)
 	}
 	
 	// listen and serve on

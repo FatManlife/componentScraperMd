@@ -16,8 +16,9 @@ func NewCoolerRepository(db *gorm.DB) *CoolerRepository {
 	return &CoolerRepository{db: db}
 }
 
-func (r *CoolerRepository) GetCoolers(ctx context.Context, params dto.CoolerParams) ([]orm.Product, error) {
+func (r *CoolerRepository) GetCoolers(ctx context.Context, params dto.CoolerParams) ([]orm.Product, int64, error) {
 	var coolers []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db,ctx,params.DefaultParams)
 
@@ -32,16 +33,55 @@ func (r *CoolerRepository) GetCoolers(ctx context.Context, params dto.CoolerPara
 	if params.Noise != 0 {
 		q = q.Where("coolers.noise = ?", params.Noise)
 	}
-	if params.Size != "" {
-		q = q.Where("coolers.size = ?", params.Size)
-	}
 	if len(params.Compatibility) > 0 {
 		q = q.Where("cooler_compatibilities.cpu IN ?", params.Compatibility)
 	}
 
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+	
+	setLimits(q, params.DefaultParams.Offset)
+
 	if err := q.Find(&coolers).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return coolers, count, nil
+}
+
+func (r *CoolerRepository) GetCompatibility(ctx context.Context) ([]string, error) {
+	var compatibilities []string
+	if err := r.db.WithContext(ctx).Model(&orm.CoolerCompatibility{}).Distinct().Pluck("cpu", &compatibilities).Error; err != nil {
 		return nil, err
 	}
 
-	return coolers, nil
+	return compatibilities, nil
+}
+
+func (r *CoolerRepository) GetTypes(ctx context.Context) ([]string, error) {
+	var types []string
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("type", &types).Error; err != nil {
+		return nil, err
+	}
+
+	return types, nil
+}
+
+func (r *CoolerRepository) GetFanRPMs(ctx context.Context) ([]int, error) {
+	var fanRPMs []int
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("fan_rpm", &fanRPMs).Error; err != nil {
+		return nil, err
+	}
+
+	return fanRPMs, nil
+}
+
+func (r *CoolerRepository) GetNoises(ctx context.Context) ([]float64, error) {
+	var noises []float64
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("noise", &noises).Error; err != nil {
+		return nil, err
+	}
+
+	return noises, nil
 }

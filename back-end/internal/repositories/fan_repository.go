@@ -16,16 +16,13 @@ func NewFanRepository(db *gorm.DB) *FanRepository {
 	return &FanRepository{db: db}
 }
 
-func (r *FanRepository) GetFans(ctx context.Context, params dto.FanParams) ([]orm.Product, error) {
+func (r *FanRepository) GetFans(ctx context.Context, params dto.FanParams) ([]orm.Product, int64, error) {
 	var fans []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
-	q.Joins("JOIN fans ON fans.product_id = products.id").Preload("Fan")
-
-	if params.Size != "" {
-		q = q.Where("fans.size = ?", params.Size)
-	}
+	q.Joins("JOIN fans ON fans.product_id = products.id").Preload("Fan")	
 
 	if params.MinFanRPM > 0 {
 		q = q.Where("fans.fan_rpm >= ?", params.MinFanRPM)
@@ -43,9 +40,35 @@ func (r *FanRepository) GetFans(ctx context.Context, params dto.FanParams) ([]or
 		q = q.Where("fans.noise <= ?", params.MaxNoise)
 	}
 
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	setLimits(q, params.DefaultParams.Offset)
+
 	if err := q.Find(&fans).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return fans, count, nil
+}	
+
+func (r *FanRepository) GetFanRPMs (ctx context.Context) ([]int, error) {
+	var fanRPMs []int
+	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Pluck("fan_rpm", &fanRPMs).Error; err != nil {
 		return nil, err
 	}
 
-	return fans, nil
-}	
+	return fanRPMs, nil
+}
+
+func (r *FanRepository) GetNoiseLevels(ctx context.Context) ([]float64, error) {
+	var noiseLevels []float64
+	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Pluck("noise", &noiseLevels).Error; err != nil {
+		return nil, err
+	}
+	
+	return noiseLevels, nil
+}
+
+

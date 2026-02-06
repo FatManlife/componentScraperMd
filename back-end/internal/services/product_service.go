@@ -10,18 +10,19 @@ import (
 
 
 type ProductService struct {
-	repo *repo.ProductRepository
+	product *repo.ProductRepository
+	website *repo.WebsiteRepository
 }
 
-func NewProductService(repo *repo.ProductRepository) *ProductService {
-	return &ProductService{repo: repo}
+func NewProductService(product *repo.ProductRepository, website *repo.WebsiteRepository) *ProductService {
+	return &ProductService{product: product, website: website}
 }
 
-func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductsResponse, error) {
-	products, err := s.repo.GetAllProducts(ctx, params)
+func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductParams) ([]dto.ProductsResponse, int64, error) {
+	products, count, err := s.product.GetAllProducts(ctx, params)
 
 	if err != nil {
-		return nil,  err
+		return nil,  0, err
 	}
 
 	var productResponses []dto.ProductsResponse
@@ -30,10 +31,26 @@ func (s *ProductService) GetProducts(ctx context.Context, params dto.ProductPara
 		productResponses = append(productResponses, utils.ProductsMapping(product))
 	}
 
-	return productResponses, nil
+	return productResponses, count, nil
 }
 
+func (s *ProductService) GetDefaultSpecs(ctx context.Context,category string) (dto.DefaultSpecs, error){
+	websites, err := s.website.GetAllWebsites(ctx)
 
-func (s *ProductService) GetProductsCount(ctx context.Context, category string)(int64, error){
-	return s.repo.GetProductsCount(ctx, category)
+	if err != nil {
+		return dto.DefaultSpecs{}, err
+	}
+
+	prices , err := s.product.GetAllPrices(ctx, category)
+
+	if err != nil {
+		return dto.DefaultSpecs{}, err
+	}
+
+	return dto.DefaultSpecs{
+		Websites: websites,
+		Prices: prices,
+		Order: []string{"price_asc", "price_desc"},
+	}, nil
 }
+

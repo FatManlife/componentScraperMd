@@ -24,28 +24,28 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 		return
 	}
 	
-	products, err := h.service.GetProducts(ctx, params)
+	products, count, err := h.service.GetProducts(ctx, params)
 	
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, products)
+	c.JSON(200, gin.H{"products": products, "count": count})
 }
 
-func (h *ProductHandler) GetProductsCount(c *gin.Context) {
-	ctx := c.Request.Context()
-
+func (h *ProductHandler) GetDefaultSpecs(c *gin.Context) {
 	category := c.Query("category")
 
-	count, err := h.service.GetProductsCount(ctx, category)
+	filters, err := h.service.GetDefaultSpecs(c.Request.Context(), category)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"count": count})
+	c.JSON(200, filters)
 }
+
+
 

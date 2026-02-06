@@ -16,8 +16,9 @@ func NewLaptopRepository(db *gorm.DB) *LaptopRepository {
 	return &LaptopRepository{db: db}
 }
 
-func (r *LaptopRepository) GetLaptops(ctx context.Context, params dto.LaptopParams) ([]orm.Product, error) {
+func (r *LaptopRepository) GetLaptops(ctx context.Context, params dto.LaptopParams) ([]orm.Product, int64, error) {
 	var laptops []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db,ctx, params.DefaultParams)
 
@@ -43,9 +44,69 @@ func (r *LaptopRepository) GetLaptops(ctx context.Context, params dto.LaptopPara
 		q = q.Where("laptops.diagonal IN ?", params.Diagonal)
 	}	
 
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	setLimits(q, params.DefaultParams.Offset)
+
 	if err := q.Find(&laptops).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return laptops, count, nil
+}
+
+func (r *LaptopRepository) GetCpus(ctx context.Context) ([]string, error) {
+	var cpus []string
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("cpu", &cpus).Error; err != nil {
 		return nil, err
 	}
 
-	return laptops, nil
+	return cpus, nil
+}
+
+func (r *LaptopRepository) GetGpus(ctx context.Context) ([]string, error) {
+	var gpus []string
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("gpu", &gpus).Error; err != nil {
+		return nil, err
+	}
+
+	return gpus, nil
+}
+
+func (r *LaptopRepository) GetRams(ctx context.Context) ([]int, error) {
+	var rams []int
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("ram", &rams).Error; err != nil {
+		return nil, err
+	}
+
+	return rams, nil
+}
+
+func (r *LaptopRepository) GetStorages(ctx context.Context) ([]int, error) {
+	var storages []int
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("storage", &storages).Error; err != nil {
+		return nil, err
+	}
+
+	return storages, nil
+}
+
+func (r *LaptopRepository) GetDiagonals(ctx context.Context) ([]string, error) {
+	var diagonals []string
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("diagonal", &diagonals).Error; err != nil {
+		return nil, err
+	}
+
+	return diagonals, nil
+}
+
+func (r *LaptopRepository) GetBattery(ctx context.Context) ([]float64, error) {
+	var batteries []float64
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("battery", &batteries).Error; err != nil {
+		return nil, err
+	}
+
+	return batteries, nil
 }

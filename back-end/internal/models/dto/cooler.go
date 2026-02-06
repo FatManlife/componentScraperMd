@@ -23,6 +23,5 @@ type CoolerParams struct {
 	Type string `form:"type"`
 	FanRPM int `form:"fan_rpm"`
 	Noise float64 `form:"noise"`
-	Size string `form:"size"`
 	Compatibility []string `form:"compatibility"`
 }

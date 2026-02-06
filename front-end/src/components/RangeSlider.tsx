@@ -60,6 +60,7 @@ function RangeSlider({
             newParams.set(minParamKey, min.toString());
             newParams.set(maxParamKey, max.toString());
         }
+        newParams.delete("page");
         navigate(`?${newParams.toString()}`);
     };
 

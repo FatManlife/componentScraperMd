@@ -25,14 +25,14 @@ func (h *ComponentHandler[T, P]) GetComponents(c *gin.Context) {
 		return
 	}
 
-	products, err := h.service.GetComponents(ctx, params)
+	products, count, err := h.service.GetComponents(ctx, params)
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, products)
+	c.JSON(200, gin.H{"products": products, "count": count})
 }
 
 func (h *ComponentHandler[T, P]) GetComponentByID(c *gin.Context) {

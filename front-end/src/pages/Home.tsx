@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchProducts, FetchProductCount } from "../api/products";
+import { FetchProducts } from "../api/products";
 import { FetchFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
@@ -13,7 +13,6 @@ import type {
 
 function Home() {
     const [searchParams] = useSearchParams();
-    const [totalCount, setTotalCount] = useState<number | null>(null);
     const [filters, setFilters] = useState<DefaultFilters | null>(null);
 
     const params = useMemo<ProductParams>(() => {
@@ -43,8 +42,6 @@ function Home() {
 
     useEffect(() => {
         execute();
-        // Fetch count
-        FetchProductCount().then(setTotalCount).catch(console.error);
         // Fetch filters
         FetchFilters().then(setFilters).catch(console.error);
     }, [params]);
@@ -54,9 +51,9 @@ function Home() {
             title="Products"
             loading={loading}
             error={error}
-            data={data}
+            data={data?.products ?? []}
+            totalCount={data?.count ?? null}
             currentPage={params.page || 1}
-            totalCount={totalCount}
             filters={filters}
         />
     );

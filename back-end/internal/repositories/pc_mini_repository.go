@@ -16,8 +16,9 @@ func NewPcMiniRepository(db *gorm.DB) *PcMiniRepository {
 	return &PcMiniRepository{db: db}
 }
 
-func (r *PcMiniRepository) GetPcMinis(ctx context.Context, params dto.PcParams) ([]orm.Product,error) {
+func (r *PcMiniRepository) GetPcMinis(ctx context.Context, params dto.PcParams) ([]orm.Product, int64, error) {
 	var pcMinis []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db,ctx,params.DefaultParams)
 
@@ -36,9 +37,55 @@ func (r *PcMiniRepository) GetPcMinis(ctx context.Context, params dto.PcParams) 
 		q = q.Where("pc_minis.storage IN ?", params.Storage)
 	}
 	
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	setLimits(q, params.DefaultParams.Offset)
+
 	if err := q.Find(&pcMinis).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return pcMinis, count, nil
+}
+
+func (r *PcMiniRepository) GetCpu(ctx context.Context) ([]string, error) {
+	var cpus []string
+
+	if err := r.db.WithContext(ctx).Model(&orm.PcMini{}).Distinct().Pluck("cpu", &cpus).Error; err != nil {
 		return nil, err
 	}
 
-	return pcMinis, nil
+	return cpus, nil
+}
+
+func (r *PcMiniRepository) GetGpu(ctx context.Context) ([]string, error) {
+	var gpus []string
+
+	if err := r.db.WithContext(ctx).Model(&orm.PcMini{}).Distinct().Pluck("gpu", &gpus).Error; err != nil {
+		return nil, err
+	}
+
+	return gpus, nil
+}
+
+func (r *PcMiniRepository) GetRam(ctx context.Context) ([]int, error) {
+	var rams []int
+
+	if err := r.db.WithContext(ctx).Model(&orm.PcMini{}).Distinct().Pluck("ram", &rams).Error; err != nil {
+		return nil, err
+	}
+
+	return rams, nil
+}
+
+func (r *PcMiniRepository) GetStorage(ctx context.Context) ([]int, error) {
+	var storages []int
+
+	if err := r.db.WithContext(ctx).Model(&orm.PcMini{}).Distinct().Pluck("storage", &storages).Error; err != nil {
+		return nil, err
+	}
+
+	return storages, nil
 }

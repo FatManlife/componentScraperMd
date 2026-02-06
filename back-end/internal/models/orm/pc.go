@@ -6,8 +6,8 @@ type Pc struct {
 
 	Cpu string 
 	Gpu string 
-	Ram string 
-	Storage string 
+	Ram int
+	Storage int
 	Motherboard string 
 	Psu string 
 	PcCase string 

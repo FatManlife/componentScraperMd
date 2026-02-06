@@ -24,6 +24,7 @@ function Sidebar({ filters }: SidebarProps) {
 
         const newParams = new URLSearchParams(searchParams);
         newParams.delete("website");
+        newParams.delete("page");
         newWebsites.forEach((w) => newParams.append("website", w));
         navigate(`?${newParams.toString()}`);
     };
@@ -35,6 +36,7 @@ function Sidebar({ filters }: SidebarProps) {
         } else {
             newParams.delete("order");
         }
+        newParams.delete("page");
         navigate(`?${newParams.toString()}`);
     };
 

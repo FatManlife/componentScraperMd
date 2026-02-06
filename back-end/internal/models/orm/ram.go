@@ -8,5 +8,5 @@ type Ram struct {
 	Speed int 
 	Type string 
 	Compatibility string 
-	Configuration string 
+	Configuration int
 }

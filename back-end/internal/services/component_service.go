@@ -9,20 +9,20 @@ import (
 )
 
 type ComponentService[T any, P any] struct {
-	getAll func (context.Context, P) ([]orm.Product, error)
+	getAll func (context.Context, P) ([]orm.Product, int64, error)
 	getByID func (context.Context, int) (*orm.Product, error)
 	mapper func(orm.Product) T
 }
 
-func NewComponentService[T any, P any](getAll func (ctx context.Context, params P) ([]orm.Product, error), getByID func (ctx context.Context, id int) (*orm.Product, error), mapper func(orm.Product) T) *ComponentService[T, P] {
+func NewComponentService[T any, P any](getAll func (ctx context.Context, params P) ([]orm.Product, int64,error), getByID func (ctx context.Context, id int) (*orm.Product, error), mapper func(orm.Product) T) *ComponentService[T, P] {
 	return &ComponentService[T, P]{getAll: getAll, getByID: getByID, mapper: mapper}
 }
 
-func (s *ComponentService[T, P]) GetComponents (ctx context.Context, params P) ([]dto.ProductsResponse, error) {
-	products, err := s.getAll(ctx, params)
+func (s *ComponentService[T, P]) GetComponents (ctx context.Context, params P) ([]dto.ProductsResponse, int64,error) {
+	products, count, err := s.getAll(ctx, params)
 
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	var mappedProducts []dto.ProductsResponse
@@ -31,7 +31,7 @@ func (s *ComponentService[T, P]) GetComponents (ctx context.Context, params P) (
 		mappedProducts = append(mappedProducts, utils.ProductsMapping(product))
 	}
 
-	return mappedProducts, nil
+	return mappedProducts, count, nil
 }
 
 func (s *ComponentService[T, P]) GetComponentByID (ctx context.Context, id int) (*T, error) {

@@ -22,3 +22,13 @@ func CastingIntFan(s string) int{
 	}
 	return 0
 }
+
+func extractCapacity(text string) int {
+    re := regexp.MustCompile(`(\d+)\s*ГБ`)
+    match := re.FindStringSubmatch(text)
+    if len(match) > 1 {
+        val, _ := strconv.Atoi(match[1])
+        return val
+    }
+    return 0
+}

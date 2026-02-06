@@ -16,39 +16,30 @@ func NewProductRepository(db *gorm.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) GetProductsCount(ctx context.Context, category string)(int64, error){
+//implemnt Getting all products with filters
+func (r *ProductRepository) GetAllProducts(ctx context.Context, params dto.ProductParams) ([]orm.Product, int64, error) {
+	var products []orm.Product
 	var count int64
 
-	q := r.db.WithContext(ctx).Model(&orm.Product{})
-
-	if category != "" {
-		q = q.Where("category = ?", category)
-	}
+	q := getDefaultProduct(r.db, ctx, params) 	
 
 	if err := q.Count(&count).Error; err != nil {
-		return 0, err
+		return nil, 0, err
 	}
 
-	return count, nil
-}
-
-//implemnt Getting all products with filters
-func (r *ProductRepository) GetAllProducts(ctx context.Context, params dto.ProductParams) ([]orm.Product, error) {
-	var products []orm.Product
-
-	q := getDefaultProduct(r.db, ctx, params) 	
+	setLimits(q, params.Offset)
 	
 	if err := q.Find(&products).Error; err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return products, nil
+	return products, count, nil
 }
 
 func (r *ProductRepository) GetProductByID(ctx context.Context, id int) (*orm.Product, error) {
 	var product orm.Product
 
-	q := r.db.WithContext(ctx).Model(&orm.Product{}).Where("id = ?", id)
+	q := r.db.WithContext(ctx).Model(&orm.Product{}).Where("id = ?", id).Preload("Website")
 
 	if err := q.First(&product).Error; err != nil {
 		return nil, err

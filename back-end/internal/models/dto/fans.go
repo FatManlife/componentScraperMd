@@ -20,5 +20,4 @@ type FanParams struct {
 	MaxFanRPM int 	`form:"max_fan_rpm"`
 	MinNoise float64 `form:"min_noise"`
 	MaxNoise float64 `form:"max_noise"`
-	Size string `form:"size"`
 }

@@ -16,8 +16,9 @@ func NewCpuRepository(db *gorm.DB) *CpuRepository {
 	return &CpuRepository{db: db}
 }
 
-func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]orm.Product, error){
+func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]orm.Product, int64, error){
 	var cpus []orm.Product
+	var count int64
 
 	q := getDefaultProduct(r.db, ctx, params.DefaultParams)
 
@@ -31,21 +32,72 @@ func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]or
 		q = q.Where("cpus.threads IN ?", params.Threads)
 	}
 
-	if params.BaseClock != 0 {
-		q = q.Where("cpus.base_clock = ?", params.BaseClock)
+	if len(params.BaseClock) > 0 {
+		q = q.Where("cpus.base_clock IN ?", params.BaseClock)
 	}
 
-	if params.BoostClock != 0 {
-		q = q.Where("cpus.boost_clock = ?", params.BoostClock)
+	if len(params.BoostClock) > 0 {
+		q = q.Where("cpus.boost_clock IN ?", params.BoostClock)
 	}
 
-	if params.Socket != "" {
-		q = q.Where("cpus.socket = ?", params.Socket)
+	if len(params.Socket) > 0 {
+		q = q.Where("cpus.socket IN ?", params.Socket)
 	}
+
+	if err := q.Count(&count).Error; err != nil {
+		return nil, 0, err
+	}
+
+	setLimits(q, params.DefaultParams.Offset)
 
 	if err := q.Find(&cpus).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return cpus, count, nil
+}
+
+func (r *CpuRepository) GetSockets(ctx context.Context) ([]string, error) {
+	var sockets []string
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("socket", &sockets).Error; err != nil {
 		return nil, err
 	}
 
-	return cpus, nil
+	return sockets, nil
+}
+
+func (r *CpuRepository) GetBaseClocks(ctx context.Context) ([]float64, error) {
+	var baseClocks []float64
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("base_clock", &baseClocks).Error; err != nil {
+		return nil, err
+	}
+
+	return baseClocks, nil
+}
+
+func (r *CpuRepository) GetBoostClocks(ctx context.Context) ([]float64, error) {
+	var boostClocks []float64
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("boost_clock", &boostClocks).Error; err != nil {
+		return nil, err
+	}
+
+	return boostClocks, nil
+}
+
+func (r *CpuRepository) GetCores(ctx context.Context) ([]int, error) {
+	var cores []int
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("cores", &cores).Error; err != nil {
+		return nil, err
+	}
+
+	return cores, nil
+}
+
+func (r *CpuRepository) GetThreads(ctx context.Context) ([]int, error) {
+	var threads []int
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("threads", &threads).Error; err != nil {
+		return nil, err
+	}
+
+	return threads, nil
 }

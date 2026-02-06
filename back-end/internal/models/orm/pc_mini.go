@@ -6,6 +6,6 @@ type PcMini struct {
 
 	Cpu string 
 	Gpu string 
-	Ram string 
-	Storage string 
+	Ram int 
+	Storage int 
 }

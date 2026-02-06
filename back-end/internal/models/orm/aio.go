@@ -6,7 +6,7 @@ type Aio struct {
 
 	Diagonal string 
 	Cpu string 
-	Ram string 
-	Storage string 
+	Ram int
+	Storage int 
 	Gpu string
 }

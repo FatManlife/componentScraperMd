@@ -50,7 +50,7 @@ func (h *handler) ssdHandler(e *colly.HTMLElement){
 			ssd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
 		case "Viteza maximă de scriere": ssd.WritingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Viteza maximă de citire": ssd.ReadingSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Form Factor": ssd.FormFactor= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Form Factor": ssd.FormFactor= strings.TrimSpace(strings.ReplaceAll(el.ChildText("span:nth-child(2)"), "\"", ""))
 		}
 	})
 
@@ -77,13 +77,12 @@ func (h *handler) hddHandler(e *colly.HTMLElement){
 			capacity := strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 
 			if strings.Contains(capacity, "TB"){
-				hdd.Capacity= utils.CastInt(capacity) * 1000
+				hdd.Capacity = utils.CastInt(capacity) * 1000
 			} else {
-				hdd.Capacity= utils.CastInt(strings.TrimSpace(capacity))
+				hdd.Capacity = utils.CastInt(strings.TrimSpace(capacity))
 			}
-
-		case "Viteza de rotație": hdd.RotationSpeed= utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Form Factor": hdd.FormFactor= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Viteza de rotație": hdd.RotationSpeed = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
+		case "Form Factor": hdd.FormFactor = strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"), "\"")[0])
 		}
 	})
 
@@ -133,8 +132,8 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 		case "Procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Producator": pc.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Model placă video": pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Capacitatea RAM": pc.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Unitate de stocare": pc.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM": pc.Ram = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))	
+		case "Unitate de stocare": pc.Storage = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))		
 		}
 	})
 
@@ -156,13 +155,20 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec {
-		case "Diagonală": laptop.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"),"\"")[0])
+		case "Diagonală": laptop.Diagonal = utils.CastFloat64(el.ChildText("span:nth-child(2)"))
 		case "Producator": laptop.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Procesor": laptop.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Placă video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		case "Procesor Video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Capacitatea RAM": laptop.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Unitate de stocare": laptop.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Tip placă video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM": laptop.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
+		case "Unitate de stocare": 
+			storage := strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+			if strings.Contains(storage, "TB") {
+				laptop.Storage = utils.CastInt(storage) * 1000
+			} else {
+				laptop.Storage = utils.CastInt(storage)
+			}
 		case "Capacitate baterie": laptop.Battery= utils.CastFloat64(el.ChildText("span:nth-child(2)"))
 		}
 	})
@@ -193,8 +199,14 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 		case "Model carcasă": pc.Case = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Model placă video": pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Capacitatea RAM": pc.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Unitate de stocare": pc.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM": pc.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
+		case "Unitate de stocare": 
+			storage := el.ChildText("span:nth-child(2)")	
+			if strings.Contains(storage, "TB") {
+				pc.Storage = utils.CastInt(storage) * 1000
+			} else {
+				pc.Storage = utils.CastInt(storage)
+			}
 		case "Model sursa de alimentare": pc.Psu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}
 	})
@@ -220,8 +232,15 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 		case "Producator": aio.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
 		case "Diagonală": aio.Diagonal= strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"),"\"")[0])
 		case "Procesor": aio.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Capacitatea RAM": aio.Ram = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Unitate de stocare": aio.Storage = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Capacitatea RAM": aio.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
+			case "Unitate de stocare":
+				var storage int		
+				if strings.Contains(el.ChildText("span:nth-child(2)"), "TB") {
+					storage = utils.CastInt(el.ChildText("span:nth-child(2)")) * 1000
+				} else {
+					storage = utils.CastInt(el.ChildText("span:nth-child(2)"))
+				}
+				aio.Storage = storage	
 		case "Placă video": aio.Gpu= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		}
 	})
@@ -304,7 +323,7 @@ func (h *handler) ramHandler(e *colly.HTMLElement){
 		case "Frecvență memorie": ram.Speed = utils.CastInt(el.ChildText("span:nth-child(2)"))
 		case "Standard memorie operativă": ram.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Aplicare (Utilizare)": ram.Compatibility = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Numărul de plăci în set": ram.Configuration = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Numărul de plăci în set": ram.Configuration = utils.CastInt(el.ChildText("span:nth-child(2)"))	
 		}
 	})
 
@@ -351,7 +370,7 @@ func (h *handler) caseHandler(e *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 		switch spec { 
 		case "Producator": pcCase.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Format": pcCase.Format = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Format": pcCase.Format = strings.TrimSpace(strings.ReplaceAll(el.ChildText("span:nth-child(2)"), "-", ""))
 		case "Compatibilitate form factor placă de bază": pcCase.MotherboardFormFactor = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
 		}
 	})
@@ -400,7 +419,13 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 
 		switch spec { 
 		case "Producator": cooler.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Tip răcire": cooler.Type = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Tip răcire": 
+			tip := strings.ToLower(el.ChildText("span:nth-child(2)"))	
+			if strings.Contains(tip,"aer"){
+				cooler.Type = "Air cooling"
+			} else if strings.Contains(tip,"apă") {
+				cooler.Type = "Liquid cooling"
+			}
 		case "Viteza maximă de rotație": cooler.FanRPM = utils.CastInt(el.ChildText("span:nth-child(2)")) 
 		case "Dimensiuni ventilator": cooler.Size = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Nivel zgomot": cooler.Noise = utils.CastFloat64(el.ChildText("span:nth-child(2)")) 

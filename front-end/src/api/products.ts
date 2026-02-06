@@ -30,18 +30,3 @@ export const FetchProducts = async (
         throw err;
     }
 };
-
-export const FetchProductCount = async (category?: string): Promise<number> => {
-    try {
-        const queryParams = new URLSearchParams();
-        if (category) queryParams.append("category", category);
-
-        const response = await api.get<{ count: number }>(
-            `/count?${queryParams.toString()}`,
-        );
-        return response.data.count;
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
-};

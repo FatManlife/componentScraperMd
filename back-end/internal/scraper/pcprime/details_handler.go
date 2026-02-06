@@ -3,7 +3,6 @@ package pcprime
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/FatManlife/component-finder/back-end/internal/constants"
@@ -30,6 +29,7 @@ var specRuEng map[string]string = map[string]string {
 	"Многоцветный":"Multicolor",
 	"Для компьютера": "Pc",
 	"Для ноутбука": "Laptop",
+	"Портативный": "Portable",
 }
 
 func setBaseAttrs(e *colly.HTMLElement, product *dto.BaseProduct, category string){
@@ -54,7 +54,13 @@ func (h *handler) ssdHandler(e *colly.HTMLElement){
 		case "Объем SSD": ssd.Capacity = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Скорость записи": ssd.WritingSpeed = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Скорость чтения": ssd.ReadingSpeed = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Формфактор": ssd.FormFactor = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Формфактор": 
+			formFactor := el.ChildText("div.table_cell:nth-child(2)")
+			if formFactor == "Портативный"{
+				ssd.FormFactor = specRuEng[formFactor]
+			} else {
+				ssd.FormFactor = formFactor
+			}
 		}
 	})
 
@@ -122,12 +128,11 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
-
 		switch spec {
-		case "Процессор": aio.Cpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1))
+		case "Процессор": aio.Cpu = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])
 		case "Модель видеокарты": aio.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Объем оперативной памяти": aio.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Объем SSD": aio.Storage=strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)) 
+		case "Объем оперативной памяти": aio.Ram = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Объем SSD": aio.Storage = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Экран": aio.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"\"")[0])
 		}
 	})
@@ -151,9 +156,9 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 
 		switch spec{
 		case "Процессор": pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Модель видеокарты": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) "))
-		case "Оперативная память": pc.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Объем SSD": pc.Storage= strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
+		case "Модель видеокарты": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Оперативная память": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Объем SSD": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
 
@@ -177,13 +182,13 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 		switch spec {
 		case "Название процессора и частота": pc.Cpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1))
 		case "Модель видеокарты": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) "))
-		case "Объем оперативной памяти": pc.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Объем SSD": pc.Storage = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1)) 
+		case "Объем оперативной памяти": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Объем SSD": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)")) 
 		//Different Case
 		case "Процессор": pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
 		case "Видеокарта": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
-		case "Оперативная память": pc.Ram = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "SSD накопитель": pc.Storage = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "Оперативная память": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2) ul li:nth-child(2) span"))
+		case "SSD накопитель": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2) ul li:nth-child(1) span"))
 		case "Материнская плата": pc.Motherboard = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
 		case "Блок питания": pc.Psu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
 		case "Корпус": pc.Case = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
@@ -288,9 +293,7 @@ func (h *handler) ramHandler(e *colly.HTMLElement){
 		case "Частота памяти": ram.Speed = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Тип оперативной памяти": ram.Type = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Вид": ram.Compatibility = specRuEng[el.ChildText("div.table_cell:nth-child(2)")]
-		case "Количество планок":
-			configuration := strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-			ram.Configuration = configuration + " x " + strconv.Itoa(ram.Capacity / utils.CastInt(configuration) ) + " GB"
+		case "Количество планок": ram.Configuration = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
 
@@ -312,16 +315,11 @@ func (h *handler) motherBoardHandler(e *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch spec {
-		case "Чипсет":
-			motherboard.Chipset= strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Тип сокета":
-			motherboard.Socket = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Формфактор":
-			motherboard.FormFactor = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Максимальный объем памяти":
-			motherboard.RamSupport= strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Поддержка памяти":
-			motherboard.FormFactorRam= strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Чипсет": motherboard.Chipset= strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Тип сокета": motherboard.Socket = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2)"),"Socket",""))
+		case "Формфактор": motherboard.FormFactor = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Максимальный объем памяти": motherboard.RamSupport= strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
+		case "Поддержка памяти": motherboard.FormFactorRam= strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
 
@@ -385,7 +383,7 @@ func (h *handler) cpuHandler(e *colly.HTMLElement){
 		case "Количество потоков": cpu.Threads = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Базовая частота": cpu.BaseClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Максимальная частота": cpu.BoostClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Тип сокета": cpu.Socket = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)")) 
+		case "Тип сокета": cpu.Socket = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2))"),"Socket",""))
 		case "Мощность TDP": cpu.Tdp = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
@@ -407,12 +405,19 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
-		switch spec{
-		case "Процессор": laptop.Cpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1))
-		case "Видеокарта": laptop.Gpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"Интегрированная","Integrated",1))
-		case "Оперативная память": laptop.Ram = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Накопитель": laptop.Storage = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГБ","GB",1))
-		case "Диагональ экрана": laptop.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"\"")[0])
+		switch spec {
+		case "Процессор": laptop.Cpu = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz"))
+		case "Видеокарта": 
+			gpu := el.ChildText("div.table_cell:nth-child(2)")
+			if strings.Contains(gpu, "Интегрированная") {
+				gpu = strings.TrimSpace(strings.ReplaceAll(gpu,"Интегрированная","Integrated"))
+			} else if strings.Contains(gpu, "Дискретная") {
+				gpu = strings.TrimSpace(strings.ReplaceAll(gpu,"Дискретная","Dedicated"))
+			}
+			laptop.Gpu = strings.ReplaceAll(gpu,"ГБ","GB")
+		case "Оперативная память": laptop.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Накопитель": laptop.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Диагональ экрана": laptop.Diagonal = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Аккумулятор": laptop.Battery = castingFloat64Laptop(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
