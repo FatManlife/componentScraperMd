@@ -105,8 +105,8 @@ func (r *RamRepository) GetCompatibility(ctx context.Context) ([]string, error){
 	return compatibilities, nil
 }
 
-func (r *RamRepository) GetConfiguration(ctx context.Context) ([]string, error){
-	var configurations []string
+func (r *RamRepository) GetConfiguration(ctx context.Context) ([]int, error){
+	var configurations []int
 
 	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("configuration", &configurations).Error; err != nil {
 		return nil, err

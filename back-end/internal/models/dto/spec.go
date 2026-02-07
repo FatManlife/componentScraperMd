@@ -7,7 +7,7 @@ type DefaultSpecs struct {
 }
 
 type AioSpecs struct {
-	Diagonal []string `form:"diagonal"`
+	Diagonal []float64`form:"diagonal"`
 	Cpu []string `form:"cpu"`
 	Ram []int `form:"ram"`
 	Storage []int `form:"storage"`
@@ -57,7 +57,7 @@ type LaptopSpecs struct {
 	Gpu []string `json:"gpu"`
 	Ram []int `json:"ram"`
 	Storage []int `json:"storage"`
-	Diagonal []string `json:"diagonal"`
+	Diagonal []float64 `json:"diagonal"`
 }
 
 type MotherboardSpecs struct {
@@ -84,7 +84,7 @@ type RamSpecs struct {
 	Speed []int `json:"speed"`
 	Type []string `json:"type"`
 	Compatibility []string `json:"compatibility"`
-	Configuration []string `json:"configuration"`
+	Configuration []int`json:"configuration"`
 }
 
 type SsdSpecs struct {

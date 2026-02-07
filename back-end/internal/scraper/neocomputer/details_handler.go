@@ -9,6 +9,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/constants"
 	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
+	"github.com/FatManlife/component-finder/back-end/internal/scraper"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -282,20 +283,24 @@ func (h *handler) ramHandler(e *colly.HTMLElement){
 	re := regexp.MustCompile(`Kit\s+of\s+(\d+)`)
 	m := re.FindStringSubmatch(strings.TrimSpace(e.ChildText("div.product_container_wrap.container.p-lg-50 h1.section-title.mb-15")))
 
+	ram.Configuration = 1
+
 	if len(m) > 1 {
 		ram.Configuration = utils.CastInt(m[1])
-	} else {
-		ram.Configuration = 1
-	}
+	} 
 
 	e.ForEach("div.spec__group ul.spec__list li.spec",func (_ int, el *colly.HTMLElement) {	 
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 
 		switch spec {
 		case "Frecventa memorie RAM": ram.Speed = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
+		case "Frecventa (MHz)": ram.Speed = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Capacitate memorie RAM": ram.Capacity = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
+		case "Capacitate (GB)": ram.Capacity = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 		case "Compatibilitate RAM": ram.Compatibility = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Compatibilitate": ram.Compatibility = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Tip memorie RAM": ram.Type= strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Tip memorie": ram.Type= strings.TrimSpace(el.ChildText("span.spec__value"))
 		}
 	})
 
@@ -394,12 +399,12 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 
 		switch spec {
-		case "Model procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Procesor grafic integrat": pc.Cpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Model procesor": pc.Cpu = scraper.CpuGeneralization(el.ChildText("span.spec__value"))
+		case "Procesor grafic integrat": pc.Cpu = scraper.CpuGeneralization(el.ChildText("span.spec__value"))
 		case "Capacitate memorie RAM": pc.Ram = utils.CastInt(el.ChildText("span.spec__value"))
 		case "Capacitate stocare (GB)": pc.Storage = utils.CastInt(el.ChildText("span.spec__value")) 
-		case "Procesor placa video": pc.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Tip placa video": pc.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Procesor placa video": pc.Gpu = scraper.GpuGeneralization(el.ChildText("span.spec__value"))
+		case "Tip placa video": pc.Gpu = scraper.GpuGeneralization(el.ChildText("span.spec__value"))
 		}
 	})
 
@@ -421,14 +426,18 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 
 		switch spec {
-		case "Model procesor": laptop.Cpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Model procesor": laptop.Cpu = scraper.CpuGeneralization(el.ChildText("span.spec__value"))
 		case "Dimensiune ecran (inch)": laptop.Diagonal = utils.CastFloat64(el.ChildText("span.spec__value")) 
 		case "Capacitate memorie RAM": laptop.Ram = utils.CastInt(el.ChildText("span.spec__value"))
 		case "Capacitate stocare (GB)": laptop.Storage = utils.CastInt(el.ChildText("span.spec__value")) 
-		case "Procesor placa video": laptop.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Procesor placa video": laptop.Gpu = scraper.GpuGeneralization(el.ChildText("span.spec__value"))
 		case "Seria laptop": laptop.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		}
 	})
+
+	if strings.Contains(laptop.Gpu, "AMD") {
+		laptop.Gpu = strings.TrimSpace(strings.ReplaceAll(laptop.Gpu, "AMD", ""))
+	}
 
 	if err := h.storage.InsertLaptop(&laptop); err != nil {
 		fmt.Println("Error inserting Laptop:", err)
@@ -448,14 +457,14 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 
 		switch spec {
-		case "Model procesor": aio.Cpu = strings.TrimSpace(el.ChildText("span.spec__value"))
-		case "Dimensiune ecran (inch)": aio.Diagonal = strings.TrimSpace(el.ChildText("span.spec__value")) 
+		case "Model procesor": aio.Cpu = scraper.CpuGeneralization(el.ChildText("span.spec__value"))
+		case "Dimensiune ecran (inch)": aio.Diagonal = utils.CastFloat64(el.ChildText("span.spec__value")) 
 		case "Capacitate memorie RAM": aio.Ram = utils.CastInt(el.ChildText("span.spec__value"))
 		case "Capacitate stocare (GB)": aio.Storage = utils.CastInt(el.ChildText("span.spec__value"))
-		case "Procesor placa video": aio.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Procesor placa video": aio.Gpu = scraper.GpuGeneralization(el.ChildText("span.spec__value"))
 		case "Seria all-in-one PC": aio.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span.spec__value")))
 		}
-	})
+	})	
 
 	if err := h.storage.InsertAio(&aio); err != nil {
 		fmt.Println("Error inserting AIO:", err)
@@ -475,10 +484,10 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 		spec := strings.TrimSpace(el.ChildText("span.spec__name"))
 		
 		switch spec{
-		case "Model procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Model procesor": pc.Cpu = scraper.CpuGeneralization(el.ChildText("span.spec__value"))
 		case "Capacitate memorie RAM": pc.Ram = utils.CastInt(el.ChildText("span.spec__value"))
 		case "Capacitate stocare (GB)": pc.Storage = utils.CastInt(el.ChildText("span.spec__value")) 
-		case "Procesor placa video": pc.Gpu = strings.TrimSpace(el.ChildText("span.spec__value"))
+		case "Procesor placa video": pc.Gpu = scraper.GpuGeneralization(el.ChildText("span.spec__value"))
 		case "Model placa de baza": pc.Motherboard = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Model carcasa": pc.Case = strings.TrimSpace(el.ChildText("span.spec__value"))
 		case "Model sursa de alimentare": pc.Psu = strings.TrimSpace(el.ChildText("span.spec__value"))

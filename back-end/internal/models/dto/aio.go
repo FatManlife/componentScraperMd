@@ -2,7 +2,7 @@ package dto
 
 type Aio struct {
 	BaseAttrs BaseProduct 
-	Diagonal string 
+	Diagonal float64
 	Cpu string 
 	Ram int 
 	Storage int 
@@ -11,7 +11,7 @@ type Aio struct {
 
 type AioResponse struct {
 	Product ProductResponse
-	Diagonal string `json:"diagonal"`
+	Diagonal float64 `json:"diagonal"`
 	Cpu string `json:"cpu"`
 	Ram int `json:"ram"`
 	Storage int `json:"storage"`
@@ -20,7 +20,7 @@ type AioResponse struct {
 
 type AioParams struct {
 	DefaultParams ProductParams
-	Diagonal []string `form:"diagonal"`
+	Diagonal []float64`form:"diagonal"`
 	Cpu []string `form:"cpu"`
 	Ram []int `form:"ram"`
 	Storage []int `form:"storage"`

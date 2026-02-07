@@ -14,7 +14,7 @@ import (
 
 func main() {
 	test_1()	
-	 test_2()
+	//test_2()
 	// test_3()
 }
 func test_1() {
@@ -22,24 +22,36 @@ func test_1() {
 	c := colly.NewCollector(colly.AllowedDomains("prime-pc.md")) 
 
 	c.OnHTML("div.main_product.container", func (e *colly.HTMLElement)  {
-		var ram dto.Ram
+		var laptop dto.Laptop
 
 		e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 			spec := el.ChildText("div.table_cell:nth-child(1)")
 
 			switch spec {
-			case "Объем оперативной памяти": ram.Capacity = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-			case "Частота памяти": ram.Speed = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-			case "Тип оперативной памяти": ram.Type = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-			case "Количество планок": ram.Configuration = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
+			case "Процессор": laptop.Cpu = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])
+			case "Видеокарта": 
+				gpu := el.ChildText("div.table_cell:nth-child(2)")
+				switch gpu {
+				case "Интегрированная": laptop.Gpu = "Integrated"
+				case "Дискретная": laptop.Gpu = "Dedicated"
+				default:
+					if strings.Contains(gpu, "Интегрированная") || strings.Contains(gpu, "Дискретная") {
+						laptop.Gpu = strings.TrimSpace(strings.Split(gpu,",")[1])
+					}
+					laptop.Gpu = strings.TrimSpace(laptop.Gpu)
+				}
+			case "Оперативная память": laptop.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+			case "Накопитель": laptop.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
+			case "Диагональ экрана": laptop.Diagonal = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
+			case "Аккумулятор": laptop.Battery = castingFloat64Laptop(el.ChildText("div.table_cell:nth-child(2)"))
 			}
 		})
 
-		data, _ := json.MarshalIndent(ram, "", "  ")
+		data, _ := json.MarshalIndent(laptop, "", "  ")
 		println(string(data))
 	})
 	
-	c.Visit("https://prime-pc.md/products/kingston-fury-beast-expo-ddr5-16gb-6800mhz-kf568c34bbe-16")
+	c.Visit("https://prime-pc.md//products/acer-nitro-v-15-anv15-52-nhqz7eu007-i5-13420h-16gb-1tb-rtx5050-linux-obsidian-black")
 }
 
 func test_2() {
@@ -82,9 +94,13 @@ func test_3(){
 
 			switch spec {
 			case "Frecventa memorie RAM": ram.Speed = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
+			case "Frecventa (MHz)": ram.Speed = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 			case "Capacitate memorie RAM": ram.Capacity = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
+			case "Capacitate (GB)": ram.Capacity = utils.CastInt(strings.TrimSpace(el.ChildText("span.spec__value")))
 			case "Compatibilitate RAM": ram.Compatibility = strings.TrimSpace(el.ChildText("span.spec__value"))
+			case "Compatibilitate": ram.Compatibility = strings.TrimSpace(el.ChildText("span.spec__value"))
 			case "Tip memorie RAM": ram.Type= strings.TrimSpace(el.ChildText("span.spec__value"))
+			case "Tip memorie": ram.Type= strings.TrimSpace(el.ChildText("span.spec__value"))
 			}
 		})
 
@@ -93,7 +109,7 @@ func test_3(){
 
 	})
 	
-	c.Visit("https://neocomputer.md/gaming-bloc-de-sistem-neo-20")
+	c.Visit("https://neocomputer.md/4gb-ddr3l-1600-sodimm-kingston-valueram-pc12800-cl11-1-35v")
 }
 
 func castingFloat64Laptop(s string) float64{

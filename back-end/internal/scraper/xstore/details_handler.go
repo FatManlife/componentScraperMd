@@ -8,6 +8,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/constants"
 	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
+	"github.com/FatManlife/component-finder/back-end/internal/scraper"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -129,9 +130,9 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 		spec := el.ChildText("span:nth-child(1)") 
 
 		switch spec {
-		case "Procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Procesor": pc.Cpu = scraper.CpuGeneralization(el.ChildText("span:nth-child(2)"))
 		case "Producator": pc.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Model placă video": pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Model placă video": pc.Gpu = scraper.GpuGeneralization(el.ChildText("span:nth-child(2)"))	
 		case "Capacitatea RAM": pc.Ram = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))	
 		case "Unitate de stocare": pc.Storage = utils.CastInt(strings.TrimSpace(el.ChildText("span:nth-child(2)")))		
 		}
@@ -157,10 +158,8 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		switch spec {
 		case "Diagonală": laptop.Diagonal = utils.CastFloat64(el.ChildText("span:nth-child(2)"))
 		case "Producator": laptop.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Procesor": laptop.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Placă video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Procesor Video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
-		case "Tip placă video": laptop.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Procesor": laptop.Cpu = scraper.CpuGeneralization(el.ChildText("span:nth-child(2)"))
+		case "Placă video": laptop.Gpu = scraper.GpuGeneralization(el.ChildText("span:nth-child(2)"))	
 		case "Capacitatea RAM": laptop.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
 		case "Unitate de stocare": 
 			storage := strings.TrimSpace(el.ChildText("span:nth-child(2)"))
@@ -171,14 +170,14 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 			}
 		case "Capacitate baterie": laptop.Battery= utils.CastFloat64(el.ChildText("span:nth-child(2)"))
 		}
-	})
+	})	
 
 	if err := h.storage.InsertLaptop(&laptop); err != nil {
 		fmt.Println("Error inserting Laptop:", err)
 		return
 	}
 
-	data,_ := json.MarshalIndent(laptop, "", " ")
+	data,_ := json.MarshalIndent(laptop, "", "  ")
 	fmt.Println(string(data))
 }
 
@@ -197,8 +196,8 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 		switch spec {
 		case "Model placă de bază": pc.Motherboard = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
 		case "Model carcasă": pc.Case = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Procesor": pc.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
-		case "Model placă video": pc.Gpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))	
+		case "Procesor": pc.Cpu = scraper.CpuGeneralization(el.ChildText("span:nth-child(2)"))
+		case "Model placă video": pc.Gpu = scraper.GpuGeneralization(el.ChildText("span:nth-child(2)"))	
 		case "Capacitatea RAM": pc.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
 		case "Unitate de stocare": 
 			storage := el.ChildText("span:nth-child(2)")	
@@ -230,8 +229,8 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 
 		switch spec { 
 		case "Producator": aio.BaseAttrs.Brand = strings.ToLower(strings.TrimSpace(el.ChildText("span:nth-child(2)")))
-		case "Diagonală": aio.Diagonal= strings.TrimSpace(strings.Split(el.ChildText("span:nth-child(2)"),"\"")[0])
-		case "Procesor": aio.Cpu = strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Diagonală": aio.Diagonal= utils.CastFloat64(el.ChildText("span:nth-child(2)"))
+		case "Procesor": aio.Cpu = scraper.CpuGeneralization(el.ChildText("span:nth-child(2)"))
 		case "Capacitatea RAM": aio.Ram = utils.CastInt(el.ChildText("span:nth-child(2)"))	
 			case "Unitate de stocare":
 				var storage int		
@@ -241,7 +240,7 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 					storage = utils.CastInt(el.ChildText("span:nth-child(2)"))
 				}
 				aio.Storage = storage	
-		case "Placă video": aio.Gpu= strings.TrimSpace(el.ChildText("span:nth-child(2)"))
+		case "Placă video": aio.Gpu = scraper.GpuGeneralization(el.ChildText("span:nth-child(2)"))
 		}
 	})
 

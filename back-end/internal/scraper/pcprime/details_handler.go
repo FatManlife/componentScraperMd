@@ -8,6 +8,7 @@ import (
 	"github.com/FatManlife/component-finder/back-end/internal/constants"
 	rawsql "github.com/FatManlife/component-finder/back-end/internal/db/raw_sql"
 	"github.com/FatManlife/component-finder/back-end/internal/models/dto"
+	"github.com/FatManlife/component-finder/back-end/internal/scraper"
 	"github.com/FatManlife/component-finder/back-end/internal/utils"
 	"github.com/gocolly/colly"
 )
@@ -129,13 +130,13 @@ func (h *handler) aioHandler(e *colly.HTMLElement){
 	e.ForEach(`div[id="fullDesc"] div.table_row`,func(_ int, el *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 		switch spec {
-		case "Процессор": aio.Cpu = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])
-		case "Модель видеокарты": aio.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Процессор": aio.Cpu = scraper.CpuGeneralization(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])	
+		case "Модель видеокарты": aio.Gpu = scraper.GpuGeneralization(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем оперативной памяти": aio.Ram = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем SSD": aio.Storage = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Экран": aio.Diagonal = strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"\"")[0])
+		case "Экран": aio.Diagonal = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		}
-	})
+	})	
 
 	if err := h.storage.InsertAio(&aio); err != nil {
 		fmt.Println("Error inserting AIO:", err)
@@ -155,8 +156,8 @@ func (h *handler) pcMiniHandler(e *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch spec{
-		case "Процессор": pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Модель видеокарты": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2)"))
+		case "Процессор": pc.Cpu = scraper.CpuGeneralization(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])
+		case "Модель видеокарты": pc.Gpu = scraper.GpuGeneralization(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Оперативная память": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем SSD": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		}
@@ -180,13 +181,13 @@ func (h *handler) pcHandler(e *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch spec {
-		case "Название процессора и частота": pc.Cpu = strings.TrimSpace(strings.Replace(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz",1))
-		case "Модель видеокарты": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) "))
+		case "Название процессора и частота": pc.Cpu = scraper.CpuGeneralization(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),"(")[0])
+		case "Модель видеокарты": pc.Gpu = scraper.GpuGeneralization(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем оперативной памяти": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Объем SSD": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)")) 
 		//Different Case
-		case "Процессор": pc.Cpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a"))
-		case "Видеокарта": pc.Gpu = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
+		case "Процессор": pc.Cpu = scraper.CpuGeneralization(el.ChildText("div.table_cell:nth-child(2) a"))
+		case "Видеокарта": pc.Gpu = scraper.GpuGeneralization(el.ChildText("div.table_cell:nth-child(2) a")) 
 		case "Оперативная память": pc.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2) ul li:nth-child(2) span"))
 		case "SSD накопитель": pc.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2) ul li:nth-child(1) span"))
 		case "Материнская плата": pc.Motherboard = strings.TrimSpace(el.ChildText("div.table_cell:nth-child(2) a")) 
@@ -383,7 +384,7 @@ func (h *handler) cpuHandler(e *colly.HTMLElement){
 		case "Количество потоков": cpu.Threads = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Базовая частота": cpu.BaseClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Максимальная частота": cpu.BoostClock = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
-		case "Тип сокета": cpu.Socket = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2))"),"Socket",""))
+		case "Тип сокета": cpu.Socket = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2)"),"Socket",""))
 		case "Мощность TDP": cpu.Tdp = utils.CastInt(el.ChildText("div.table_cell:nth-child(2)"))
 		}
 	})
@@ -406,21 +407,15 @@ func (h *handler) laptopHandler(e *colly.HTMLElement){
 		spec := el.ChildText("div.table_cell:nth-child(1)")
 
 		switch spec {
-		case "Процессор": laptop.Cpu = strings.TrimSpace(strings.ReplaceAll(el.ChildText("div.table_cell:nth-child(2)"),"ГГц","GHz"))
-		case "Видеокарта": 
-			gpu := el.ChildText("div.table_cell:nth-child(2)")
-			if strings.Contains(gpu, "Интегрированная") {
-				gpu = strings.TrimSpace(strings.ReplaceAll(gpu,"Интегрированная","Integrated"))
-			} else if strings.Contains(gpu, "Дискретная") {
-				gpu = strings.TrimSpace(strings.ReplaceAll(gpu,"Дискретная","Dedicated"))
-			}
-			laptop.Gpu = strings.ReplaceAll(gpu,"ГБ","GB")
+		case "Процессор": 
+		laptop.Cpu = scraper.CpuGeneralization(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[0])	
+		case "Видеокарта": laptop.Gpu = scraper.GpuGeneralization(strings.TrimSpace(strings.Split(el.ChildText("div.table_cell:nth-child(2)"),",")[1]))
 		case "Оперативная память": laptop.Ram = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Накопитель": laptop.Storage = extractCapacity(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Диагональ экрана": laptop.Diagonal = utils.CastFloat64(el.ChildText("div.table_cell:nth-child(2)"))
 		case "Аккумулятор": laptop.Battery = castingFloat64Laptop(el.ChildText("div.table_cell:nth-child(2)"))
 		}
-	})
+	})	
 
 	if err := h.storage.InsertLaptop(&laptop); err != nil {
 		fmt.Println("Error inserting Laptop:", err)

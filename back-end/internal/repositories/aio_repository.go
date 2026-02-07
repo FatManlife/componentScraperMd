@@ -57,8 +57,8 @@ func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]o
 	return aios, count, nil
 }
 
-func (r *AioRepository) GetDiagonlas(ctx context.Context) ([]string, error) {
-	var diagonals []string
+func (r *AioRepository) GetDiagonlas(ctx context.Context) ([]float64, error) {
+	var diagonals []float64
 	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("diagonal", &diagonals).Error ; err != nil {
 		return nil, err
 	}

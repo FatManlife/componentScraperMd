@@ -4,7 +4,7 @@ type Aio struct {
 	ID int `gorm:"primaryKey;autoIncrement"`
 	ProductID int
 
-	Diagonal string 
+	Diagonal float64
 	Cpu string 
 	Ram int
 	Storage int 

@@ -93,8 +93,8 @@ func (r *LaptopRepository) GetStorages(ctx context.Context) ([]int, error) {
 	return storages, nil
 }
 
-func (r *LaptopRepository) GetDiagonals(ctx context.Context) ([]string, error) {
-	var diagonals []string
+func (r *LaptopRepository) GetDiagonals(ctx context.Context) ([]float64, error) {
+	var diagonals []float64
 	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("diagonal", &diagonals).Error; err != nil {
 		return nil, err
 	}
