@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import Pagination from "./Pagination";
 import ProductList from "./ProductList";
 import Sidebar from "./Sidebar";
-import type { Products, DefaultFilters } from "../constants/types";
+import AioFilters from "./sidebars/AioFilters";
+import type { Products, DefaultSpecs, AioSpecs } from "../constants/types";
 
 type ProductListLayoutProps = {
     title: string;
@@ -11,7 +12,9 @@ type ProductListLayoutProps = {
     data: Products[] | null;
     currentPage: number;
     totalCount: number | null;
-    filters: DefaultFilters | null;
+    filters: DefaultSpecs | null;
+    category?: string | null;
+    specificSpecs?: AioSpecs | null;
     children?: ReactNode;
 };
 
@@ -23,8 +26,36 @@ function ProductListLayout({
     currentPage,
     totalCount,
     filters,
+    category,
+    specificSpecs,
     children,
 }: ProductListLayoutProps) {
+    const renderSpecificFilters = () => {
+        console.log(
+            "renderSpecificFilters called - category:",
+            category,
+            "specificSpecs:",
+            specificSpecs,
+        );
+        if (!category || !specificSpecs) {
+            console.log(
+                "Returning null - category:",
+                category,
+                "specificSpecs:",
+                specificSpecs,
+            );
+            return null;
+        }
+
+        switch (category) {
+            case "aio":
+                console.log("Rendering AioFilters with specs:", specificSpecs);
+                return <AioFilters specs={specificSpecs as AioSpecs} />;
+            default:
+                return null;
+        }
+    };
+
     return (
         <div className="bg-gray-100 py-8 px-4">
             <div className="max-w-6xl mx-auto">
@@ -35,7 +66,10 @@ function ProductListLayout({
                 {children}
 
                 <div className="flex gap-6">
-                    <Sidebar filters={filters} />
+                    <Sidebar
+                        filters={filters}
+                        specificFilters={renderSpecificFilters()}
+                    />
 
                     <div className="flex-1 flex flex-col">
                         <div className="min-h-200">

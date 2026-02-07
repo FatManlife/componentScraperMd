@@ -22,7 +22,11 @@ function ProductCard({ product }: ProductCardProps) {
                 <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 min-h-12">
                     {product.name}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">{product.brand}</p>
+                <p className="text-sm text-gray-600 mb-2">
+                    {product.brand && product.brand !== ""
+                        ? product.brand
+                        : "Unk"}
+                </p>
                 <div className="flex items-center justify-between mb-3">
                     <span className="text-lg font-bold text-blue-600">
                         MDL{product.price}

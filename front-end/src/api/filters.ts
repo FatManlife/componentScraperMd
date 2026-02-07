@@ -1,15 +1,29 @@
 import api from "./axios";
-import type { DefaultFilters } from "../constants/types";
+import type {
+    DefaultSpecs,
+    ComponentFiltersResponse,
+} from "../constants/types";
 
-export const FetchFilters = async (
-    category?: string,
-): Promise<DefaultFilters> => {
+export const FetchProductFilters = async (): Promise<DefaultSpecs> => {
     try {
         const queryParams = new URLSearchParams();
-        if (category) queryParams.append("category", category);
 
-        const response = await api.get<DefaultFilters>(
-            `/filter?${queryParams.toString()}`,
+        const response = await api.get<DefaultSpecs>(
+            `product/spec?${queryParams.toString()}`,
+        );
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+
+export const FetchComponentFilters = async <T>(
+    category: string,
+): Promise<ComponentFiltersResponse<T>> => {
+    try {
+        const response = await api.get<ComponentFiltersResponse<T>>(
+            `${category}/spec`,
         );
         return response.data;
     } catch (err) {

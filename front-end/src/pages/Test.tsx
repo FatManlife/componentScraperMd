@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { FetchFilters } from "../api/filters";
+import { FetchProductFilters } from "../api/filters";
 import Sidebar from "../components/Sidebar";
-import type { DefaultFilters } from "../constants/types";
+import type { DefaultSpecs } from "../constants/types";
 
 function Test() {
-    const [filters, setFilters] = useState<DefaultFilters | null>(null);
+    const [filters, setFilters] = useState<DefaultSpecs | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -13,7 +13,7 @@ function Test() {
             setLoading(true);
             setError(null);
             try {
-                const data = await FetchFilters();
+                const data = await FetchProductFilters();
                 setFilters(data);
                 console.log("Filters data:", data);
             } catch (err) {
@@ -35,7 +35,9 @@ function Test() {
                 </h1>
 
                 {loading && (
-                    <div className="text-center text-gray-600">Loading filters...</div>
+                    <div className="text-center text-gray-600">
+                        Loading filters...
+                    </div>
                 )}
 
                 {error && (
@@ -46,7 +48,7 @@ function Test() {
 
                 <div className="flex gap-6">
                     <Sidebar filters={filters} />
-                    
+
                     {filters && (
                         <div className="flex-1 bg-white rounded-lg shadow-md p-6">
                             <h2 className="text-xl font-bold text-gray-800 mb-4">

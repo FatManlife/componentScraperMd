@@ -38,25 +38,38 @@ export type ProductParams = {
 };
 
 export type AioResponse = {
-    product: Product;
-    diagonal: string;
+    Product: Product;
+    diagonal: number;
     cpu: string;
-    ram: string;
-    storage: string;
+    ram: number;
+    storage: number;
     gpu: string;
 };
 
 export type AioParams = {
     defaultParams: ProductParams;
-    diagonal?: string[];
+    diagonal?: number[];
     cpu?: string[];
-    ram?: string[];
-    storage?: string[];
+    ram?: number[];
+    storage?: number[];
     gpu?: string[];
 };
 
-export type DefaultFilters = {
+export type AioSpecs = {
+    Diagonal: number[];
+    Cpu: string[];
+    Ram: number[];
+    Storage: number[];
+    Gpu: string[];
+};
+
+export type DefaultSpecs = {
     websites: string[];
     prices: number[];
     order: string[];
+};
+
+export type ComponentFiltersResponse<T> = {
+    defaultSpecs: DefaultSpecs;
+    specificSpecs: T;
 };

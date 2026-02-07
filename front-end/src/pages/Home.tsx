@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FetchProducts } from "../api/products";
-import { FetchFilters } from "../api/filters";
+import { FetchProductFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductParams,
     ProductOrder,
     ProductResponse,
-    DefaultFilters,
+    DefaultSpecs,
 } from "../constants/types";
 
 function Home() {
     const [searchParams] = useSearchParams();
-    const [filters, setFilters] = useState<DefaultFilters | null>(null);
+    const [filters, setFilters] = useState<DefaultSpecs | null>(null);
 
     const params = useMemo<ProductParams>(() => {
         return {
@@ -43,7 +43,7 @@ function Home() {
     useEffect(() => {
         execute();
         // Fetch filters
-        FetchFilters().then(setFilters).catch(console.error);
+        FetchProductFilters().then(setFilters).catch(console.error);
     }, [params]);
 
     return (
