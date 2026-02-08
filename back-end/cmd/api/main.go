@@ -125,8 +125,11 @@ func main() {
 	r.Use(cors.Default())
 
 	//Http Requests products getters
-	r.GET("/", productHanlder.GetProducts)
-	r.GET("/spec", productHanlder.GetDefaultSpecs)
+	products := r.Group("/product")
+	{
+		products.GET("", productHanlder.GetProducts)
+		products.GET("/spec", productHanlder.GetDefaultSpecs)
+	}
 
 	//Http Requests component getters	
 	//Cooler

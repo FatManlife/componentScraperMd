@@ -59,7 +59,7 @@ func (r *CpuRepository) GetCpus(ctx context.Context, params dto.CpuParams) ([]or
 
 func (r *CpuRepository) GetSockets(ctx context.Context) ([]string, error) {
 	var sockets []string
-	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("socket", &sockets).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Order("socket").Pluck("socket", &sockets).Error; err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (r *CpuRepository) GetSockets(ctx context.Context) ([]string, error) {
 
 func (r *CpuRepository) GetBaseClocks(ctx context.Context) ([]float64, error) {
 	var baseClocks []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("base_clock", &baseClocks).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Order("base_clock").Pluck("base_clock", &baseClocks).Error; err != nil {
 		return nil, err
 	}
 
@@ -77,7 +77,7 @@ func (r *CpuRepository) GetBaseClocks(ctx context.Context) ([]float64, error) {
 
 func (r *CpuRepository) GetBoostClocks(ctx context.Context) ([]float64, error) {
 	var boostClocks []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("boost_clock", &boostClocks).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Order("boost_clock").Pluck("boost_clock", &boostClocks).Error; err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (r *CpuRepository) GetBoostClocks(ctx context.Context) ([]float64, error) {
 
 func (r *CpuRepository) GetCores(ctx context.Context) ([]int, error) {
 	var cores []int
-	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("cores", &cores).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Order("cores").Pluck("cores", &cores).Error; err != nil {
 		return nil, err
 	}
 
@@ -95,7 +95,7 @@ func (r *CpuRepository) GetCores(ctx context.Context) ([]int, error) {
 
 func (r *CpuRepository) GetThreads(ctx context.Context) ([]int, error) {
 	var threads []int
-	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Pluck("threads", &threads).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cpu{}).Distinct().Order("threads").Pluck("threads", &threads).Error; err != nil {
 		return nil, err
 	}
 

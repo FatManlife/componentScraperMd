@@ -59,7 +59,7 @@ func (r *LaptopRepository) GetLaptops(ctx context.Context, params dto.LaptopPara
 
 func (r *LaptopRepository) GetCpus(ctx context.Context) ([]string, error) {
 	var cpus []string
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("cpu", &cpus).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("cpu").Pluck("cpu", &cpus).Error; err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (r *LaptopRepository) GetCpus(ctx context.Context) ([]string, error) {
 
 func (r *LaptopRepository) GetGpus(ctx context.Context) ([]string, error) {
 	var gpus []string
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("gpu", &gpus).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("gpu").Pluck("gpu", &gpus).Error; err != nil {
 		return nil, err
 	}
 
@@ -77,7 +77,7 @@ func (r *LaptopRepository) GetGpus(ctx context.Context) ([]string, error) {
 
 func (r *LaptopRepository) GetRams(ctx context.Context) ([]int, error) {
 	var rams []int
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("ram", &rams).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("ram").Pluck("ram", &rams).Error; err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (r *LaptopRepository) GetRams(ctx context.Context) ([]int, error) {
 
 func (r *LaptopRepository) GetStorages(ctx context.Context) ([]int, error) {
 	var storages []int
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("storage", &storages).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("storage").Pluck("storage", &storages).Error; err != nil {
 		return nil, err
 	}
 
@@ -95,7 +95,7 @@ func (r *LaptopRepository) GetStorages(ctx context.Context) ([]int, error) {
 
 func (r *LaptopRepository) GetDiagonals(ctx context.Context) ([]float64, error) {
 	var diagonals []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("diagonal", &diagonals).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("diagonal").Pluck("diagonal", &diagonals).Error; err != nil {
 		return nil, err
 	}
 
@@ -104,7 +104,7 @@ func (r *LaptopRepository) GetDiagonals(ctx context.Context) ([]float64, error) 
 
 func (r *LaptopRepository) GetBattery(ctx context.Context) ([]float64, error) {
 	var batteries []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Pluck("battery", &batteries).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Laptop{}).Distinct().Order("battery").Pluck("battery", &batteries).Error; err != nil {
 		return nil, err
 	}
 

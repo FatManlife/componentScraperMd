@@ -56,7 +56,7 @@ func (r *PsuRepository) GetPsus(ctx context.Context, params dto.PsuParams) ([]or
 func (r *PsuRepository) GetPower(ctx context.Context) ([]int, error){
 	var powers []int
 
-	if err := r.db.Model(&orm.Psu{}).Distinct().Pluck("power", &powers).Error; err != nil {
+	if err := r.db.Model(&orm.Psu{}).Distinct().Order("power").Pluck("power", &powers).Error; err != nil {
 		return nil, err
 	}
 
@@ -65,8 +65,8 @@ func (r *PsuRepository) GetPower(ctx context.Context) ([]int, error){
 
 func (r *PsuRepository) GetEfficiency(ctx context.Context) ([]string, error){
 	var efficiencies []string	
-
-	if err := r.db.Model(&orm.Psu{}).Distinct().Pluck("efficiency", &efficiencies).Error; err != nil {
+	
+	if err := r.db.Model(&orm.Psu{}).Distinct().Order("efficiency").Pluck("efficiency", &efficiencies).Error; err != nil {
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (r *PsuRepository) GetEfficiency(ctx context.Context) ([]string, error){
 func (r *PsuRepository) GetFormFactor(ctx context.Context) ([]string, error){
 	var formFactors []string
 
-	if err := r.db.Model(&orm.Psu{}).Distinct().Pluck("form_factor", &formFactors).Error; err != nil {
+	if err := r.db.Model(&orm.Psu{}).Distinct().Order("form_factor").Pluck("form_factor", &formFactors).Error; err != nil {
 		return nil, err
 	}
 

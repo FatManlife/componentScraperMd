@@ -52,7 +52,7 @@ func (r *MotherboardRepository) GetMotherboards(ctx context.Context, params dto.
 func (r *MotherboardRepository) GetChipset(ctx context.Context) ([]string, error) {
 	var chipsets []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("chipset", &chipsets).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Order("chipset").Pluck("chipset", &chipsets).Error; err != nil {
 		return nil, err
 	}
 
@@ -62,7 +62,7 @@ func (r *MotherboardRepository) GetChipset(ctx context.Context) ([]string, error
 func (r *MotherboardRepository) GetSocket(ctx context.Context) ([]string, error) {
 	var sockets []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("socket", &sockets).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Order("socket").Pluck("socket", &sockets).Error; err != nil {
 		return nil, err
 	}
 
@@ -72,7 +72,7 @@ func (r *MotherboardRepository) GetSocket(ctx context.Context) ([]string, error)
 func (r *MotherboardRepository) GetFormFactor(ctx context.Context) ([]string, error) {
 	var formFactors []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Pluck("form_factor", &formFactors).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Motherboard{}).Distinct().Order("form_factor").Pluck("form_factor", &formFactors).Error; err != nil {
 		return nil, err
 	}
 

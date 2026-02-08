@@ -68,7 +68,7 @@ func (r *SSDRepository) GetSsds(ctx context.Context, params dto.SsdParams) ([]or
 func (r *SSDRepository) GetCapacity(ctx context.Context) ([]int, error) {
 	var capacities []int
 
-	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Pluck("capacity", &capacities).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Order("capacity").Pluck("capacity", &capacities).Error; err != nil {
 		return nil, err
 	}
 
@@ -78,7 +78,7 @@ func (r *SSDRepository) GetCapacity(ctx context.Context) ([]int, error) {
 func (r *SSDRepository) GetReadingSpeed(ctx context.Context) ([]int, error) {
 	var speeds []int
 
-	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Pluck("reading_speed", &speeds).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Order("reading_speed").Pluck("reading_speed", &speeds).Error; err != nil {
 		return nil, err
 	}
 
@@ -88,7 +88,7 @@ func (r *SSDRepository) GetReadingSpeed(ctx context.Context) ([]int, error) {
 func (r *SSDRepository) GetWritingSpeed(ctx context.Context) ([]int, error) {
 	var speeds []int
 
-	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Pluck("writing_speed", &speeds).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Order("writing_speed").Pluck("writing_speed", &speeds).Error; err != nil {
 		return nil, err
 	}
 
@@ -98,7 +98,7 @@ func (r *SSDRepository) GetWritingSpeed(ctx context.Context) ([]int, error) {
 func (r *SSDRepository) GetFormFactor(ctx context.Context) ([]string, error) {
 	var formFactors []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Pluck("form_factor", &formFactors).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Ssd{}).Distinct().Order("form_factor").Pluck("form_factor", &formFactors).Error; err != nil {
 		return nil, err
 	}
 

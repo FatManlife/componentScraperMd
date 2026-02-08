@@ -47,7 +47,7 @@ func (r *CaseRepository) GetCases(ctx context.Context, params dto.CaseParams) ([
 
 func (r *CaseRepository) GetFormats(ctx context.Context) ([]string, error) {
 	var formats []string
-	if err := r.db.WithContext(ctx).Model(&orm.PcCase{}).Distinct().Pluck("format", &formats).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.PcCase{}).Distinct().Order("format").Pluck("format", &formats).Error; err != nil {
 		return nil, err
 	}
 
@@ -56,7 +56,7 @@ func (r *CaseRepository) GetFormats(ctx context.Context) ([]string, error) {
 
 func (r *CaseRepository) GetMotherboardFormFactors(ctx context.Context) ([]string, error) {
 	var formFactors []string
-	if err := r.db.WithContext(ctx).Model(&orm.PcCase{}).Distinct().Pluck("motherboard_form_factor", &formFactors).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.PcCase{}).Distinct().Order("motherboard_form_factor").Pluck("motherboard_form_factor", &formFactors).Error; err != nil {
 		return nil, err
 	}
 

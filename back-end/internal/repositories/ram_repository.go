@@ -68,7 +68,7 @@ func (r *RamRepository) GetRams(ctx context.Context, params dto.RamParams, ) ([]
 func (r *RamRepository) GetCapacity(ctx context.Context) ([]int, error){
 	var capacities []int
 
-	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("capacity", &capacities).Error; err != nil {
+	if err := r.db.Model(&orm.Ram{}).Distinct().Order("capacity").Pluck("capacity", &capacities).Error; err != nil {
 		return nil, err
 	}
 
@@ -78,7 +78,7 @@ func (r *RamRepository) GetCapacity(ctx context.Context) ([]int, error){
 func (r *RamRepository) GetSpeed(ctx context.Context) ([]int, error){
 	var speeds []int
 
-	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("speed", &speeds).Error; err != nil {
+	if err := r.db.Model(&orm.Ram{}).Distinct().Order("speed").Pluck("speed", &speeds).Error; err != nil {
 		return nil, err
 	}
 
@@ -88,7 +88,7 @@ func (r *RamRepository) GetSpeed(ctx context.Context) ([]int, error){
 func (r *RamRepository) GetType(ctx context.Context) ([]string, error){
 	var types []string
 
-	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("type", &types).Error; err != nil {
+	if err := r.db.Model(&orm.Ram{}).Distinct().Order("type").Pluck("type", &types).Error; err != nil {
 		return nil, err
 	}
 
@@ -98,7 +98,7 @@ func (r *RamRepository) GetType(ctx context.Context) ([]string, error){
 func (r *RamRepository) GetCompatibility(ctx context.Context) ([]string, error){
 	var compatibilities []string	
 
-	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("compatibility", &compatibilities).Error; err != nil {
+	if err := r.db.Model(&orm.Ram{}).Distinct().Order("compatibility").Pluck("compatibility", &compatibilities).Error; err != nil {
 		return nil, err
 	}
 
@@ -108,7 +108,7 @@ func (r *RamRepository) GetCompatibility(ctx context.Context) ([]string, error){
 func (r *RamRepository) GetConfiguration(ctx context.Context) ([]int, error){
 	var configurations []int
 
-	if err := r.db.Model(&orm.Ram{}).Distinct().Pluck("configuration", &configurations).Error; err != nil {
+	if err := r.db.Model(&orm.Ram{}).Distinct().Order("configuration").Pluck("configuration", &configurations).Error; err != nil {
 		return nil, err
 	}
 

@@ -52,7 +52,7 @@ func (r *CoolerRepository) GetCoolers(ctx context.Context, params dto.CoolerPara
 
 func (r *CoolerRepository) GetCompatibility(ctx context.Context) ([]string, error) {
 	var compatibilities []string
-	if err := r.db.WithContext(ctx).Model(&orm.CoolerCompatibility{}).Distinct().Pluck("cpu", &compatibilities).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.CoolerCompatibility{}).Distinct().Order("cpu").Pluck("cpu", &compatibilities).Error; err != nil {
 		return nil, err
 	}
 
@@ -61,7 +61,7 @@ func (r *CoolerRepository) GetCompatibility(ctx context.Context) ([]string, erro
 
 func (r *CoolerRepository) GetTypes(ctx context.Context) ([]string, error) {
 	var types []string
-	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("type", &types).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Order("type").Pluck("type", &types).Error; err != nil {
 		return nil, err
 	}
 
@@ -70,7 +70,7 @@ func (r *CoolerRepository) GetTypes(ctx context.Context) ([]string, error) {
 
 func (r *CoolerRepository) GetFanRPMs(ctx context.Context) ([]int, error) {
 	var fanRPMs []int
-	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("fan_rpm", &fanRPMs).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Order("fan_rpm").Pluck("fan_rpm", &fanRPMs).Error; err != nil {
 		return nil, err
 	}
 
@@ -79,7 +79,7 @@ func (r *CoolerRepository) GetFanRPMs(ctx context.Context) ([]int, error) {
 
 func (r *CoolerRepository) GetNoises(ctx context.Context) ([]float64, error) {
 	var noises []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Pluck("noise", &noises).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Cooler{}).Distinct().Order("noise").Pluck("noise", &noises).Error; err != nil {
 		return nil, err
 	}
 

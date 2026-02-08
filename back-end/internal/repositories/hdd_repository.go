@@ -59,7 +59,7 @@ func (r *HddRepository) GetHdds(ctx context.Context, params dto.HddParams) ([]or
 
 func (r *HddRepository) GetFormFactors(ctx context.Context) ([]string, error) {
 	var formFactors []string
-	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Pluck("form_factor", &formFactors).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Order("form_factor").Pluck("form_factor", &formFactors).Error; err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (r *HddRepository) GetFormFactors(ctx context.Context) ([]string, error) {
 
 func (r *HddRepository) GetRotationSpeeds(ctx context.Context) ([]int, error) {
 	var rotationSpeeds []int
-	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Pluck("rotation_speed", &rotationSpeeds).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Order("rotation_speed").Pluck("rotation_speed", &rotationSpeeds).Error; err != nil {
 		return nil, err
 	}
 	
@@ -77,7 +77,7 @@ func (r *HddRepository) GetRotationSpeeds(ctx context.Context) ([]int, error) {
 
 func (r *HddRepository) GetCapacities(ctx context.Context) ([]int, error) {
 	var capacities []int
-	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Pluck("capacity", &capacities).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Hdd{}).Distinct().Order("capacity").Pluck("capacity", &capacities).Error; err != nil {
 		return nil, err
 	}
 	

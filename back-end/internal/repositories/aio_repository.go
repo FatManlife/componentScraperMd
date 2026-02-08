@@ -59,7 +59,7 @@ func (r *AioRepository) GetAios (ctx context.Context, params dto.AioParams) ([]o
 
 func (r *AioRepository) GetDiagonlas(ctx context.Context) ([]float64, error) {
 	var diagonals []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("diagonal", &diagonals).Error ; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Order("diagonal").Pluck("diagonal", &diagonals).Error ; err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (r *AioRepository) GetDiagonlas(ctx context.Context) ([]float64, error) {
 
 func (r *AioRepository) GetRams(ctx context.Context) ([]int, error) {
 	var rams []int
-	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("ram", &rams).Error ; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Order("ram").Pluck("ram", &rams).Error ; err != nil {
 		return nil, err
 	}
 
@@ -77,7 +77,7 @@ func (r *AioRepository) GetRams(ctx context.Context) ([]int, error) {
 
 func (r *AioRepository) GetStorages(ctx context.Context) ([]int, error) {
 	var storages []int
-	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("storage", &storages).Error ; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Order("storage").Pluck("storage", &storages).Error ; err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (r *AioRepository) GetStorages(ctx context.Context) ([]int, error) {
 
 func (r *AioRepository) GetCpus(ctx context.Context) ([]string, error) {
 	var cpus []string
-	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("cpu", &cpus).Error ; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Order("cpu").Pluck("cpu", &cpus).Error ; err != nil {
 		return nil, err
 	}
 
@@ -95,7 +95,7 @@ func (r *AioRepository) GetCpus(ctx context.Context) ([]string, error) {
 
 func (r *AioRepository) GetGpus(ctx context.Context) ([]string, error) {
 	var gpus []string
-	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Pluck("gpu", &gpus).Error ; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Aio{}).Distinct().Order("gpu").Pluck("gpu", &gpus).Error ; err != nil {
 		return nil, err
 	}
 

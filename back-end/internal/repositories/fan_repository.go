@@ -55,7 +55,7 @@ func (r *FanRepository) GetFans(ctx context.Context, params dto.FanParams) ([]or
 
 func (r *FanRepository) GetFanRPMs (ctx context.Context) ([]int, error) {
 	var fanRPMs []int
-	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Pluck("fan_rpm", &fanRPMs).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Order("fan_rpm").Pluck("fan_rpm", &fanRPMs).Error; err != nil {
 		return nil, err
 	}
 
@@ -64,7 +64,7 @@ func (r *FanRepository) GetFanRPMs (ctx context.Context) ([]int, error) {
 
 func (r *FanRepository) GetNoiseLevels(ctx context.Context) ([]float64, error) {
 	var noiseLevels []float64
-	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Pluck("noise", &noiseLevels).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Fan{}).Distinct().Order("noise").Pluck("noise", &noiseLevels).Error; err != nil {
 		return nil, err
 	}
 	

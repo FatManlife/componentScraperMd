@@ -56,7 +56,7 @@ func (r *PcRepository) GetPcs(ctx context.Context, params dto.PcParams) ([]orm.P
 func (r *PcRepository) GetCpu(ctx context.Context) ([]string, error) {
 	var cpus []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Pluck("cpu", &cpus).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Order("cpu").Pluck("cpu", &cpus).Error; err != nil {
 		return nil, err
 	}
 
@@ -66,7 +66,7 @@ func (r *PcRepository) GetCpu(ctx context.Context) ([]string, error) {
 func (r *PcRepository) GetGpu(ctx context.Context) ([]string, error) {
 	var gpus []string
 
-	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Pluck("gpu", &gpus).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Order("gpu").Pluck("gpu", &gpus).Error; err != nil {
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (r *PcRepository) GetGpu(ctx context.Context) ([]string, error) {
 func (r *PcRepository) GetRam(ctx context.Context) ([]int, error) {
 	var rams []int
 
-	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Pluck("ram", &rams).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Order("ram").Pluck("ram", &rams).Error; err != nil {
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (r *PcRepository) GetRam(ctx context.Context) ([]int, error) {
 func (r *PcRepository) GetStorage(ctx context.Context) ([]int, error) {
 	var storages []int
 
-	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Pluck("storage", &storages).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Pc{}).Distinct().Order("storage").Pluck("storage", &storages).Error; err != nil {
 		return nil, err
 	}
 

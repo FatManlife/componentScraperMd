@@ -61,7 +61,7 @@ func (r *GpuRepository) GetGpus(ctx context.Context, params dto.GpuParams) ([]or
 
 func (r *GpuRepository) GetChipsets(ctx context.Context) ([]string, error) {
 	var chipsets []string
-	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Pluck("chipset", &chipsets).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Order("chipset").Pluck("chipset", &chipsets).Error; err != nil {
 		return nil, err
 	}
 
@@ -70,7 +70,7 @@ func (r *GpuRepository) GetChipsets(ctx context.Context) ([]string, error) {
 
 func (r *GpuRepository) GetGpuFrequencies(ctx context.Context) ([]int, error) {
 	var gpuFrequencies []int
-	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Pluck("gpu_frequency", &gpuFrequencies).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Order("gpu_frequency").Pluck("gpu_frequency", &gpuFrequencies).Error; err != nil {
 		return nil, err
 	}
 
@@ -79,7 +79,7 @@ func (r *GpuRepository) GetGpuFrequencies(ctx context.Context) ([]int, error) {
 
 func (r *GpuRepository) GetVramFrequencies(ctx context.Context) ([]int, error) {
 	var vramFrequencies []int
-	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Pluck("vram_frequency", &vramFrequencies).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Order("vram_frequency").Pluck("vram_frequency", &vramFrequencies).Error; err != nil {
 		return nil, err
 	}
 
@@ -88,9 +88,9 @@ func (r *GpuRepository) GetVramFrequencies(ctx context.Context) ([]int, error) {
 
 func (r *GpuRepository) GetVrams(ctx context.Context) ([]int, error) {
 	var vrams []int
-	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Pluck("vram", &vrams).Error; err != nil {
+	if err := r.db.WithContext(ctx).Model(&orm.Gpu{}).Distinct().Order("vram").Pluck("vram", &vrams).Error; err != nil {
 		return nil, err
 	}
-
+	
 	return vrams, nil
 }
