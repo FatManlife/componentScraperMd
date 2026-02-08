@@ -8,14 +8,14 @@ type Fan struct {
 }
 
 type FanResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	FanRPM int `json:"fan_rpm"`
 	Noise float64 `json:"noise"`
 	Size string `json:"size"`
 }	
 
 type FanParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	MinFanRPM int 	`form:"min_fan_rpm"`
 	MaxFanRPM int 	`form:"max_fan_rpm"`
 	MinNoise float64 `form:"min_noise"`

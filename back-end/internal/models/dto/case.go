@@ -7,13 +7,13 @@ type Case struct {
 }
 
 type CaseResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Format string `json:"format"`
 	MotherboardFormFactor string `json:"motherboard_form_factor"`	
 }
 
 type CaseParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	Format []string `form:"format"`
 	MotherboardFormFactor []string `form:"motherboard_form_factor"`
 }

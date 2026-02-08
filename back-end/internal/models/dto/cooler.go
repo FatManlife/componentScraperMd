@@ -10,7 +10,7 @@ type Cooler struct {
 }
 
 type CoolerResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Type string `json:"type"`
 	FanRPM int `json:"fan_rpm"`
 	Noise float64 `json:"noise"`
@@ -19,7 +19,7 @@ type CoolerResponse struct {
 }
 
 type CoolerParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	Type string `form:"type"`
 	FanRPM int `form:"fan_rpm"`
 	Noise float64 `form:"noise"`

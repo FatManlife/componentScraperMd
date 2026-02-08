@@ -11,7 +11,7 @@ type Cpu struct {
 }
 
 type CpuResponse struct {
-	Product    ProductResponse
+	Product    ProductResponse `json:"product"`
 	Cores      int     `json:"cores"`
 	Threads    int     `json:"threads"`
 	BaseClock  float64 `json:"base_clock"`
@@ -21,7 +21,7 @@ type CpuResponse struct {
 }
 
 type CpuParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	Cores      []int	`form:"cores"` 
 	Threads    []int     `form:"threads"`
 	BaseClock  []float64 `form:"base_clock"`

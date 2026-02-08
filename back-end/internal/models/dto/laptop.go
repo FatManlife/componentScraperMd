@@ -11,7 +11,7 @@ type Laptop struct {
 }
 
 type LaptopResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Cpu string `json:"cpu"`
 	Gpu string`json:"gpu"`
 	Ram int`json:"ram"`
@@ -21,7 +21,7 @@ type LaptopResponse struct {
 }
 
 type LaptopParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"` 
 	Cpu []string `form:"cpu"` 
 	Gpu []string `form:"gpu"`
 	Ram []int `form:"ram"`

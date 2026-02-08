@@ -168,7 +168,7 @@ func main() {
 		psu.GET("/:id", psuGenericHandler.GetComponentByID)
 	}
 	//PC Mini
-	pcmini := r.Group("/pcmini")
+	pcmini := r.Group("/pc-mini")
 	{
 		pcmini.GET("", pcMiniGenericHandler.GetComponents)
 		pcmini.GET("/spec", pcMiniSpecHandler.GetComponentSpecs)

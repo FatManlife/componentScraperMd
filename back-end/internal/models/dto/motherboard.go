@@ -10,7 +10,7 @@ type Motherboard struct {
 }
 
 type MotherboardResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Chipset string `json:"chipset"`
 	Socket string `json:"socket"`
 	FormFactor string `json:"form_factor"`
@@ -19,7 +19,7 @@ type MotherboardResponse struct {
 }
 
 type MotherboardParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	Chipset []string `form:"chipset"`
 	Socket []string `form:"socket"`
 	FormFactor []string `form:"form_factor"`

@@ -10,7 +10,7 @@ type Aio struct {
 }
 
 type AioResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Diagonal float64 `json:"diagonal"`
 	Cpu string `json:"cpu"`
 	Ram int `json:"ram"`
@@ -19,8 +19,8 @@ type AioResponse struct {
 }
 
 type AioParams struct {
-	DefaultParams ProductParams
-	Diagonal []float64`form:"diagonal"`
+	DefaultParams ProductParams `form:"default_params"` 
+	Diagonal []float64 `form:"diagonal"`
 	Cpu []string `form:"cpu"`
 	Ram []int `form:"ram"`
 	Storage []int `form:"storage"`

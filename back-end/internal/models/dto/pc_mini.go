@@ -9,7 +9,7 @@ type PcMini struct {
 }
 
 type PcMiniResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Cpu string `json:"cpu"`
 	Gpu string `json:"gpu"`
 	Ram int `json:"ram"`

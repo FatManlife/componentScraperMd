@@ -9,7 +9,7 @@ type Gpu struct {
 }
 
 type GpuResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Chipset string `json:"chipset"`
 	Vram int `json:"vram"`
 	GpuFrequency int `json:"gpu_frequency"`
@@ -17,7 +17,7 @@ type GpuResponse struct {
 }
 
 type GpuParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	Chipset string `form:"chipset"`
 	MinVram int `form:"min_vram"`
 	MaxVram int `form:"max_vram"`

@@ -8,14 +8,14 @@ type Hdd struct  {
 }
 
 type HddResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Capacity int `json:"capacity"`
 	RotationSpeed int `json:"rotation_speed"`	
 	FormFactor string `json:"form_factor"`
 }
 
 type HddParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	MinCapacity int `form:"min_capacity"`
 	MaxCapacity int `form:"max_capacity"`
 	MinRotationSpeed int `form:"min_rotation_speed"`

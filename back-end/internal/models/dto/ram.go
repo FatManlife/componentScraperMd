@@ -10,7 +10,7 @@ type Ram struct {
 }
 
 type RamResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Capacity int `json:"capacity"`
 	Speed int `json:"speed"`
 	Type string `json:"type"`
@@ -19,11 +19,11 @@ type RamResponse struct {
 }
 
 type RamParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	MinCapacity int `form:"min_capacity"`
 	MaxCapacity int `form:"max_capacity"`
-	MinSpeed int`form:"min_speed"`
-	MaxSpeed int`form:"max_speed"`
+	MinSpeed int `form:"min_speed"`
+	MaxSpeed int `form:"max_speed"`
 	Type []string `form:"type"`
 	Compatibility []string `form:"compatibility"`
 	Configuration []int `form:"configuration"`

@@ -8,14 +8,14 @@ type Psu struct {
 }
 
 type PsuResponse struct {
-	Product ProductResponse
+	Product ProductResponse `json:"product"`
 	Power int `json:"power"`
 	Efficiency string `json:"efficiency"`
 	FormFactor string `json:"form_factor"`
 }
 
 type PsuParams struct {
-	DefaultParams ProductParams 
+	DefaultParams ProductParams `form:"default_params"`
 	MinPower int `form:"min_power"`
 	MaxPower int `form:"max_power"`
 	Efficiency []string `form:"efficiency"`
