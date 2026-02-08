@@ -18,7 +18,7 @@ function Pagination({
     const handlePageChange = (page: number) => {
         const newParams = new URLSearchParams(searchParams);
         newParams.set("page", page.toString());
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     if (totalPages <= 1) return null;

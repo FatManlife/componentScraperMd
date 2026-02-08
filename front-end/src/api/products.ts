@@ -19,3 +19,16 @@ export const FetchProducts = async (
         throw err;
     }
 };
+
+export const FetchProduct = async <T>(
+    category: string,
+    id: number,
+): Promise<T> => {
+    try {
+        const response = await api.get<T>(`/${category}/${id}`);
+        return response.data;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};

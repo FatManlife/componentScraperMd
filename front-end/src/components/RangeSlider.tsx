@@ -59,7 +59,7 @@ function RangeSlider({
             newParams.set(maxParamKey, max.toString());
         }
         newParams.delete("page");
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     const toggleEnabled = () => {
@@ -76,7 +76,7 @@ function RangeSlider({
             newParams.set(minParamKey, minValue.toString());
             newParams.set(maxParamKey, maxValue.toString());
         }
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     const minPercent = ((minValue - rangeMin) / (rangeMax - rangeMin)) * 100;

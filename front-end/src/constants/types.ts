@@ -40,7 +40,7 @@ export type ProductParams = {
 
 //Component Responses
 export type AioResponse = {
-    Product: Product;
+    product: Product;
     diagonal: number;
     cpu: string;
     ram: number;
@@ -49,13 +49,13 @@ export type AioResponse = {
 };
 
 export type CaseResponse = {
-    Product: Product;
+    product: Product;
     format: string;
     motherboard_form_factor: string;
 };
 
 export type CoolerResponse = {
-    Product: Product;
+    product: Product;
     type: string;
     fan_rpm: number;
     noise: number;
@@ -64,7 +64,7 @@ export type CoolerResponse = {
 };
 
 export type CpuResponse = {
-    Product: Product;
+    product: Product;
     cores: number;
     threads: number;
     base_clock: number;
@@ -74,14 +74,14 @@ export type CpuResponse = {
 };
 
 export type FanResponse = {
-    Product: Product;
+    product: Product;
     fan_rpm: number;
     noise: number;
     size: string;
 };
 
 export type GpuResponse = {
-    Product: Product;
+    product: Product;
     chipset: string;
     vram: number;
     gpu_frequency: number;
@@ -89,14 +89,14 @@ export type GpuResponse = {
 };
 
 export type HddResponse = {
-    Product: Product;
+    product: Product;
     capacity: number;
     rotation_speed: number;
     form_factor: string;
 };
 
 export type LaptopResponse = {
-    Product: Product;
+    product: Product;
     cpu: string;
     gpu: string;
     ram: number;
@@ -106,7 +106,7 @@ export type LaptopResponse = {
 };
 
 export type MotherboardResponse = {
-    Product: Product;
+    product: Product;
     chipset: string;
     socket: string;
     form_factor: string;
@@ -115,7 +115,7 @@ export type MotherboardResponse = {
 };
 
 export type PcResponse = {
-    Product: Product;
+    product: Product;
     cpu: string;
     gpu: string;
     ram: number;
@@ -126,7 +126,7 @@ export type PcResponse = {
 };
 
 export type PcMiniResponse = {
-    Product: Product;
+    product: Product;
     cpu: string;
     gpu: string;
     ram: number;
@@ -134,7 +134,7 @@ export type PcMiniResponse = {
 };
 
 export type PsuResponse = {
-    Product: Product;
+    product: Product;
     power: number;
     efficiency: string;
     form_factor: string;
@@ -279,7 +279,7 @@ export type PsuSpecs = {
 };
 
 export type RamResponse = {
-    Product: Product;
+    product: Product;
     capacity: number;
     speed: number;
     type: string;
@@ -307,7 +307,7 @@ export type RamSpecs = {
 };
 
 export type SsdResponse = {
-    Product: Product;
+    product: Product;
     capacity: number;
     reading_speed: number;
     writing_speed: number;

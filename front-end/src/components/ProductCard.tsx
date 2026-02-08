@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Products } from "../constants/types";
 
 type ProductCardProps = {
@@ -6,7 +7,10 @@ type ProductCardProps = {
 
 function ProductCard({ product }: ProductCardProps) {
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <Link
+            to={`/${product.category}/${product.id}`}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow block"
+        >
             <div className="aspect-square bg-gray-200 flex items-center justify-center">
                 {product.image_url ? (
                     <img
@@ -46,7 +50,7 @@ function ProductCard({ product }: ProductCardProps) {
                     </span>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 

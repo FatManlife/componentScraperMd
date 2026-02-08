@@ -105,7 +105,7 @@ function ProductListLayout({
                 );
             case "pc":
                 return <PcFilters specs={specificSpecs as PcSpecs} />;
-            case "pcmini":
+            case "pc-mini":
                 return <PcMiniFilters specs={specificSpecs as PcMiniSpecs} />;
             case "psu":
                 return <PsuFilters specs={specificSpecs as PsuSpecs} />;

@@ -12,7 +12,7 @@ function Header() {
         } else {
             newParams.delete("name");
         }
-        navigate(`/?${newParams.toString()}`);
+        navigate(`/?${newParams.toString()}`, { replace: true });
     };
 
     return (

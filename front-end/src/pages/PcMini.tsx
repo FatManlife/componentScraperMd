@@ -59,7 +59,7 @@ function PcMini() {
     }, [params]);
 
     useEffect(() => {
-        FetchComponentFilters<PcMiniSpecs>("pcmini")
+        FetchComponentFilters<PcMiniSpecs>("pc-mini")
             .then((data) => {
                 setFilters(data);
             })
@@ -75,7 +75,7 @@ function PcMini() {
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="pcmini"
+            category="pc-mini"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );

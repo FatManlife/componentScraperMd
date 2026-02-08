@@ -45,7 +45,7 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
         newParams.delete("website");
         newParams.delete("page");
         newWebsites.forEach((w) => newParams.append("website", w));
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     const handleOrderChange = (order: ProductOrder) => {
@@ -56,7 +56,7 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
             newParams.delete("order");
         }
         newParams.delete("page");
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     const handleResetFilters = () => {
@@ -66,7 +66,7 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
         if (name) {
             newParams.set("name", name);
         }
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     return (

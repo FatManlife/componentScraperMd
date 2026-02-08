@@ -425,7 +425,7 @@ export const FetchPcMini = async (
         }
 
         const response = await api.get<ProductResponse>(
-            `/pcmini?${queryParams.toString()}`,
+            `/pc-mini?${queryParams.toString()}`,
         );
         return response.data;
     } catch (err) {

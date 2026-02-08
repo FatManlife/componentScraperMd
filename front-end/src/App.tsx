@@ -16,6 +16,7 @@ import PcMini from "./pages/PcMini";
 import Psu from "./pages/Psu";
 import Ram from "./pages/Ram";
 import Ssd from "./pages/Ssd";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
     return (
@@ -34,9 +35,10 @@ function App() {
                     <Route path="/laptop" element={<Laptop />} />
                     <Route path="/motherboard" element={<Motherboard />} />
                     <Route path="/pc" element={<Pc />} />
-                    <Route path="/pcmini" element={<PcMini />} />
+                    <Route path="/pc-mini" element={<PcMini />} />
                     <Route path="/psu" element={<Psu />} />
                     <Route path="/ram" element={<Ram />} />
+                    <Route path="/:category/:id" element={<ProductDetail />} />
                     <Route path="/ssd" element={<Ssd />} />
                 </Routes>
             </Layout>

@@ -33,7 +33,7 @@ function ScrollableCheckboxList({
         newParams.delete(paramName);
         newParams.delete("page");
         updated.forEach((v) => newParams.append(paramName, v));
-        navigate(`?${newParams.toString()}`);
+        navigate(`?${newParams.toString()}`, { replace: true });
     };
 
     return (
