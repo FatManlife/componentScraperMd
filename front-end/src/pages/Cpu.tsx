@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchAio } from "../api/components";
+import { FetchCpu } from "../api/components";
 import { FetchComponentFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductResponse,
-    AioParams,
+    CpuParams,
     ProductOrder,
     ComponentFiltersResponse,
-    AioSpecs,
+    CpuSpecs,
 } from "../constants/types";
 
-function Aio() {
+function Cpu() {
     const [searchParams] = useSearchParams();
     const [filters, setFilters] =
-        useState<ComponentFiltersResponse<AioSpecs> | null>(null);
+        useState<ComponentFiltersResponse<CpuSpecs> | null>(null);
 
-    const params = useMemo<AioParams>(() => {
+    const params = useMemo<CpuParams>(() => {
         return {
             defaultParams: {
                 name: searchParams.get("name") ?? undefined,
@@ -37,25 +37,28 @@ function Aio() {
                     ? (searchParams.get("order") as ProductOrder)
                     : undefined,
             },
-            diagonal: searchParams
-                .getAll("diagonal")
-                .map((d) => parseFloat(d))
-                .filter((d) => !isNaN(d)),
-            cpu: searchParams.getAll("cpu"),
-            ram: searchParams
-                .getAll("ram")
-                .map((r) => parseInt(r, 10))
-                .filter((r) => !isNaN(r)),
-            storage: searchParams
-                .getAll("storage")
-                .map((s) => parseInt(s, 10))
-                .filter((s) => !isNaN(s)),
-            gpu: searchParams.getAll("gpu"),
+            cores: searchParams
+                .getAll("cores")
+                .map((c) => parseInt(c, 10))
+                .filter((c) => !isNaN(c)),
+            threads: searchParams
+                .getAll("threads")
+                .map((t) => parseInt(t, 10))
+                .filter((t) => !isNaN(t)),
+            base_clock: searchParams
+                .getAll("base_clock")
+                .map((b) => parseFloat(b))
+                .filter((b) => !isNaN(b)),
+            boost_clock: searchParams
+                .getAll("boost_clock")
+                .map((b) => parseFloat(b))
+                .filter((b) => !isNaN(b)),
+            socket: searchParams.getAll("socket"),
         };
     }, [searchParams.toString()]);
 
     const { data, loading, error, execute } = useFetch<ProductResponse>(() =>
-        FetchAio(params),
+        FetchCpu(params),
     );
 
     useEffect(() => {
@@ -63,27 +66,25 @@ function Aio() {
     }, [params]);
 
     useEffect(() => {
-        // Fetch filters for AIO category (only once on mount)
-        FetchComponentFilters<AioSpecs>("aio")
-            .then((data) => {
-                setFilters(data);
-            })
+        // Fetch filters for CPU category (only once on mount)
+        FetchComponentFilters<CpuSpecs>("cpu")
+            .then(setFilters)
             .catch(console.error);
     }, []);
 
     return (
         <ProductListLayout
-            title="AIO Products"
+            title="CPU Products"
             loading={loading}
             error={error}
             data={data?.products ?? []}
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="aio"
+            category="cpu"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );
 }
 
-export default Aio;
+export default Cpu;

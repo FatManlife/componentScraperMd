@@ -3,7 +3,37 @@ import Pagination from "./Pagination";
 import ProductList from "./ProductList";
 import Sidebar from "./Sidebar";
 import AioFilters from "./sidebars/AioFilters";
-import type { Products, DefaultSpecs, AioSpecs } from "../constants/types";
+import CaseFilters from "./sidebars/CaseFilters";
+import CoolerFilters from "./sidebars/CoolerFilters";
+import CpuFilters from "./sidebars/CpuFilters";
+import FanFilters from "./sidebars/FanFilters";
+import GpuFilters from "./sidebars/GpuFilters";
+import HddFilters from "./sidebars/HddFilters";
+import LaptopFilters from "./sidebars/LaptopFilters";
+import MotherboardFilters from "./sidebars/MotherboardFilters";
+import PcFilters from "./sidebars/PcFilters";
+import PcMiniFilters from "./sidebars/PcMiniFilters";
+import PsuFilters from "./sidebars/PsuFilters";
+import RamFilters from "./sidebars/RamFilters";
+import SsdFilters from "./sidebars/SsdFilters";
+import type {
+    Products,
+    DefaultSpecs,
+    AioSpecs,
+    CaseSpecs,
+    CoolerSpecs,
+    CpuSpecs,
+    FanSpecs,
+    GpuSpecs,
+    HddSpecs,
+    LaptopSpecs,
+    MotherboardSpecs,
+    PcSpecs,
+    PcMiniSpecs,
+    PsuSpecs,
+    RamSpecs,
+    SsdSpecs,
+} from "../constants/types";
 
 type ProductListLayoutProps = {
     title: string;
@@ -14,7 +44,22 @@ type ProductListLayoutProps = {
     totalCount: number | null;
     filters: DefaultSpecs | null;
     category?: string | null;
-    specificSpecs?: AioSpecs | null;
+    specificSpecs?:
+        | AioSpecs
+        | CaseSpecs
+        | CoolerSpecs
+        | CpuSpecs
+        | FanSpecs
+        | GpuSpecs
+        | HddSpecs
+        | LaptopSpecs
+        | MotherboardSpecs
+        | PcSpecs
+        | PcMiniSpecs
+        | PsuSpecs
+        | RamSpecs
+        | SsdSpecs
+        | null;
     children?: ReactNode;
 };
 
@@ -31,26 +76,43 @@ function ProductListLayout({
     children,
 }: ProductListLayoutProps) {
     const renderSpecificFilters = () => {
-        console.log(
-            "renderSpecificFilters called - category:",
-            category,
-            "specificSpecs:",
-            specificSpecs,
-        );
         if (!category || !specificSpecs) {
-            console.log(
-                "Returning null - category:",
-                category,
-                "specificSpecs:",
-                specificSpecs,
-            );
             return null;
         }
 
         switch (category) {
             case "aio":
-                console.log("Rendering AioFilters with specs:", specificSpecs);
                 return <AioFilters specs={specificSpecs as AioSpecs} />;
+            case "case":
+                return <CaseFilters specs={specificSpecs as CaseSpecs} />;
+            case "cooler":
+                return <CoolerFilters specs={specificSpecs as CoolerSpecs} />;
+            case "cpu":
+                return <CpuFilters specs={specificSpecs as CpuSpecs} />;
+            case "fan":
+                return <FanFilters specs={specificSpecs as FanSpecs} />;
+            case "gpu":
+                return <GpuFilters specs={specificSpecs as GpuSpecs} />;
+            case "hdd":
+                return <HddFilters specs={specificSpecs as HddSpecs} />;
+            case "laptop":
+                return <LaptopFilters specs={specificSpecs as LaptopSpecs} />;
+            case "motherboard":
+                return (
+                    <MotherboardFilters
+                        specs={specificSpecs as MotherboardSpecs}
+                    />
+                );
+            case "pc":
+                return <PcFilters specs={specificSpecs as PcSpecs} />;
+            case "pcmini":
+                return <PcMiniFilters specs={specificSpecs as PcMiniSpecs} />;
+            case "psu":
+                return <PsuFilters specs={specificSpecs as PsuSpecs} />;
+            case "ram":
+                return <RamFilters specs={specificSpecs as RamSpecs} />;
+            case "ssd":
+                return <SsdFilters specs={specificSpecs as SsdSpecs} />;
             default:
                 return null;
         }

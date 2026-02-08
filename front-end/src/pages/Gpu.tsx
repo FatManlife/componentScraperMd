@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchAio } from "../api/components";
+import { FetchGpu } from "../api/components";
 import { FetchComponentFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductResponse,
-    AioParams,
+    GpuParams,
     ProductOrder,
     ComponentFiltersResponse,
-    AioSpecs,
+    GpuSpecs,
 } from "../constants/types";
 
-function Aio() {
+function Gpu() {
     const [searchParams] = useSearchParams();
     const [filters, setFilters] =
-        useState<ComponentFiltersResponse<AioSpecs> | null>(null);
+        useState<ComponentFiltersResponse<GpuSpecs> | null>(null);
 
-    const params = useMemo<AioParams>(() => {
+    const params = useMemo<GpuParams>(() => {
         return {
             defaultParams: {
                 name: searchParams.get("name") ?? undefined,
@@ -37,25 +37,30 @@ function Aio() {
                     ? (searchParams.get("order") as ProductOrder)
                     : undefined,
             },
-            diagonal: searchParams
-                .getAll("diagonal")
-                .map((d) => parseFloat(d))
-                .filter((d) => !isNaN(d)),
-            cpu: searchParams.getAll("cpu"),
-            ram: searchParams
-                .getAll("ram")
-                .map((r) => parseInt(r, 10))
-                .filter((r) => !isNaN(r)),
-            storage: searchParams
-                .getAll("storage")
-                .map((s) => parseInt(s, 10))
-                .filter((s) => !isNaN(s)),
-            gpu: searchParams.getAll("gpu"),
+            chipset: searchParams.getAll("chipset"),
+            min_vram: searchParams.get("min_vram")
+                ? parseInt(searchParams.get("min_vram")!, 10)
+                : undefined,
+            max_vram: searchParams.get("max_vram")
+                ? parseInt(searchParams.get("max_vram")!, 10)
+                : undefined,
+            min_gpu_frequency: searchParams.get("min_gpu_frequency")
+                ? parseInt(searchParams.get("min_gpu_frequency")!, 10)
+                : undefined,
+            max_gpu_frequency: searchParams.get("max_gpu_frequency")
+                ? parseInt(searchParams.get("max_gpu_frequency")!, 10)
+                : undefined,
+            min_vram_frequency: searchParams.get("min_vram_frequency")
+                ? parseInt(searchParams.get("min_vram_frequency")!, 10)
+                : undefined,
+            max_vram_frequency: searchParams.get("max_vram_frequency")
+                ? parseInt(searchParams.get("max_vram_frequency")!, 10)
+                : undefined,
         };
     }, [searchParams.toString()]);
 
     const { data, loading, error, execute } = useFetch<ProductResponse>(() =>
-        FetchAio(params),
+        FetchGpu(params),
     );
 
     useEffect(() => {
@@ -63,8 +68,7 @@ function Aio() {
     }, [params]);
 
     useEffect(() => {
-        // Fetch filters for AIO category (only once on mount)
-        FetchComponentFilters<AioSpecs>("aio")
+        FetchComponentFilters<GpuSpecs>("gpu")
             .then((data) => {
                 setFilters(data);
             })
@@ -73,17 +77,17 @@ function Aio() {
 
     return (
         <ProductListLayout
-            title="AIO Products"
+            title="GPU Products"
             loading={loading}
             error={error}
             data={data?.products ?? []}
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="aio"
+            category="gpu"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );
 }
 
-export default Aio;
+export default Gpu;

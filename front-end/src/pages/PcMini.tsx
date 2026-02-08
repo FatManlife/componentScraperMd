@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchAio } from "../api/components";
+import { FetchPcMini } from "../api/components";
 import { FetchComponentFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductResponse,
-    AioParams,
+    PcMiniParams,
     ProductOrder,
     ComponentFiltersResponse,
-    AioSpecs,
+    PcMiniSpecs,
 } from "../constants/types";
 
-function Aio() {
+function PcMini() {
     const [searchParams] = useSearchParams();
     const [filters, setFilters] =
-        useState<ComponentFiltersResponse<AioSpecs> | null>(null);
+        useState<ComponentFiltersResponse<PcMiniSpecs> | null>(null);
 
-    const params = useMemo<AioParams>(() => {
+    const params = useMemo<PcMiniParams>(() => {
         return {
             defaultParams: {
                 name: searchParams.get("name") ?? undefined,
@@ -37,11 +37,8 @@ function Aio() {
                     ? (searchParams.get("order") as ProductOrder)
                     : undefined,
             },
-            diagonal: searchParams
-                .getAll("diagonal")
-                .map((d) => parseFloat(d))
-                .filter((d) => !isNaN(d)),
             cpu: searchParams.getAll("cpu"),
+            gpu: searchParams.getAll("gpu"),
             ram: searchParams
                 .getAll("ram")
                 .map((r) => parseInt(r, 10))
@@ -50,12 +47,11 @@ function Aio() {
                 .getAll("storage")
                 .map((s) => parseInt(s, 10))
                 .filter((s) => !isNaN(s)),
-            gpu: searchParams.getAll("gpu"),
         };
     }, [searchParams.toString()]);
 
     const { data, loading, error, execute } = useFetch<ProductResponse>(() =>
-        FetchAio(params),
+        FetchPcMini(params),
     );
 
     useEffect(() => {
@@ -63,8 +59,7 @@ function Aio() {
     }, [params]);
 
     useEffect(() => {
-        // Fetch filters for AIO category (only once on mount)
-        FetchComponentFilters<AioSpecs>("aio")
+        FetchComponentFilters<PcMiniSpecs>("pcmini")
             .then((data) => {
                 setFilters(data);
             })
@@ -73,17 +68,17 @@ function Aio() {
 
     return (
         <ProductListLayout
-            title="AIO Products"
+            title="PC Mini Products"
             loading={loading}
             error={error}
             data={data?.products ?? []}
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="aio"
+            category="pcmini"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );
 }
 
-export default Aio;
+export default PcMini;

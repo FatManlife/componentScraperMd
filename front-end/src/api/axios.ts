@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
-  timeout: 10000,
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  timeout: Number(import.meta.env.VITE_API_TIMEOUT) || 10000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -32,12 +32,18 @@ api.interceptors.response.use(
     // Handle errors globally
     if (error.response) {
       // Server responded with error
-      console.error('API Error:', error.response.data);
+      if (import.meta.env.VITE_ENV === 'development') {
+        console.error('API Error:', error.response.data);
+      }
     } else if (error.request) {
       // No response received
-      console.error('Network Error:', error.message);
+      if (import.meta.env.VITE_ENV === 'development') {
+        console.error('Network Error:', error.message);
+      }
     } else {
-      console.error('Error:', error.message);
+      if (import.meta.env.VITE_ENV === 'development') {
+        console.error('Error:', error.message);
+      }
     }
     return Promise.reject(error);
   }

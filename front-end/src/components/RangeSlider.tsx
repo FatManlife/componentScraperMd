@@ -12,8 +12,6 @@ type RangeSliderProps = {
 
 function RangeSlider({
     values,
-    label,
-    text,
     minParamKey = "min",
     maxParamKey = "max",
     formatValue = (value) => value.toFixed(0),
@@ -85,11 +83,7 @@ function RangeSlider({
     const maxPercent = ((maxValue - rangeMin) / (rangeMax - rangeMin)) * 100;
 
     return (
-        <div className="mb-6">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">
-                {label}
-            </h4>
-
+        <div className="px-2">
             {/* Enable/Disable Toggle */}
             <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded mb-3">
                 <input
@@ -98,12 +92,10 @@ function RangeSlider({
                     onChange={toggleEnabled}
                     className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700">
-                    Allow {text} Filtering
-                </span>
+                <span className="text-sm text-gray-700">Allow Filtering</span>
             </label>
             {isEnabled && (
-                <div className={"space-y-3"}>
+                <div className="space-y-3 px-2">
                     <div className="flex justify-between text-xs text-gray-600">
                         <span>{formatValue(minValue)}</span>
                         <span>{formatValue(maxValue)}</span>

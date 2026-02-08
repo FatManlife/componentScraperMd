@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchAio } from "../api/components";
+import { FetchPsu } from "../api/components";
 import { FetchComponentFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductResponse,
-    AioParams,
+    PsuParams,
     ProductOrder,
     ComponentFiltersResponse,
-    AioSpecs,
+    PsuSpecs,
 } from "../constants/types";
 
-function Aio() {
+function Psu() {
     const [searchParams] = useSearchParams();
     const [filters, setFilters] =
-        useState<ComponentFiltersResponse<AioSpecs> | null>(null);
+        useState<ComponentFiltersResponse<PsuSpecs> | null>(null);
 
-    const params = useMemo<AioParams>(() => {
+    const params = useMemo<PsuParams>(() => {
         return {
             defaultParams: {
                 name: searchParams.get("name") ?? undefined,
@@ -37,25 +37,19 @@ function Aio() {
                     ? (searchParams.get("order") as ProductOrder)
                     : undefined,
             },
-            diagonal: searchParams
-                .getAll("diagonal")
-                .map((d) => parseFloat(d))
-                .filter((d) => !isNaN(d)),
-            cpu: searchParams.getAll("cpu"),
-            ram: searchParams
-                .getAll("ram")
-                .map((r) => parseInt(r, 10))
-                .filter((r) => !isNaN(r)),
-            storage: searchParams
-                .getAll("storage")
-                .map((s) => parseInt(s, 10))
-                .filter((s) => !isNaN(s)),
-            gpu: searchParams.getAll("gpu"),
+            min_power: searchParams.get("min_power")
+                ? parseInt(searchParams.get("min_power")!, 10)
+                : undefined,
+            max_power: searchParams.get("max_power")
+                ? parseInt(searchParams.get("max_power")!, 10)
+                : undefined,
+            efficiency: searchParams.getAll("efficiency"),
+            form_factor: searchParams.getAll("form_factor"),
         };
     }, [searchParams.toString()]);
 
     const { data, loading, error, execute } = useFetch<ProductResponse>(() =>
-        FetchAio(params),
+        FetchPsu(params),
     );
 
     useEffect(() => {
@@ -63,8 +57,7 @@ function Aio() {
     }, [params]);
 
     useEffect(() => {
-        // Fetch filters for AIO category (only once on mount)
-        FetchComponentFilters<AioSpecs>("aio")
+        FetchComponentFilters<PsuSpecs>("psu")
             .then((data) => {
                 setFilters(data);
             })
@@ -73,17 +66,17 @@ function Aio() {
 
     return (
         <ProductListLayout
-            title="AIO Products"
+            title="PSU Products"
             loading={loading}
             error={error}
             data={data?.products ?? []}
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="aio"
+            category="psu"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );
 }
 
-export default Aio;
+export default Psu;

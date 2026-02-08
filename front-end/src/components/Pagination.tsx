@@ -15,8 +15,6 @@ function Pagination({
     const [searchParams] = useSearchParams();
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-    console.log("Total Pages:", itemsPerPage, totalCount, totalPages);
-
     const handlePageChange = (page: number) => {
         const newParams = new URLSearchParams(searchParams);
         newParams.set("page", page.toString());

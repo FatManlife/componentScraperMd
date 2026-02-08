@@ -15,7 +15,6 @@ function Test() {
             try {
                 const data = await FetchProductFilters();
                 setFilters(data);
-                console.log("Filters data:", data);
             } catch (err) {
                 setError("Failed to fetch filters");
                 console.error(err);

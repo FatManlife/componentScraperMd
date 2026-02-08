@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FetchAio } from "../api/components";
+import { FetchCooler } from "../api/components";
 import { FetchComponentFilters } from "../api/filters";
 import { useFetch } from "../hooks/useFetch";
 import ProductListLayout from "../components/ProductListLayout";
 import type {
     ProductResponse,
-    AioParams,
+    CoolerParams,
     ProductOrder,
     ComponentFiltersResponse,
-    AioSpecs,
+    CoolerSpecs,
 } from "../constants/types";
 
-function Aio() {
+function Cooler() {
     const [searchParams] = useSearchParams();
     const [filters, setFilters] =
-        useState<ComponentFiltersResponse<AioSpecs> | null>(null);
+        useState<ComponentFiltersResponse<CoolerSpecs> | null>(null);
 
-    const params = useMemo<AioParams>(() => {
+    const params = useMemo<CoolerParams>(() => {
         return {
             defaultParams: {
                 name: searchParams.get("name") ?? undefined,
@@ -37,25 +37,21 @@ function Aio() {
                     ? (searchParams.get("order") as ProductOrder)
                     : undefined,
             },
-            diagonal: searchParams
-                .getAll("diagonal")
-                .map((d) => parseFloat(d))
-                .filter((d) => !isNaN(d)),
-            cpu: searchParams.getAll("cpu"),
-            ram: searchParams
-                .getAll("ram")
+            type: searchParams.getAll("type"),
+            fan_rpm: searchParams
+                .getAll("fan_rpm")
                 .map((r) => parseInt(r, 10))
                 .filter((r) => !isNaN(r)),
-            storage: searchParams
-                .getAll("storage")
-                .map((s) => parseInt(s, 10))
-                .filter((s) => !isNaN(s)),
-            gpu: searchParams.getAll("gpu"),
+            noise: searchParams
+                .getAll("noise")
+                .map((n) => parseFloat(n))
+                .filter((n) => !isNaN(n)),
+            compatibility: searchParams.getAll("compatibility"),
         };
     }, [searchParams.toString()]);
 
     const { data, loading, error, execute } = useFetch<ProductResponse>(() =>
-        FetchAio(params),
+        FetchCooler(params),
     );
 
     useEffect(() => {
@@ -63,27 +59,25 @@ function Aio() {
     }, [params]);
 
     useEffect(() => {
-        // Fetch filters for AIO category (only once on mount)
-        FetchComponentFilters<AioSpecs>("aio")
-            .then((data) => {
-                setFilters(data);
-            })
+        // Fetch filters for Cooler category (only once on mount)
+        FetchComponentFilters<CoolerSpecs>("cooler")
+            .then(setFilters)
             .catch(console.error);
     }, []);
 
     return (
         <ProductListLayout
-            title="AIO Products"
+            title="Cooler Products"
             loading={loading}
             error={error}
             data={data?.products ?? []}
             currentPage={params.defaultParams.page || 1}
             totalCount={data?.count ?? null}
             filters={filters?.defaultSpecs ?? null}
-            category="aio"
+            category="cooler"
             specificSpecs={filters?.specificSpecs ?? null}
         />
     );
 }
 
-export default Aio;
+export default Cooler;
