@@ -60,7 +60,8 @@ function Pagination({
                 return (
                     <span
                         key={`ellipsis-${index}`}
-                        className="px-3 py-2 text-gray-500"
+                        className="px-3 py-2"
+                        style={{ color: '#8A8A8A' }}
                     >
                         ...
                     </span>
@@ -72,11 +73,24 @@ function Pagination({
                     key={page}
                     onClick={() => handlePageChange(page as number)}
                     disabled={page === currentPage}
-                    className={`px-3 py-2 rounded transition ${
-                        page === currentPage
-                            ? "bg-blue-500 text-white font-semibold"
-                            : "bg-white text-gray-700 hover:bg-gray-100"
-                    } disabled:cursor-not-allowed`}
+                    className="px-3 py-2 transition-all disabled:cursor-not-allowed"
+                    style={{
+                        backgroundColor: page === currentPage ? '#000000' : '#FFFFFF',
+                        color: page === currentPage ? '#FFFFFF' : '#000000',
+                        border: '1px solid #D9D9D9',
+                        borderRadius: '2px',
+                        fontWeight: page === currentPage ? '600' : '400'
+                    }}
+                    onMouseEnter={(e) => {
+                        if (page !== currentPage) {
+                            e.currentTarget.style.backgroundColor = '#F4F4F4';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (page !== currentPage) {
+                            e.currentTarget.style.backgroundColor = '#FFFFFF';
+                        }
+                    }}
                 >
                     {page}
                 </button>
@@ -89,7 +103,24 @@ function Pagination({
             <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-4 py-2 bg-white text-gray-700 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 transition-all disabled:cursor-not-allowed"
+                style={{
+                    backgroundColor: '#FFFFFF',
+                    color: '#000000',
+                    border: '1px solid #D9D9D9',
+                    borderRadius: '2px',
+                    opacity: currentPage === 1 ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                    if (currentPage !== 1) {
+                        e.currentTarget.style.backgroundColor = '#F4F4F4';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (currentPage !== 1) {
+                        e.currentTarget.style.backgroundColor = '#FFFFFF';
+                    }
+                }}
             >
                 Previous
             </button>
@@ -99,7 +130,24 @@ function Pagination({
             <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-white text-gray-700 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-4 py-2 transition-all disabled:cursor-not-allowed"
+                style={{
+                    backgroundColor: '#FFFFFF',
+                    color: '#000000',
+                    border: '1px solid #D9D9D9',
+                    borderRadius: '2px',
+                    opacity: currentPage === totalPages ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                    if (currentPage !== totalPages) {
+                        e.currentTarget.style.backgroundColor = '#F4F4F4';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    if (currentPage !== totalPages) {
+                        e.currentTarget.style.backgroundColor = '#FFFFFF';
+                    }
+                }}
             >
                 Next
             </button>

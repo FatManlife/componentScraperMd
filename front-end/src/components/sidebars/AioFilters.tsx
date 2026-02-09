@@ -37,12 +37,15 @@ function AioFilters({ specs }: AioFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("diagonal")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             Diagonal (inches)
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.diagonal ? "−" : "+"}
                         </span>
                     </button>
@@ -64,12 +67,15 @@ function AioFilters({ specs }: AioFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("cpu")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             CPU
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.cpu ? "−" : "+"}
                         </span>
                     </button>
@@ -88,12 +94,15 @@ function AioFilters({ specs }: AioFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("ram")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             RAM (GB)
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.ram ? "−" : "+"}
                         </span>
                     </button>
@@ -115,12 +124,15 @@ function AioFilters({ specs }: AioFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("storage")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             Storage (GB)
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.storage ? "−" : "+"}
                         </span>
                     </button>
@@ -142,12 +154,15 @@ function AioFilters({ specs }: AioFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("gpu")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             GPU
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.gpu ? "−" : "+"}
                         </span>
                     </button>

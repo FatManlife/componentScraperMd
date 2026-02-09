@@ -74,7 +74,7 @@ function ProductDetail() {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <div className="flex items-center justify-center min-h-100">
-                    <div className="text-xl text-gray-600">Loading...</div>
+                    <div className="text-xl" style={{ color: '#8A8A8A' }}>Loading...</div>
                 </div>
             </div>
         );
@@ -84,12 +84,15 @@ function ProductDetail() {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8">
                 <div className="flex flex-col items-center justify-center min-h-100">
-                    <div className="text-xl text-red-600 mb-4">
+                    <div className="text-xl mb-4" style={{ color: '#000000' }}>
                         {error || "Product not found"}
                     </div>
                     <button
                         onClick={() => navigate(-1)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        className="px-4 py-2 transition-colors"
+                        style={{ backgroundColor: '#000000', color: '#FFFFFF', borderRadius: '2px' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8A8A8A'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#000000'}
                     >
                         Go Back
                     </button>
@@ -103,16 +106,19 @@ function ProductDetail() {
         <div className="max-w-6xl mx-auto px-4 py-8">
             <button
                 onClick={() => navigate(-1)}
-                className="mb-6 flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                className="mb-6 flex items-center gap-2 transition-opacity"
+                style={{ color: '#000000' }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
             >
                 <span>←</span>
                 <span>Back to results</span>
             </button>
 
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-hidden" style={{ backgroundColor: '#FFFFFF', border: '1px solid #D9D9D9', borderRadius: '2px' }}>
                 <div className="grid md:grid-cols-2 gap-8 p-8">
                     {/* Product Image */}
-                    <div className="aspect-square bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
+                    <div className="aspect-square flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#F4F4F4', borderRadius: '2px' }}>
                         {product.product.image_url ? (
                             <img
                                 src={product.product.image_url}
@@ -120,36 +126,36 @@ function ProductDetail() {
                                 className="w-full h-full object-cover"
                             />
                         ) : (
-                            <span className="text-gray-400">No Image</span>
+                            <span style={{ color: '#8A8A8A' }}>No Image</span>
                         )}
                     </div>
 
                     {/* Product Details */}
                     <div className="flex flex-col">
-                        <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                        <h1 className="text-3xl font-bold mb-4" style={{ color: '#000000' }}>
                             {product.product.name}
                         </h1>
 
                         <div className="mb-6">
-                            <p className="text-gray-600 mb-2">
-                                <span className="font-semibold">Brand:</span>{" "}
+                            <p className="mb-2" style={{ color: '#8A8A8A' }}>
+                                <span className="font-semibold" style={{ color: '#000000' }}>Brand:</span>{" "}
                                 {product.product.brand || "Unknown"}
                             </p>
-                            <p className="text-gray-600 mb-2">
-                                <span className="font-semibold">Category:</span>{" "}
+                            <p className="mb-2" style={{ color: '#8A8A8A' }}>
+                                <span className="font-semibold" style={{ color: '#000000' }}>Category:</span>{" "}
                                 {product.product.category}
                             </p>
                         </div>
 
                         <div className="mb-6">
-                            <div className="text-4xl font-bold text-blue-600 mb-2">
+                            <div className="text-4xl font-bold mb-2" style={{ color: '#000000' }}>
                                 MDL {product.product.price}
                             </div>
                         </div>
 
                         {/* Component-specific specs */}
-                        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-3">
+                        <div className="mb-6 p-4" style={{ backgroundColor: '#F4F4F4', borderRadius: '2px' }}>
+                            <h2 className="text-xl font-semibold mb-3" style={{ color: '#000000' }}>
                                 Specifications
                             </h2>
                             <div className="space-y-2">
@@ -158,12 +164,13 @@ function ProductDetail() {
                                     return (
                                         <div
                                             key={key}
-                                            className="flex justify-between py-2 border-b border-gray-200 last:border-0"
+                                            className="flex justify-between py-2 last:border-0"
+                                            style={{ borderBottom: '1px solid #D9D9D9' }}
                                         >
-                                            <span className="text-gray-600 capitalize">
+                                            <span className="capitalize" style={{ color: '#8A8A8A' }}>
                                                 {key.replace(/_/g, " ")}:
                                             </span>
-                                            <span className="font-semibold text-gray-800">
+                                            <span className="font-semibold" style={{ color: '#000000' }}>
                                                 {value?.toString() || "N/A"}
                                             </span>
                                         </div>
@@ -173,17 +180,17 @@ function ProductDetail() {
                         </div>
 
                         {/* Store Info */}
-                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg mb-6">
+                        <div className="flex items-center gap-3 p-4 mb-6" style={{ backgroundColor: '#F4F4F4', borderRadius: '2px' }}>
                             <img
                                 src={product.product.website_image}
                                 alt={product.product.website}
                                 className="h-8 w-auto object-contain"
                             />
                             <div>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm" style={{ color: '#8A8A8A' }}>
                                     Available at
                                 </p>
-                                <p className="font-semibold text-gray-800">
+                                <p className="font-semibold" style={{ color: '#000000' }}>
                                     {product.product.website}
                                 </p>
                             </div>
@@ -194,7 +201,10 @@ function ProductDetail() {
                             href={product.product.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors text-center font-semibold"
+                            className="w-full py-3 px-6 text-center font-semibold transition-colors"
+                            style={{ backgroundColor: '#000000', color: '#FFFFFF', borderRadius: '2px', display: 'block' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8A8A8A'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#000000'}
                         >
                             View on {product.product.website}
                         </a>

@@ -43,12 +43,23 @@ function RamFilters({ specs }: RamFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("capacity")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Capacity
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.capacity ? "−" : "+"}
                         </span>
                     </button>
@@ -70,12 +81,23 @@ function RamFilters({ specs }: RamFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("speed")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Speed
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.speed ? "−" : "+"}
                         </span>
                     </button>
@@ -97,12 +119,23 @@ function RamFilters({ specs }: RamFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("type")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Type
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.type ? "−" : "+"}
                         </span>
                     </button>
@@ -121,12 +154,23 @@ function RamFilters({ specs }: RamFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("compatibility")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Compatibility
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.compatibility ? "−" : "+"}
                         </span>
                     </button>
@@ -145,12 +189,23 @@ function RamFilters({ specs }: RamFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("configuration")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Configuration
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.configuration ? "−" : "+"}
                         </span>
                     </button>

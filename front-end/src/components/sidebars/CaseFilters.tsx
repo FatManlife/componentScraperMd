@@ -29,12 +29,15 @@ function CaseFilters({ specs }: CaseFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("format")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: 'transparent' }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                             Format
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: '#8A8A8A' }}>
                             {openSections.format ? "−" : "+"}
                         </span>
                     </button>
@@ -56,12 +59,15 @@ function CaseFilters({ specs }: CaseFiltersProps) {
                             onClick={() =>
                                 toggleSection("motherboardFormFactor")
                             }
-                            className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                            className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                            style={{ backgroundColor: 'transparent' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                         >
-                            <h4 className="text-sm font-semibold text-gray-700">
+                            <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                                 Motherboard Form Factor
                             </h4>
-                            <span className="text-gray-500">
+                            <span style={{ color: '#8A8A8A' }}>
                                 {openSections.motherboardFormFactor ? "−" : "+"}
                             </span>
                         </button>

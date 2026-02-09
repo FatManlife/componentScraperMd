@@ -34,12 +34,23 @@ function HddFilters({ specs }: HddFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("capacity")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Capacity
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.capacity ? "−" : "+"}
                         </span>
                     </button>
@@ -61,12 +72,23 @@ function HddFilters({ specs }: HddFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("rotationSpeed")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Rotation Speed
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.rotationSpeed ? "−" : "+"}
                         </span>
                     </button>
@@ -88,12 +110,23 @@ function HddFilters({ specs }: HddFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("formFactor")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Form Factor
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.formFactor ? "−" : "+"}
                         </span>
                     </button>

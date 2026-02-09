@@ -8,7 +8,7 @@ type ProductListProps = {
 function ProductList({ products }: ProductListProps) {
     if (!products || products.length === 0) {
         return (
-            <div className="text-center text-gray-600 py-8">
+            <div className="text-center py-8" style={{ color: '#8A8A8A' }}>
                 No products found.
             </div>
         );

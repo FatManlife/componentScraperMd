@@ -5,7 +5,10 @@ type SearchBarProps = {
     placeholder?: string;
 };
 
-function SearchBar({ onSearch, placeholder = "Search products..." }: SearchBarProps) {
+function SearchBar({
+    onSearch,
+    placeholder = "Search products...",
+}: SearchBarProps) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -19,18 +22,43 @@ function SearchBar({ onSearch, placeholder = "Search products..." }: SearchBarPr
     };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto mb-6">
-            <div className="flex gap-2">
+        <form onSubmit={handleSubmit} className="w-full max-w-3xl">
+            <div className="flex gap-3">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder={placeholder}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 px-4 py-3 focus:outline-none transition-all duration-200"
+                    style={{
+                        backgroundColor: "#F4F4F4",
+                        border: "1px solid #D9D9D9",
+                        borderRadius: "2px",
+                        color: "#000000",
+                    }}
+                    onFocus={(e) => {
+                        e.target.style.backgroundColor = "#FFFFFF";
+                        e.target.style.borderColor = "#8A8A8A";
+                    }}
+                    onBlur={(e) => {
+                        e.target.style.backgroundColor = "#F4F4F4";
+                        e.target.style.borderColor = "#D9D9D9";
+                    }}
                 />
                 <button
                     type="submit"
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    className="px-8 py-3 font-medium transition-all duration-200"
+                    style={{
+                        backgroundColor: "#000000",
+                        color: "#FFFFFF",
+                        borderRadius: "2px",
+                    }}
+                    onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#8A8A8A")
+                    }
+                    onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#000000")
+                    }
                 >
                     Search
                 </button>
@@ -38,7 +66,19 @@ function SearchBar({ onSearch, placeholder = "Search products..." }: SearchBarPr
                     <button
                         type="button"
                         onClick={handleClear}
-                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+                        className="px-5 py-3 font-medium transition-all duration-200"
+                        style={{
+                            backgroundColor: "#F4F4F4",
+                            color: "#000000",
+                            border: "1px solid #D9D9D9",
+                            borderRadius: "2px",
+                        }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#D9D9D9")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
                     >
                         Clear
                     </button>

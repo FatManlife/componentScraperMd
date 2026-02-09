@@ -32,12 +32,23 @@ function PsuFilters({ specs }: PsuFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("power")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Power
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.power ? "−" : "+"}
                         </span>
                     </button>
@@ -59,12 +70,23 @@ function PsuFilters({ specs }: PsuFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("efficiency")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Efficiency
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.efficiency ? "−" : "+"}
                         </span>
                     </button>
@@ -83,12 +105,23 @@ function PsuFilters({ specs }: PsuFiltersProps) {
                 <div className="mb-6">
                     <button
                         onClick={() => toggleSection("formFactor")}
-                        className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                        className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                        style={{ backgroundColor: "transparent" }}
+                        onMouseEnter={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#F4F4F4")
+                        }
+                        onMouseLeave={(e) =>
+                            (e.currentTarget.style.backgroundColor =
+                                "transparent")
+                        }
                     >
-                        <h4 className="text-sm font-semibold text-gray-700">
+                        <h4
+                            className="text-sm font-semibold"
+                            style={{ color: "#000000" }}
+                        >
                             Form Factor
                         </h4>
-                        <span className="text-gray-500">
+                        <span style={{ color: "#8A8A8A" }}>
                             {openSections.formFactor ? "−" : "+"}
                         </span>
                     </button>

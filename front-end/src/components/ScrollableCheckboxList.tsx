@@ -45,7 +45,21 @@ function ScrollableCheckboxList({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={`Search ${label}...`}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm focus:outline-none transition-all"
+                    style={{
+                        backgroundColor: '#F4F4F4',
+                        border: '1px solid #D9D9D9',
+                        borderRadius: '2px',
+                        color: '#000000'
+                    }}
+                    onFocus={(e) => {
+                        e.target.style.backgroundColor = '#FFFFFF';
+                        e.target.style.borderColor = '#8A8A8A';
+                    }}
+                    onBlur={(e) => {
+                        e.target.style.backgroundColor = '#F4F4F4';
+                        e.target.style.borderColor = '#D9D9D9';
+                    }}
                 />
             </div>
 
@@ -76,7 +90,10 @@ function ScrollableCheckboxList({
                         return (
                             <label
                                 key={index}
-                                className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                                className="flex items-center gap-2 cursor-pointer p-2 transition-colors"
+                                style={{ backgroundColor: 'transparent' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                                 <input
                                     type="checkbox"
@@ -88,16 +105,16 @@ function ScrollableCheckboxList({
                                             e.target.checked,
                                         )
                                     }
-                                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                    className="w-4 h-4"
                                 />
-                                <span className="text-sm text-gray-700">
+                                <span className="text-sm" style={{ color: '#000000' }}>
                                     {displayLabel}
                                 </span>
                             </label>
                         );
                     })
                 ) : (
-                    <div className="text-sm text-gray-500 p-2">
+                    <div className="text-sm p-2" style={{ color: '#8A8A8A' }}>
                         No results found
                     </div>
                 )}

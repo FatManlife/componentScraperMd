@@ -43,23 +43,31 @@ function RangeSlider({
     const handleMinChange = (value: number) => {
         const newMin = Math.min(value, maxValue - 1);
         setMinValue(newMin);
-        updateUrl(newMin, maxValue);
     };
 
     const handleMaxChange = (value: number) => {
         const newMax = Math.max(value, minValue + 1);
         setMaxValue(newMax);
-        updateUrl(minValue, newMax);
     };
 
-    const updateUrl = (min: number, max: number) => {
-        const newParams = new URLSearchParams(searchParams);
+    const handleMinRelease = () => {
         if (isEnabled) {
-            newParams.set(minParamKey, min.toString());
-            newParams.set(maxParamKey, max.toString());
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set(minParamKey, minValue.toString());
+            newParams.set(maxParamKey, maxValue.toString());
+            newParams.delete("page");
+            navigate(`?${newParams.toString()}`, { replace: true });
         }
-        newParams.delete("page");
-        navigate(`?${newParams.toString()}`, { replace: true });
+    };
+
+    const handleMaxRelease = () => {
+        if (isEnabled) {
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set(minParamKey, minValue.toString());
+            newParams.set(maxParamKey, maxValue.toString());
+            newParams.delete("page");
+            navigate(`?${newParams.toString()}`, { replace: true });
+        }
     };
 
     const toggleEnabled = () => {
@@ -85,32 +93,38 @@ function RangeSlider({
     return (
         <div className="px-2">
             {/* Enable/Disable Toggle */}
-            <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded mb-3">
+            <label className="flex items-center gap-2 cursor-pointer p-2 mb-3 transition-colors"
+                style={{ backgroundColor: 'transparent' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
                 <input
                     type="checkbox"
                     checked={isEnabled}
                     onChange={toggleEnabled}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    className="w-4 h-4"
                 />
-                <span className="text-sm text-gray-700">Allow Filtering</span>
+                <span className="text-sm" style={{ color: '#000000' }}>Allow Filtering</span>
             </label>
             {isEnabled && (
                 <div className="space-y-3 px-2">
-                    <div className="flex justify-between text-xs text-gray-600">
+                    <div className="flex justify-between text-xs" style={{ color: '#8A8A8A' }}>
                         <span>{formatValue(minValue)}</span>
                         <span>{formatValue(maxValue)}</span>
                     </div>
 
                     <div className="relative h-6">
                         {/* Track background */}
-                        <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 rounded -translate-y-1/2" />
+                        <div className="absolute top-1/2 left-0 right-0 h-2 -translate-y-1/2" style={{ backgroundColor: '#D9D9D9', borderRadius: '2px' }} />
 
                         {/* Active track */}
                         <div
-                            className="absolute top-1/2 h-2 bg-blue-500 rounded -translate-y-1/2"
+                            className="absolute top-1/2 h-2 -translate-y-1/2"
                             style={{
                                 left: `${minPercent}%`,
                                 right: `${100 - maxPercent}%`,
+                                backgroundColor: '#000000',
+                                borderRadius: '2px'
                             }}
                         />
 
@@ -123,8 +137,10 @@ function RangeSlider({
                             onChange={(e) =>
                                 handleMinChange(parseFloat(e.target.value))
                             }
+                            onMouseUp={handleMinRelease}
+                            onTouchEnd={handleMinRelease}
                             disabled={!isEnabled}
-                            className="absolute w-full h-6 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-blue-600 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow"
+                            className="absolute w-full h-6 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-[#000000] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-[#000000] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow"
                             style={{
                                 zIndex: minValue > rangeMax - 100 ? 5 : 3,
                             }}
@@ -139,8 +155,10 @@ function RangeSlider({
                             onChange={(e) =>
                                 handleMaxChange(parseFloat(e.target.value))
                             }
+                            onMouseUp={handleMaxRelease}
+                            onTouchEnd={handleMaxRelease}
                             disabled={!isEnabled}
-                            className="absolute w-full h-6 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-blue-600 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow"
+                            className="absolute w-full h-6 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-[#000000] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-[#000000] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:shadow"
                             style={{ zIndex: 4 }}
                         />
                     </div>

@@ -70,12 +70,15 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
     };
 
     return (
-        <aside className="w-64 bg-white rounded-lg shadow-md p-4 sticky top-4 self-start max-h-[calc(100vh-2rem)] overflow-y-auto">
+        <aside className="w-64 p-4 sticky top-4 self-start max-h-[calc(100vh-2rem)] overflow-y-auto" style={{ backgroundColor: '#FFFFFF', border: '1px solid #D9D9D9', borderRadius: '2px' }}>
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-800">Filters</h3>
+                <h3 className="text-lg font-bold" style={{ color: '#000000' }}>Filters</h3>
                 <button
                     onClick={handleResetFilters}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                    className="text-sm font-medium px-2 py-1 transition-colors"
+                    style={{ color: '#000000', backgroundColor: '#F4F4F4' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#D9D9D9'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
                 >
                     Reset
                 </button>
@@ -85,12 +88,15 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
             <div className="mb-6">
                 <button
                     onClick={() => toggleSection("websites")}
-                    className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                    className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                    style={{ backgroundColor: 'transparent' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                    <h4 className="text-sm font-semibold text-gray-700">
+                    <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                         Websites
                     </h4>
-                    <span className="text-gray-500">
+                    <span style={{ color: '#8A8A8A' }}>
                         {openSections.websites ? "−" : "+"}
                     </span>
                 </button>
@@ -99,7 +105,10 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
                         {filters.websites.map((website, index) => (
                             <label
                                 key={index}
-                                className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                                className="flex items-center gap-2 cursor-pointer p-2 transition-colors"
+                                style={{ backgroundColor: 'transparent' }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                             >
                                 <input
                                     type="checkbox"
@@ -111,9 +120,9 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
                                             e.target.checked,
                                         )
                                     }
-                                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                    className="w-4 h-4"
                                 />
-                                <span className="text-sm text-gray-700">
+                                <span className="text-sm" style={{ color: '#000000' }}>
                                     {website}
                                 </span>
                             </label>
@@ -126,12 +135,15 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
             <div className="mb-6">
                 <button
                     onClick={() => toggleSection("price")}
-                    className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                    className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                    style={{ backgroundColor: 'transparent' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                    <h4 className="text-sm font-semibold text-gray-700">
+                    <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                         Price Range
                     </h4>
-                    <span className="text-gray-500">
+                    <span style={{ color: '#8A8A8A' }}>
                         {openSections.price ? "−" : "+"}
                     </span>
                 </button>
@@ -148,18 +160,25 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
             <div className="mb-6">
                 <button
                     onClick={() => toggleSection("sort")}
-                    className="flex items-center justify-between w-full text-left mb-2 hover:bg-gray-50 p-2 rounded"
+                    className="flex items-center justify-between w-full text-left mb-2 p-2 transition-colors"
+                    style={{ backgroundColor: 'transparent' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                    <h4 className="text-sm font-semibold text-gray-700">
+                    <h4 className="text-sm font-semibold" style={{ color: '#000000' }}>
                         Sort By
                     </h4>
-                    <span className="text-gray-500">
+                    <span style={{ color: '#8A8A8A' }}>
                         {openSections.sort ? "−" : "+"}
                     </span>
                 </button>
                 {openSections.sort && (
                     <div className="space-y-2">
-                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                        <label className="flex items-center gap-2 cursor-pointer p-2 transition-colors"
+                            style={{ backgroundColor: 'transparent' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
                             <input
                                 type="radio"
                                 name="order"
@@ -170,13 +189,17 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
                                         e.target.value as ProductOrder,
                                     )
                                 }
-                                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                className="w-4 h-4"
                             />
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm" style={{ color: '#000000' }}>
                                 Default
                             </span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                        <label className="flex items-center gap-2 cursor-pointer p-2 transition-colors"
+                            style={{ backgroundColor: 'transparent' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
                             <input
                                 type="radio"
                                 name="order"
@@ -187,13 +210,17 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
                                         e.target.value as ProductOrder,
                                     )
                                 }
-                                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                className="w-4 h-4"
                             />
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm" style={{ color: '#000000' }}>
                                 Price: Low to High
                             </span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                        <label className="flex items-center gap-2 cursor-pointer p-2 transition-colors"
+                            style={{ backgroundColor: 'transparent' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F4F4F4'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                        >
                             <input
                                 type="radio"
                                 name="order"
@@ -204,9 +231,9 @@ function Sidebar({ filters, specificFilters }: SidebarProps) {
                                         e.target.value as ProductOrder,
                                     )
                                 }
-                                className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                                className="w-4 h-4"
                             />
-                            <span className="text-sm text-gray-700">
+                            <span className="text-sm" style={{ color: '#000000' }}>
                                 Price: High to Low
                             </span>
                         </label>
