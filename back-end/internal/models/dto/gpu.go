@@ -18,7 +18,7 @@ type GpuResponse struct {
 
 type GpuParams struct {
 	DefaultParams ProductParams `form:"default_params"`
-	Chipset string `form:"chipset"`
+	Chipset []string `form:"chipset"`
 	MinVram int `form:"min_vram"`
 	MaxVram int `form:"max_vram"`
 	MinGpuFrequency int `form:"min_gpu_frequency"`

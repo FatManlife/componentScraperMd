@@ -438,7 +438,7 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 
 		el.ForEach("p", func(_ int, element *colly.HTMLElement){
 			if (element.ChildText("span:nth-child(2)") == "Da"){
-				cooler.Compatibility = append(cooler.Compatibility, element.ChildText("span:nth-child(1)"))
+				cooler.Compatibility = append(cooler.Compatibility, scraper.CpuGeneralization(element.ChildText("span:nth-child(1)")))
 			}
 		})
 	})

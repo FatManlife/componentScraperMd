@@ -349,7 +349,7 @@ func (h *handler) coolerHandler(e *colly.HTMLElement){
 		case "Тип сокета процессора":	
 			s := el.ChildText("div.table_cell:nth-child(2)")
 			cooler.Compatibility = func(parts []string) []string{
-				for i := range parts {parts[i] = strings.TrimSpace(parts[i])} 
+				for i := range parts {parts[i] = strings.TrimSpace(scraper.CpuGeneralization(parts[i]))} 
 				return parts 
 			}(strings.Split(s,"/"))
 		}

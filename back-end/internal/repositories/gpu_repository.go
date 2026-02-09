@@ -24,8 +24,8 @@ func (r *GpuRepository) GetGpus(ctx context.Context, params dto.GpuParams) ([]or
 
 	q.Joins("JOIN gpus ON gpus.product_id = products.id").Preload("Gpu")
 
-	if params.Chipset != "" {
-		q = q.Where("gpus.chipset = ?", params.Chipset)
+	if len(params.Chipset) > 0 {
+		q = q.Where("gpus.chipset IN ?", params.Chipset)
 	}
 	if params.MinVram > 0 {
 		q = q.Where("gpus.vram >= ?", params.MinVram)

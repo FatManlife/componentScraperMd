@@ -24,14 +24,14 @@ func (r *CoolerRepository) GetCoolers(ctx context.Context, params dto.CoolerPara
 
 	q.Group("products.id").Joins("JOIN coolers ON coolers.product_id = products.id JOIN cooler_cpus ON cooler_cpus.cooler_id = coolers.id JOIN cooler_compatibilities ON cooler_compatibilities.id = cooler_cpus.compatibility_id")
 
-	if params.Type != "" {
-		q = q.Where("coolers.type = ?", params.Type)
+	if len(params.Type) > 0 {
+		q = q.Where("coolers.type IN ?", params.Type)
 	}
-	if params.FanRPM != 0 {
-		q = q.Where("coolers.fan_rpm = ?", params.FanRPM)
+	if len(params.FanRPM) > 0 {
+		q = q.Where("coolers.fan_rpm IN ?", params.FanRPM)
 	}
-	if params.Noise != 0 {
-		q = q.Where("coolers.noise = ?", params.Noise)
+	if len(params.Noise) > 0 {
+		q = q.Where("coolers.noise IN ?", params.Noise)
 	}
 	if len(params.Compatibility) > 0 {
 		q = q.Where("cooler_compatibilities.cpu IN ?", params.Compatibility)
