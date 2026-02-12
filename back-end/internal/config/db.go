@@ -3,13 +3,19 @@ package config
 import (
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func ConnDb() *gorm.DB {
-	dsn := "host=localhost user=admin password=admin dbname=pc_components port=5432 sslmode=disable"
+	err := godotenv.Load()
+    if err != nil {
+        log.Println("No .env file found, using system environment variables")
+    }
+	dsn := os.Getenv("DB_DSN")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
