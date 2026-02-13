@@ -42,9 +42,11 @@ function Home() {
 
     useEffect(() => {
         execute();
-        // Fetch filters
-        FetchProductFilters().then(setFilters).catch(console.error);
     }, [params]);
+
+    useEffect(() => {
+        FetchProductFilters().then(setFilters).catch(console.error);
+    }, []);
 
     return (
         <ProductListLayout

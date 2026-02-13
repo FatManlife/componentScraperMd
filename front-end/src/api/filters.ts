@@ -6,11 +6,7 @@ import type {
 
 export const FetchProductFilters = async (): Promise<DefaultSpecs> => {
     try {
-        const queryParams = new URLSearchParams();
-
-        const response = await api.get<DefaultSpecs>(
-            `product/spec?${queryParams.toString()}`,
-        );
+        const response = await api.get<DefaultSpecs>(`product/spec`);
         return response.data;
     } catch (err) {
         console.error(err);
