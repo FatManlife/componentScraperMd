@@ -12,7 +12,7 @@ import (
 )
 
 var categoryMap map[string]string = map[string]string {
-	 "procesoare": "cpu",
+	"procesoare": "cpu",
 	"storage hdd": "hdd",
 	"storage ssd": "ssd",
 	"memorii ram": "ram",

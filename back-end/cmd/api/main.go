@@ -125,6 +125,8 @@ func main() {
 	r.Use(cors.Default())
 
 	//Http Requests products getters
+	r.GET("", productHanlder.GetProducts)
+
 	products := r.Group("/product")
 	{
 		products.GET("", productHanlder.GetProducts)
